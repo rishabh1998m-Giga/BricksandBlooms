@@ -127,7 +127,7 @@ const SatisfactionSection = () => {
         </div>
 
         {/* "Every project starts fresh" cards */}
-          <div className="sat-item grid grid-cols-1 md:grid-cols-2 gap-6 mb-20 opacity-0">
+        <div className="sat-item grid grid-cols-1 md:grid-cols-2 gap-6 mb-20 opacity-0">
           <div className="rounded-2xl border border-black/[0.08] p-10 bg-white hover:border-black/15 transition-colors">
             <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-black/40 mb-3">
               No pre-designed templates
@@ -151,6 +151,7 @@ const SatisfactionSection = () => {
                 From concept to maintenance, every detail is tailored to your needs and long-term sustainability.
               </p>
             </div>
+          </div>
         </div>
 
         {/* Simple Pricing Preview */}

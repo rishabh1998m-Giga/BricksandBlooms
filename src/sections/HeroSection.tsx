@@ -143,7 +143,7 @@ const HeroSection = () => {
             alt="Woman with blue flowers"
             className="h-full w-full object-cover object-top"
           />
-          {/* "let's create" overlay on image */}
+          {/* Hero overlay text */}
           <div className="absolute inset-0 flex items-start justify-center pt-[10%]">
             <h1 className="text-[60px] sm:text-[80px] md:text-[100px] font-extrabold text-white/10 tracking-tight select-none pointer-events-none">
               let's create
@@ -205,19 +205,16 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Create\Studio Logo */}
+          {/* Brick & Blooms Logo */}
           <div
             ref={logoRef}
             className="mt-4 flex items-center justify-center opacity-0"
           >
             <span className="text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] xl:text-[150px] font-extrabold leading-none tracking-tighter text-coral">
-              Create
-            </span>
-            <span className="mx-1 sm:mx-2 text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] xl:text-[150px] font-light leading-none text-white/60">
-              \
+              Brick
             </span>
             <span className="text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] xl:text-[150px] font-extrabold leading-none tracking-tighter text-white">
-              Studio
+              &amp; Blooms
             </span>
           </div>
 

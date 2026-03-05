@@ -23,9 +23,9 @@ const Footer = () => {
 
   const navLinks = [
     { label: 'HOME', href: '#' },
-    { label: 'WORK', href: '#work' },
-    { label: 'STUDIO', href: '#studio' },
-    { label: 'WHISPERS', href: '#whispers' },
+    { label: 'PROJECTS', href: '#work' },
+    { label: 'SERVICES', href: '#studio' },
+    { label: 'INSIGHTS', href: '#whispers' },
     { label: 'CONTACT', href: '#contact' },
   ];
 
@@ -144,7 +144,7 @@ const Footer = () => {
             {/* Tagline */}
             <div>
               <p className="text-[12px] leading-relaxed text-black/40">
-                Digital experiences that connect, scale and perform.
+                Landscape design, terrace gardens, and outdoor transformations that bring nature closer to you.
               </p>
             </div>
           </div>
@@ -179,26 +179,22 @@ const Footer = () => {
             {/* Center: Large Logo */}
             <div className="text-center">
               <div className="flex items-center justify-center gap-1">
-                <span className="text-[42px] md:text-[56px] lg:text-[72px] font-bold tracking-tight text-coral">
-                  Create
-                </span>
-                <span className="text-[42px] md:text-[56px] lg:text-[72px] font-light text-black/20">\</span>
-                <span className="text-[42px] md:text-[56px] lg:text-[72px] font-bold tracking-tight text-black/20">
-                  Studio
+                <span className="text-[32px] md:text-[44px] lg:text-[56px] font-bold tracking-tight text-coral">
+                  Brick &amp; Blooms
                 </span>
               </div>
               <p className="mt-2 text-[12px] text-black/40">
-                A creative agency for design, strategy, marketing, and scalable premium websites.
+                A landscape design studio for terraces, balconies, and outdoor spaces that grow with you.
               </p>
             </div>
 
             {/* Right: Phone & Socials */}
             <div className="flex flex-col items-center gap-4 md:items-end">
               <a
-                href="tel:+13105550165"
+                href="tel:+911234567890"
                 className="text-[18px] font-semibold text-black/70 transition-colors hover:text-coral"
               >
-                (310) 555-0165
+                +91 12345 67890
               </a>
               <div className="flex gap-4">
                 {socialLinks.map((link) => (
@@ -223,28 +219,21 @@ const Footer = () => {
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <span className="text-[11px] text-black/30">© 2026 Create Studio — All work, all rights.</span>
+              <span className="text-[11px] text-black/30">© 2026 Brick &amp; Blooms — All gardens, all rights.</span>
             </div>
 
             <div className="flex flex-col md:flex-row items-center gap-4">
-              <span className="text-[11px] text-black/30">Create® - Framer template</span>
-              <span className="text-[11px] text-black/30">|</span>
-              <span className="text-[11px] text-black/30">
-                designed by{' '}
-                <a href="https://tamasbodo.com" target="_blank" rel="noopener noreferrer" className="text-coral hover:text-coral-hover transition-colors">
-                  tamas
-                </a>
-              </span>
+              <span className="text-[11px] text-black/30">Brick &amp; Blooms — Landscape Design Studio</span>
             </div>
 
             <div className="text-[10px] text-black/25">
-              <p><strong>Create Studio</strong> LLC.</p>
-              <p>567 Sunset Blvd, Suite 501</p>
-              <p>Los Angeles, CA 90026</p>
+              <p><strong>Brick &amp; Blooms</strong></p>
+              <p>Terrace &amp; Landscape Studio</p>
+              <p>Based in India</p>
             </div>
 
             <div className="text-[10px] text-black/25">
-              <p>hello@create.com</p>
+              <p>hello@brickandblooms.in</p>
             </div>
           </div>
         </div>

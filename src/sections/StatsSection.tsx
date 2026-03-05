@@ -13,10 +13,10 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { value: 86, suffix: '+', label: 'PROJECTS SHIPPED', code: '//001', barWidth: '86%' },
-  { value: 80, suffix: '%', label: 'REPEAT COLLABORATIONS', code: '//002', barWidth: '80%' },
-  { value: 32, suffix: '', label: 'INDUSTRY AWARDS', code: '//003', barWidth: '64%' },
-  { value: 89, suffix: '%', label: 'CLIENT RETENTION RATE', code: '// 004', barWidth: '89%' },
+  { value: 10000, suffix: '+', label: 'PLANTS INSTALLED', code: '//001', barWidth: '95%' },
+  { value: 50, suffix: '+', label: 'TERRACE & BALCONY GARDENS', code: '//002', barWidth: '80%' },
+  { value: 4, suffix: '+', label: 'YEARS OF DESIGN & EXECUTION EXPERTISE', code: '//003', barWidth: '70%' },
+  { value: 95, suffix: '%', label: 'PROJECT COMPLETION WITHIN TIMELINE', code: '//004', barWidth: '95%' },
 ];
 
 const clientLogos = [
@@ -105,10 +105,10 @@ const StatsSection = () => {
         <div className="flex items-start justify-between mb-8">
           <div>
             <h2 className="mb-4 text-[32px] font-medium leading-[1.1] tracking-tight text-white md:text-[44px]">
-              The proof behind our work
+              The proof behind our landscapes
             </h2>
             <p className="max-w-[460px] text-[14px] leading-relaxed text-white/50">
-              —— From first launches to lasting collaborations, we're trusted to deliver on time and at quality.
+              From concept to completion, we design and deliver outdoor spaces that stand the test of time.
             </p>
           </div>
           {/* Logo placeholder */}

@@ -61,10 +61,10 @@ const WeCreateSection = () => {
   }));
 
   const textLines = [
-    { text: 'we listen', color: 'text-black' },
-    { text: 'we imagine', color: 'text-black' },
-    { text: 'we create', color: 'text-coral' },
-    { text: 'beautiful things', color: 'text-black/70' },
+    { text: 'we observe', color: 'text-black' },
+    { text: 'we design', color: 'text-black' },
+    { text: 'we transform', color: 'text-coral' },
+    { text: 'outdoor spaces', color: 'text-black/70' },
   ];
 
   return (

@@ -125,7 +125,7 @@ const HeroSection = () => {
     };
   }, []);
 
-  const headlineWords = ['Digital', 'experiences', 'that', 'connect,', 'scale', 'and', 'perform'];
+  const headlineWords = ['Nature’s', 'Beauty', 'Delivered'];
 
   return (
     <section
@@ -258,10 +258,10 @@ const HeroSection = () => {
 
             <div className="hero-bottom-item opacity-0">
               <p className="mb-1 max-w-[420px] text-[11px] font-semibold uppercase leading-[1.8] tracking-[0.06em] text-white/70">
-                A DESIGN STUDIO TRUSTED BY STARTUPS AND LEADING BRANDS.
+                TRANSFORMING OUTDOOR SPACES WITH THOUGHTFUL LANDSCAPE DESIGN & EXECUTION.
               </p>
               <p className="mb-4 max-w-[420px] text-[11px] font-semibold uppercase leading-[1.8] tracking-[0.06em] text-white/70">
-                WE CREATE STORIES PEOPLE REMEMBER.
+                DESIGN • CONSULTATION • EXECUTION • PROJECT MANAGEMENT.
               </p>
             </div>
 

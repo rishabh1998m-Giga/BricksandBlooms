@@ -49,10 +49,10 @@ const SatisfactionSection = () => {
         <div className="flex items-start justify-between mb-16">
           <div>
             <h2 className="mb-4 text-[32px] md:text-[44px] font-medium leading-[1.1] tracking-tight text-black">
-              Designed to Make Your Life Easier
+              Designed to Bring Nature Closer to You
             </h2>
             <p className="max-w-[460px] text-[14px] leading-relaxed text-black/50">
-              —— Clear process, quick reviews, and a clean launch at the end. We keep the steps simple so projects never get stuck.
+              Clear process. Thoughtful planning. Seamless execution. We keep things simple so your outdoor transformation feels effortless.
             </p>
           </div>
           <div className="hidden md:block">
@@ -72,10 +72,10 @@ const SatisfactionSection = () => {
             </div>
             <div className="flex items-baseline gap-3">
               <span className="text-[56px] md:text-[80px] font-extrabold leading-none tracking-tight text-coral">
-                Ideas
+                Landscapes
               </span>
               <span className="text-[20px] md:text-[28px] font-medium text-black/60">
-                that start with you
+                that begin with your vision
               </span>
             </div>
           </div>
@@ -88,25 +88,25 @@ const SatisfactionSection = () => {
               <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-black/40">Client Satisfaction Rate</span>
             </div>
             <div className="text-[48px] md:text-[64px] font-bold leading-none tracking-tight text-black mb-6">
-              99.9%
+              98%
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div>
-                <div className="text-[24px] font-bold text-black">12+</div>
-                <div className="text-[11px] text-black/50">Industries served</div>
+                <div className="text-[24px] font-bold text-black">120+</div>
+                <div className="text-[11px] text-black/50">Projects Completed</div>
               </div>
               <div>
-                <div className="text-[24px] font-bold text-black">24h</div>
-                <div className="text-[11px] text-black/50">Average Response Time</div>
+                <div className="text-[24px] font-bold text-black">4+ Years</div>
+                <div className="text-[11px] text-black/50">Landscape Expertise</div>
               </div>
               <div>
-                <div className="text-[24px] font-bold text-black">96%</div>
-                <div className="text-[11px] text-black/50">First Draft Approved</div>
+                <div className="text-[24px] font-bold text-black">95%</div>
+                <div className="text-[11px] text-black/50">On-Time Project Delivery</div>
               </div>
               <div>
-                <div className="text-[24px] font-bold text-black">99%</div>
-                <div className="text-[11px] text-black/50">Ship on-Time</div>
+                <div className="text-[24px] font-bold text-black">90%</div>
+                <div className="text-[11px] text-black/50">Repeat & Referral Clients</div>
               </div>
             </div>
 
@@ -118,32 +118,39 @@ const SatisfactionSection = () => {
                 ))}
               </div>
               <span className="text-[13px] font-semibold text-black">5 / 5</span>
-              <span className="text-[12px] text-black/50">(98 reviews)</span>
+              <span className="text-[12px] text-black/50">(Based on client feedback)</span>
             </div>
             <p className="mt-2 text-[12px] text-black/40">
-              Backed by feedback from <strong>120+</strong> brands we've worked with.
+              ★★★★★ 5/5 (Based on client feedback) — trusted by homeowners, commercial spaces & hospitality brands.
             </p>
           </div>
         </div>
 
         {/* "Every project starts fresh" cards */}
-        <div className="sat-item grid grid-cols-1 md:grid-cols-2 gap-6 mb-20 opacity-0">
+          <div className="sat-item grid grid-cols-1 md:grid-cols-2 gap-6 mb-20 opacity-0">
           <div className="rounded-2xl border border-black/[0.08] p-10 bg-white hover:border-black/15 transition-colors">
-            <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-black/40 mb-3">No reheated or pre-made.</p>
-            <h3 className="text-[24px] md:text-[28px] font-semibold leading-tight text-black mb-6">Every project starts fresh.</h3>
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-[#0a0a0a] flex items-center justify-center">
-                <span className="text-[14px] font-bold text-white">C</span>
-              </div>
-              <span className="text-[11px] font-medium text-black/40">Create®</span>
-            </div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-black/40 mb-3">
+              No pre-designed templates
+            </p>
+            <h3 className="text-[24px] md:text-[28px] font-semibold leading-tight text-black mb-4">
+              Every landscape starts with your space.
+            </h3>
+            <p className="text-[13px] leading-relaxed text-black/55">
+              We design around your sunlight, soil, lifestyle, and vision — never one-size-fits-all.
+            </p>
           </div>
           <div className="rounded-2xl border border-black/[0.08] p-10 bg-white hover:border-black/15 transition-colors flex items-center">
             <div>
-              <span className="text-[28px] md:text-[36px] font-bold text-coral leading-tight tracking-tight">Custom work</span>
-              <p className="text-[18px] md:text-[22px] font-medium text-black/60 mt-1">from day one.</p>
+              <span className="text-[28px] md:text-[36px] font-bold text-coral leading-tight tracking-tight">
+                Custom solutions
+              </span>
+              <p className="text-[18px] md:text-[22px] font-medium text-black/60 mt-1">
+                Built to grow with you.
+              </p>
+              <p className="mt-3 text-[13px] leading-relaxed text-black/55">
+                From concept to maintenance, every detail is tailored to your needs and long-term sustainability.
+              </p>
             </div>
-          </div>
         </div>
 
         {/* Simple Pricing Preview */}

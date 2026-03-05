@@ -9,25 +9,25 @@ const processSteps = [
   {
     number: '//01',
     title: 'DISCOVERY',
-    description: 'We start by listening. Goals, challenges, and vision are mapped out clearly, setting the foundation for everything that follows.',
+    description: 'We begin by understanding your space, lifestyle, and vision. Site visits, soil study, sunlight patterns, and functional needs are carefully mapped before design begins.',
     icon: Search,
   },
   {
     number: '//02',
-    title: 'STRATEGY',
-    description: 'With insights in place, we define the roadmap. Positioning, priorities, and the best way to align design and execution.',
+    title: 'PLANNING & DESIGN',
+    description: 'With insights in place, we create thoughtful landscape concepts. Layouts, plant selection, zoning, irrigation planning, and 3D visualizations ensure clarity before execution.',
     icon: Lightbulb,
   },
   {
     number: '//03',
-    title: 'DESIGN & BUILD',
-    description: 'Ideas take shape. From visuals to digital experiences, we design and develop with sharp attention to detail.',
+    title: 'EXECUTION & BUILD',
+    description: 'Design comes to life with precision. From sourcing materials to on-site supervision, we manage every detail to ensure quality and timeline control.',
     icon: Palette,
   },
   {
     number: '//04',
-    title: 'LAUNCH & GROW',
-    description: 'Delivery is just the beginning. We measure, refine, and scale to ensure your project continues to perform.',
+    title: 'GROW & MAINTAIN',
+    description: 'Installation is just the beginning. We guide plant care, maintenance schedules, and seasonal upgrades to ensure your landscape thrives long-term.',
     icon: Rocket,
   },
 ];
@@ -84,10 +84,10 @@ const ProcessSection = () => {
         <div className="flex items-start justify-between mb-12">
           <div>
             <h2 className="mb-4 text-[32px] md:text-[44px] font-medium leading-[1.1] tracking-tight text-white">
-              The process behind our success
+              The process behind every landscape
             </h2>
             <p className="max-w-[460px] text-[14px] leading-relaxed text-white/50">
-              —— We work with clarity, precision. Every step designed to move your project forward with confidence.
+              We work with clarity and care. Every step is designed to transform your space with confidence.
             </p>
           </div>
           <div className="hidden md:block">
@@ -104,10 +104,10 @@ const ProcessSection = () => {
             {/* Services card */}
             <div className="process-item mb-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8 opacity-0">
               <h3 className="mb-3 text-[20px] font-medium text-white">
-                Services built on process, precision, and people.
+                From concept to bloom, follow the journey that brings your outdoor space to life.
               </h3>
               <p className="mb-6 text-[13px] leading-relaxed text-white/50">
-                We combine strategy, design, content, and technology, giving you a single partner for every stage of your brand's growth.
+                Our process keeps every project clear, structured, and easy to follow — from the first walk-through to the final planting.
               </p>
               <a
                 href="#contact"
@@ -156,7 +156,7 @@ const ProcessSection = () => {
               <div className="relative aspect-[4/3] w-full overflow-hidden">
                 <img
                   src="/project-blackwell.jpg"
-                  alt="Blackwell Motors"
+                  alt="Featured Brick & Blooms landscape project"
                   className="h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -164,14 +164,14 @@ const ProcessSection = () => {
                   <div className="h-5 w-5 rounded-full border border-white/30 flex items-center justify-center">
                     <span className="text-[7px] font-bold text-white">B</span>
                   </div>
-                  <span className="text-[12px] font-semibold text-white">Blackwell Motors</span>
+                  <span className="text-[12px] font-semibold text-white">Brick & Blooms</span>
                 </div>
               </div>
 
               {/* Description */}
               <div className="p-6">
                 <p className="mb-4 text-[12px] leading-relaxed text-white/60">
-                  Step inside one of our featured projects. From first brief to launch, follow the process that shows what makes Create® different.
+                  Follow a real landscape transformation from first site visit to final planting — and see how every step shapes the result.
                 </p>
 
                 <div className="mb-4">
@@ -179,15 +179,15 @@ const ProcessSection = () => {
                     Our process in motion
                   </h4>
                   <p className="text-[12px] leading-relaxed text-white/50">
-                    Explore a real case where strategy, design, and delivery lined up exactly as we work today.
+                    Explore how strategy, design, and execution align seamlessly in every Brick & Blooms project.
                   </p>
                 </div>
 
                 <a
-                  href="#"
+                  href="#work"
                   className="group inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-coral transition-colors hover:text-coral-hover"
                 >
-                  Explore Case Studies
+                  View our projects
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </a>
               </div>

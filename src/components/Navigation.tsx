@@ -65,8 +65,7 @@ const Navigation = () => {
             }`}
           >
             <a href="#" className="flex items-center" onClick={(e) => handleNavClick(e, '#')}>
-              <span className="text-[22px] font-bold tracking-tight text-coral">create</span>
-              <span className="text-[10px] text-coral/70 ml-0.5 -mt-2">®</span>
+              <span className="text-[22px] font-bold tracking-tight text-coral">Brick &amp; Blooms</span>
             </a>
           </div>
 
@@ -81,7 +80,7 @@ const Navigation = () => {
               onClick={(e) => handleNavClick(e, '#work')}
               className="group relative flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-white/80 transition-all duration-200 hover:text-white"
             >
-              Work
+              Projects
               <span className="flex h-4 min-w-[14px] items-center justify-center rounded-[3px] bg-white px-1 text-[9px] font-bold text-black animate-pulse-badge">
                 5
               </span>
@@ -91,14 +90,14 @@ const Navigation = () => {
               onClick={(e) => handleNavClick(e, '#studio')}
               className="text-[12px] font-medium uppercase tracking-[0.08em] text-white/80 transition-all duration-200 hover:text-white"
             >
-              Studio
+              Services
             </a>
             <a
               href="#whispers"
               onClick={(e) => handleNavClick(e, '#whispers')}
               className="group relative flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-white/80 transition-all duration-200 hover:text-white"
             >
-              Whispers
+              Insights
               <span className="flex h-4 min-w-[14px] items-center justify-center rounded-[3px] bg-white px-1 text-[9px] font-bold text-black animate-pulse-badge">
                 7
               </span>
@@ -116,7 +115,7 @@ const Navigation = () => {
               onClick={(e) => handleNavClick(e, '#contact')}
               className="group hidden md:flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-white/80 transition-all duration-200 hover:text-white"
             >
-              Contact
+              Let’s talk
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
 
@@ -144,10 +143,10 @@ const Navigation = () => {
           className="flex flex-col items-center justify-center h-full gap-8 pt-16"
         >
           {[
-            { label: 'Work', href: '#work', badge: '5' },
-            { label: 'Studio', href: '#studio' },
-            { label: 'Whispers', href: '#whispers', badge: '7' },
-            { label: 'Contact', href: '#contact' },
+            { label: 'Projects', href: '#work', badge: '5' },
+            { label: 'Services', href: '#studio' },
+            { label: 'Insights', href: '#whispers', badge: '7' },
+            { label: 'Let’s talk', href: '#contact' },
           ].map((link) => (
             <a
               key={link.label}

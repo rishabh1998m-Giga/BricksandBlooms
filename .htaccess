@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Keep real files/directories untouched
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# SPA fallback for route paths like /v1, /v2, /services, etc.
+RewriteRule ^ index.html [L]

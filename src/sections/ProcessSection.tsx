@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { ArrowRight, Search, Lightbulb, Palette, Rocket } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { VERSION_THEMES, type VersionKey, withVersionPath } from '../theme/versionThemes';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,8 +34,14 @@ const processSteps = [
   },
 ];
 
-const ProcessSection = () => {
+interface ProcessSectionProps {
+  version?: VersionKey;
+}
+
+const ProcessSection = ({ version = 'main' }: ProcessSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
+  const isMain = version === 'main';
+  const theme = VERSION_THEMES[version];
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -62,14 +70,18 @@ const ProcessSection = () => {
       ref={sectionRef}
       className="relative w-full overflow-hidden py-24"
       style={{
-        background: 'linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 30%, #2a1050 50%, #3a1060 70%, #1a0a2e 100%)',
+        background: isMain
+          ? 'linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 30%, #2a1050 50%, #3a1060 70%, #1a0a2e 100%)'
+          : theme.navGradient,
       }}
     >
       {/* Abstract gradient overlay */}
       <div
         className="absolute inset-0 opacity-40"
         style={{
-          background: 'radial-gradient(ellipse at 30% 60%, rgba(60,40,120,0.5) 0%, transparent 50%), radial-gradient(ellipse at 70% 40%, rgba(180,50,80,0.2) 0%, transparent 40%)',
+          background: isMain
+            ? 'radial-gradient(ellipse at 30% 60%, rgba(60,40,120,0.5) 0%, transparent 50%), radial-gradient(ellipse at 70% 40%, rgba(180,50,80,0.2) 0%, transparent 40%)'
+            : 'radial-gradient(ellipse at 30% 60%, rgba(255,255,255,0.22) 0%, transparent 55%), radial-gradient(ellipse at 70% 40%, rgba(255,255,255,0.16) 0%, transparent 45%)',
         }}
       />
 
@@ -109,13 +121,13 @@ const ProcessSection = () => {
               <p className="mb-6 text-[13px] leading-relaxed text-white/50">
                 Our process keeps every project clear, structured, and easy to follow — from the first walk-through to the final planting.
               </p>
-              <a
-                href="#contact"
+              <Link
+                to={withVersionPath(version, '/services')}
                 className="group inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-coral transition-colors hover:text-coral-hover"
               >
                 Chat with our Operations Manager
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-              </a>
+              </Link>
             </div>
 
             {/* Process steps */}
@@ -161,10 +173,10 @@ const ProcessSection = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                  <div className="h-5 w-5 rounded-full border border-white/30 flex items-center justify-center">
-                    <span className="text-[7px] font-bold text-white">B</span>
+                  <div className="h-5 w-5 rounded-full bg-white/20 flex items-center justify-center">
+                    <span className="text-[8px] font-bold text-white">B</span>
                   </div>
-                  <span className="text-[12px] font-semibold text-white">Brick & Blooms</span>
+                  <span className="text-[12px] font-semibold text-white">Brick &amp; Blooms</span>
                 </div>
               </div>
 
@@ -183,13 +195,13 @@ const ProcessSection = () => {
                   </p>
                 </div>
 
-                <a
-                  href="#work"
+                <Link
+                  to={withVersionPath(version, '/projects')}
                   className="group inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-coral transition-colors hover:text-coral-hover"
                 >
                   View our projects
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>

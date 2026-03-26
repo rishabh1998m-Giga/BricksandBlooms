@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { VERSION_THEMES, type VersionKey } from '../theme/versionThemes';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -100,8 +101,13 @@ const services: Service[] = [
   },
 ];
 
-const ServicesSection = () => {
+interface ServicesSectionProps {
+  version?: VersionKey;
+}
+
+const ServicesSection = ({ version = 'main' }: ServicesSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
+  const theme = VERSION_THEMES[version];
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -148,7 +154,11 @@ const ServicesSection = () => {
             >
               {/* Image placeholder */}
               <div className="lg:col-span-3">
-                <div className={`aspect-[4/3] w-full rounded-xl bg-gradient-to-br ${service.imageColor} overflow-hidden`}>
+                <div
+                  className={`aspect-[4/3] w-full rounded-xl bg-gradient-to-br overflow-hidden ${
+                    version === 'main' ? service.imageColor : theme.serviceGradients[index % theme.serviceGradients.length]
+                  }`}
+                >
                   <div className="h-full w-full flex items-center justify-center">
                     <span className="text-white/20 text-[40px] font-bold">{service.number}</span>
                   </div>

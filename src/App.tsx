@@ -1,24 +1,15 @@
 import { useEffect, useRef } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-
-import CustomCursor from './components/CustomCursor';
-import Navigation from './components/Navigation';
-import HeroSection from './sections/HeroSection';
-import WeCreateSection from './sections/WeCreateSection';
-import WorkSection from './sections/WorkSection';
-import StatsSection from './sections/StatsSection';
-import ServicesSection from './sections/ServicesSection';
-import ProcessSection from './sections/ProcessSection';
-import SatisfactionSection from './sections/SatisfactionSection';
-import PricingSection from './sections/PricingSection';
-import TeamSection from './sections/TeamSection';
-import FAQSection from './sections/FAQSection';
-import TestimonialsSection from './sections/TestimonialsSection';
-import BlogSection from './sections/BlogSection';
-import CTASection from './sections/CTASection';
-import Footer from './sections/Footer';
+import SiteLayout from './components/SiteLayout';
+import HomePage from './pages/HomePage';
+import ProjectsPage from './pages/ProjectsPage';
+import ServicesPage from './pages/ServicesPage';
+import InsightsPage from './pages/InsightsPage';
+import TeamPage from './pages/TeamPage';
+import type { VersionKey } from './theme/versionThemes';
 
 import './App.css';
 
@@ -60,29 +51,27 @@ function App() {
   }, []);
 
   return (
-    <main className="relative min-h-screen w-full overflow-x-hidden">
-      {/* Custom Cursor */}
-      <CustomCursor />
-      
-      {/* Navigation */}
-      <Navigation />
-      
-      {/* Sections */}
-      <HeroSection />
-      <WeCreateSection />
-      <WorkSection />
-      <StatsSection />
-      <ServicesSection />
-      <ProcessSection />
-      <SatisfactionSection />
-      <PricingSection />
-      <TeamSection />
-      <FAQSection />
-      <TestimonialsSection />
-      <BlogSection />
-      <CTASection />
-      <Footer />
-    </main>
+    <Routes>
+      <Route path="/" element={<SiteLayout version="main" />}>
+        <Route index element={<HomePage version="main" />} />
+        <Route path="projects" element={<ProjectsPage version="main" />} />
+        <Route path="services" element={<ServicesPage version="main" />} />
+        <Route path="insights" element={<InsightsPage version="main" />} />
+        <Route path="team" element={<TeamPage version="main" />} />
+      </Route>
+
+      {(['v1', 'v2', 'v3', 'v4', 'v5'] as VersionKey[]).map((version) => (
+        <Route key={version} path={`/${version}`} element={<SiteLayout version={version} />}>
+          <Route index element={<HomePage version={version} />} />
+          <Route path="projects" element={<ProjectsPage version={version} />} />
+          <Route path="services" element={<ServicesPage version={version} />} />
+          <Route path="insights" element={<InsightsPage version={version} />} />
+          <Route path="team" element={<TeamPage version={version} />} />
+        </Route>
+      ))}
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUp, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { type VersionKey, withVersionPath } from '../theme/versionThemes';
 
-const Footer = () => {
+interface FooterProps {
+  version?: VersionKey;
+}
+
+const Footer = ({ version = 'main' }: FooterProps) => {
   const circleRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState('');
 
@@ -22,11 +28,11 @@ const Footer = () => {
   };
 
   const navLinks = [
-    { label: 'HOME', href: '#' },
-    { label: 'PROJECTS', href: '#work' },
-    { label: 'SERVICES', href: '#studio' },
-    { label: 'INSIGHTS', href: '#whispers' },
-    { label: 'CONTACT', href: '#contact' },
+    { label: 'HOME', href: withVersionPath(version, '/') },
+    { label: 'PROJECTS', href: withVersionPath(version, '/projects') },
+    { label: 'SERVICES', href: withVersionPath(version, '/services') },
+    { label: 'INSIGHTS', href: withVersionPath(version, '/insights') },
+    { label: 'TEAM', href: withVersionPath(version, '/team') },
   ];
 
   const legalLinks = [
@@ -96,13 +102,13 @@ const Footer = () => {
               <h4 className="mb-4 text-[11px] font-semibold text-black/40">Navigate</h4>
               <div className="space-y-2.5">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.label}
-                    href={link.href}
+                    to={link.href}
                     className="block text-[12px] font-semibold uppercase tracking-[0.08em] text-black/70 transition-colors hover:text-coral"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>

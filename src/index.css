@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=General+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -373,6 +374,56 @@
   background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+}
+
+/* Route-scoped font stacks for version variants */
+.font-main {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.font-v1 {
+  font-family: 'General Sans', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.font-v2 {
+  font-family: 'DM Sans', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.font-v3 {
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.font-v4 {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.font-v5 {
+  font-family: 'Playfair Display', 'Inter', system-ui, -apple-system, serif;
+}
+
+/* Keep main untouched while making v1-v5 visually unified */
+.version-shell section {
+  background: transparent !important;
+}
+
+.version-shell [class*='bg-\\[\\#0a0a0a\\]'],
+.version-shell [class*='bg-white'],
+.version-shell [class*='bg-black'] {
+  background-color: transparent !important;
+}
+
+.version-shell [class*='text-black'] {
+  color: rgba(255, 247, 238, 0.92) !important;
+}
+
+.version-shell [class*='text-white/40'],
+.version-shell [class*='text-white/50'],
+.version-shell [class*='text-white/60'] {
+  color: rgba(255, 241, 224, 0.82) !important;
+}
+
+.version-shell [class*='border-black'] {
+  border-color: rgba(255, 226, 191, 0.32) !important;
 }
 
 /* Reduced motion support */

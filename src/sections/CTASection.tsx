@@ -1,11 +1,17 @@
 import { useEffect, useRef } from 'react';
 import { ArrowRight, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { type VersionKey, withVersionPath } from '../theme/versionThemes';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CTASection = () => {
+interface CTASectionProps {
+  version?: VersionKey;
+}
+
+const CTASection = ({ version = 'main' }: CTASectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -104,21 +110,21 @@ const CTASection = () => {
 
         {/* CTA Button */}
         <div className="cta-item flex flex-col sm:flex-row items-center gap-4 opacity-0">
-          <a
-            href="#contact"
+          <Link
+            to={withVersionPath(version, '/services')}
             className="group flex items-center gap-2 rounded-lg bg-coral px-8 py-4 text-[12px] font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-coral-hover"
           >
             Book a consultation
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </a>
+          </Link>
 
-            <a
-              href="#work"
+            <Link
+              to={withVersionPath(version, '/projects')}
               className="group flex items-center gap-2 rounded-lg border border-black/20 bg-transparent px-6 py-4 text-[12px] font-semibold uppercase tracking-[0.12em] text-black transition-all hover:border-black/40 hover:bg-black/[0.03]"
             >
               View recent projects
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
+            </Link>
         </div>
       </div>
     </section>

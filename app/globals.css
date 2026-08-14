@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #0e0c09;
+  --color-bg-elevated: #17140f;
+  --color-fg: #f1ecdd;
+  --color-muted: #a79e8c;
+  --color-terracotta: #d97a4e;
+  --color-terracotta-dim: #3a2419;
+  --color-teal: #4ca48e;
+  --color-teal-dim: #17332b;
+  --color-blush: #dd939a;
+  --color-line: rgba(241, 236, 220, 0.14);
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-bg-elevated: var(--color-bg-elevated);
+  --color-fg: var(--color-fg);
+  --color-muted: var(--color-muted);
+  --color-terracotta: var(--color-terracotta);
+  --color-terracotta-dim: var(--color-terracotta-dim);
+  --color-teal: var(--color-teal);
+  --color-teal-dim: var(--color-teal-dim);
+  --color-blush: var(--color-blush);
+  --color-line: var(--color-line);
+  --font-display: var(--font-syne);
+  --font-body: var(--font-newsreader);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-terracotta);
+  color: var(--color-bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 3px;
+}
+
+.arch-draw {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: arch-draw-in 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes arch-draw-in {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

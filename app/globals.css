@@ -24,7 +24,8 @@
   --color-teal-dim: var(--color-teal-dim);
   --color-blush: var(--color-blush);
   --color-line: var(--color-line);
-  --font-display: var(--font-syne);
+  --font-display: var(--font-fraunces);
+  --font-ui: var(--font-manrope);
   --font-body: var(--font-newsreader);
 }
 

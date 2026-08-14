@@ -15,7 +15,7 @@ export default function Nav() {
           priority
         />
       </a>
-      <ul className="hidden items-center gap-8 font-display text-[0.7rem] tracking-[0.14em] text-fg/80 uppercase md:flex">
+      <ul className="hidden items-center gap-8 font-ui text-[0.7rem] font-medium tracking-[0.18em] text-fg/80 uppercase md:flex">
         {LINKS.map((link) => (
           <li key={link}>
             <a

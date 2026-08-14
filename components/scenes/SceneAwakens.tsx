@@ -137,13 +137,15 @@ export default function SceneAwakens() {
       <div className="absolute inset-0 bg-gradient-to-b from-bg/55 via-transparent to-bg/65" />
 
       <div className="relative z-10 flex h-full items-center justify-center px-6">
-        <div className="relative h-16 w-full max-w-xl text-center" aria-hidden="true">
+        <div className="relative h-20 w-full max-w-3xl text-center sm:h-28" aria-hidden="true">
           {LINES.map((line, i) => (
             <p
               key={line}
               data-line
-              className={`absolute inset-0 font-display text-4xl font-bold sm:text-6xl ${
-                i === LINES.length - 1 ? "text-terracotta" : "text-fg"
+              className={`absolute inset-0 font-display text-[2.6rem] font-black leading-none tracking-[-0.01em] sm:text-[4.6rem] md:text-[5.6rem] ${
+                i === LINES.length - 1
+                  ? "italic text-terracotta"
+                  : "text-fg"
               }`}
             >
               {line}
@@ -154,7 +156,7 @@ export default function SceneAwakens() {
 
       {!ready && (
         <div className="absolute inset-0 flex items-center justify-center bg-bg">
-          <span className="font-display text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+          <span className="font-ui text-[0.68rem] font-medium uppercase tracking-[0.2em] text-muted">
             Loading
           </span>
         </div>

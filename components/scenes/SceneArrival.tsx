@@ -94,24 +94,26 @@ export default function SceneArrival() {
         className="pointer-events-none absolute right-[-8vw] top-1/2 h-[70vh] w-auto -translate-y-1/2 text-terracotta opacity-40 md:right-[-2vw]"
       />
 
-      <div className="relative z-10 flex max-w-3xl flex-col items-center px-6 text-center">
+      <div className="relative z-10 flex max-w-5xl flex-col items-center px-6 text-center">
         <p
           data-reveal
-          className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"
+          className="font-ui text-[0.7rem] font-semibold tracking-[0.32em] text-teal uppercase"
         >
           Architects · Interiors · Landscape
         </p>
 
         <h1
           data-reveal
-          className="mt-6 text-balance font-display text-[2.6rem] font-bold leading-[0.98] text-fg sm:text-[3.6rem] md:text-[4.8rem]"
+          className="mt-7 text-balance font-display text-[3.4rem] font-black leading-[0.92] tracking-[-0.02em] text-fg sm:text-[5.4rem] md:text-[7.2rem] lg:text-[8.4rem]"
         >
-          Nature&rsquo;s Beauty <span className="text-terracotta">Delivered</span>
+          Nature&rsquo;s Beauty
+          <br />
+          <span className="italic text-terracotta">Delivered</span>
         </h1>
 
         <p
           data-reveal
-          className="mt-6 max-w-xl text-balance font-body text-lg text-fg/85 sm:text-xl"
+          className="mt-8 max-w-xl text-balance font-body text-xl text-fg/85 sm:text-2xl"
         >
           Transforming outdoor spaces with thoughtful landscape design &amp;
           execution.
@@ -119,7 +121,7 @@ export default function SceneArrival() {
 
         <p
           data-reveal
-          className="mt-5 font-display text-[0.68rem] tracking-[0.18em] text-muted uppercase"
+          className="mt-6 font-ui text-[0.68rem] font-medium tracking-[0.24em] text-muted uppercase"
         >
           Design · Consultation · Execution · Project Management
         </p>
@@ -129,7 +131,7 @@ export default function SceneArrival() {
         data-reveal
         className="absolute bottom-9 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
       >
-        <span className="font-display text-[0.62rem] tracking-[0.2em] text-fg/60 uppercase">
+        <span className="font-ui text-[0.62rem] font-medium tracking-[0.28em] text-fg/60 uppercase">
           Scroll
         </span>
         <span className="h-10 w-px animate-pulse bg-fg/40" />

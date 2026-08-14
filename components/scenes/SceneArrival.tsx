@@ -82,9 +82,9 @@ export default function SceneArrival() {
         muted
         playsInline
         preload="auto"
-        poster="/assets/video/prakrti-nilaya-poster.png"
+        poster="/prakrti-nilaya-poster.png"
       >
-        <source src="/assets/video/prakrti-nilaya.webm" type="video/webm" />
+        <source src="/hero-prakrti-nilaya.webm" type="video/webm" />
       </video>
 
       <div className="absolute inset-0 bg-gradient-to-b from-bg/70 via-bg/35 to-bg/85" />

@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope, Newsreader } from "next/font/google";
+import { Syne, Newsreader } from "next/font/google";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
-  weight: "variable",
-  style: ["normal", "italic"],
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600", "700", "800"],
 });
 
 const newsreader = Newsreader({
@@ -33,10 +26,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${fraunces.variable} ${manrope.variable} ${newsreader.variable}`}
-    >
+    <html lang="en" className={`${syne.variable} ${newsreader.variable}`}>
       <body>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>

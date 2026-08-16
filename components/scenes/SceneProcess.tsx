@@ -152,7 +152,7 @@ export default function SceneProcess() {
           <div className="max-w-2xl">
             <h2
               data-reveal
-              className="text-balance font-display text-[2.2rem] font-bold leading-[1.05] text-fg sm:text-[2.8rem] md:text-[3.2rem]"
+              className="text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
             >
               The process behind every landscape
             </h2>
@@ -186,7 +186,7 @@ export default function SceneProcess() {
                   {step.icon}
                 </span>
                 <div>
-                  <p className="flex items-baseline gap-2 font-display text-base font-bold tracking-[0.02em] text-fg">
+                  <p className="flex items-baseline gap-2 font-display text-lg font-bold tracking-[0.01em] text-fg">
                     <span className="text-[0.75rem] font-normal tracking-[0.1em] text-muted">
                       {step.index}
                     </span>

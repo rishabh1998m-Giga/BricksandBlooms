@@ -141,10 +141,10 @@ function BeforeAfterCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      <h3 className="mt-5 font-display text-lg font-bold text-fg">
+      <h3 className="mt-5 font-display text-xl font-bold tracking-[-0.01em] text-fg sm:text-2xl">
         {project.title}
       </h3>
-      <p className="mt-1 font-body text-sm text-muted">
+      <p className="mt-1.5 font-body text-base text-muted">
         {project.description}
       </p>
     </div>
@@ -197,7 +197,7 @@ export default function SceneTransformation() {
         </p>
         <h2
           data-reveal
-          className="mt-4 max-w-xl text-balance font-display text-[2.4rem] font-bold leading-[1.02] text-fg sm:text-[3rem]"
+          className="mt-4 max-w-xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
         >
           See the difference
         </h2>

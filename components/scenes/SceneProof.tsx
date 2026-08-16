@@ -41,15 +41,6 @@ const STATS: Stat[] = [
   },
 ];
 
-const PARTNERS = [
-  "Partner 1",
-  "Partner 2",
-  "Partner 3",
-  "Partner 4",
-  "Partner 5",
-  "Partner 6",
-];
-
 export default function SceneProof() {
   const rootRef = useRef<HTMLDivElement>(null);
   const valueRefs = useRef<HTMLSpanElement[]>([]);
@@ -145,7 +136,7 @@ export default function SceneProof() {
             </p>
             <h2
               data-reveal
-              className="mt-4 text-balance font-display text-[2.2rem] font-bold leading-[1.04] text-fg sm:text-[2.8rem] md:text-[3.2rem]"
+              className="mt-4 text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
             >
               The proof behind our landscapes
             </h2>
@@ -170,7 +161,7 @@ export default function SceneProof() {
         <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4 md:gap-8">
           {STATS.map((stat, i) => (
             <div key={stat.label} data-reveal>
-              <div className="flex items-baseline font-display text-[2.6rem] font-bold leading-none text-fg sm:text-[3.2rem]">
+              <div className="flex items-baseline font-display text-[3rem] font-bold leading-none tracking-[-0.01em] text-fg sm:text-[3.8rem] md:text-[4.4rem]">
                 <span
                   ref={(el) => {
                     if (el) valueRefs.current[i] = el;
@@ -198,23 +189,23 @@ export default function SceneProof() {
           ))}
         </div>
 
-        <div data-reveal className="mt-20 border-t border-line pt-10">
-          <p className="text-center font-display text-[0.62rem] tracking-[0.18em] text-muted uppercase">
-            Brands who are part of our success story
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
-            {PARTNERS.map((partner) => (
-              <div
-                key={partner}
-                className="flex items-center gap-2.5 text-fg/50"
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-[0.6rem] text-fg/60">
-                  P
-                </span>
-                <span className="font-display text-sm">{partner}</span>
-              </div>
+        <div
+          data-reveal
+          className="mt-20 flex flex-col items-center gap-3 border-t border-line pt-10 text-center"
+        >
+          <div className="flex gap-1 text-teal" aria-hidden="true">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg key={i} width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 1.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.1-5.4 3.1 1.3-6-4.6-4.1 6.1-.6L10 1.5Z" />
+              </svg>
             ))}
           </div>
+          <p className="font-display text-sm text-fg/80">
+            5/5, based on client feedback
+          </p>
+          <p className="font-body text-sm text-muted">
+            Trusted by homeowners, commercial spaces &amp; hospitality brands.
+          </p>
         </div>
       </div>
     </section>

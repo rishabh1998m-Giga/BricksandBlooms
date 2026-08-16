@@ -153,7 +153,7 @@ export default function SceneAwakens() {
             The Landscape Awakens
           </p>
 
-          <div className="relative mt-6 h-[9.5rem] w-full sm:h-[9rem] md:h-[8.5rem]">
+          <div className="relative mt-6 h-[11.5rem] w-full sm:h-[10.5rem] md:h-[10rem]">
             {BEATS.map((beat, i) => (
               <div
                 key={beat.label}
@@ -162,7 +162,7 @@ export default function SceneAwakens() {
                 }}
                 className="absolute inset-x-0 top-0 flex flex-col items-center"
               >
-                <h2 className="text-balance font-display text-[2rem] font-bold leading-[1.02] text-fg sm:text-[2.6rem] md:text-[3.2rem]">
+                <h2 className="text-balance font-display text-[2.4rem] font-bold leading-[0.98] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]">
                   {beat.label}
                   <span className="text-terracotta">.</span>
                 </h2>

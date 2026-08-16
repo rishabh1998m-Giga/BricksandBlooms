@@ -94,7 +94,7 @@ export default function SceneArrival() {
         className="pointer-events-none absolute right-[-8vw] top-1/2 h-[70vh] w-auto -translate-y-1/2 text-terracotta opacity-40 md:right-[-2vw]"
       />
 
-      <div className="relative z-10 flex max-w-3xl flex-col items-center px-6 text-center">
+      <div className="relative z-10 flex max-w-5xl flex-col items-center px-6 text-center">
         <p
           data-reveal
           className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"
@@ -104,7 +104,7 @@ export default function SceneArrival() {
 
         <h1
           data-reveal
-          className="mt-6 text-balance font-display text-[2.6rem] font-bold leading-[0.98] text-fg sm:text-[3.6rem] md:text-[4.8rem]"
+          className="mt-6 text-balance font-display text-[3.2rem] font-bold leading-[0.94] tracking-[-0.02em] text-fg sm:text-[5rem] md:text-[6.5rem] lg:text-[7.5rem]"
         >
           Nature&rsquo;s Beauty <span className="text-terracotta">Delivered</span>
         </h1>

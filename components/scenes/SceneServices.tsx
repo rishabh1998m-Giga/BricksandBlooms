@@ -137,7 +137,7 @@ function ServiceCard({
         "grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:items-center md:gap-16"
       }
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-[0_20px_60px_-20px_rgba(20,19,16,0.35)]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line shadow-[0_25px_70px_-25px_rgba(0,0,0,0.65)]">
         <Image
           src={service.image}
           alt=""
@@ -145,32 +145,32 @@ function ServiceCard({
           sizes="(min-width: 768px) 42vw, 100vw"
           className="object-cover"
         />
-        <span className="absolute bottom-4 left-5 font-display text-6xl font-bold text-white/60 md:text-7xl">
+        <span className="absolute bottom-4 left-5 font-display text-6xl font-bold text-fg/50 md:text-7xl">
           {service.index}
         </span>
       </div>
 
       <div>
         <div className="flex items-center gap-4">
-          <span className="font-display text-xs tracking-[0.1em] text-[#8a8676]">
+          <span className="font-display text-xs tracking-[0.1em] text-muted">
             {service.index}
           </span>
-          <span className="relative h-px flex-1 bg-[#141310]/10">
+          <span className="relative h-px flex-1 bg-line">
             <span
               ref={lineRef}
-              className="absolute inset-y-0 left-0 block h-px w-full origin-left scale-x-0 bg-[#141310]/45"
+              className="absolute inset-y-0 left-0 block h-px w-full origin-left scale-x-0 bg-teal"
             />
           </span>
-          <span className="whitespace-nowrap rounded-full border border-[#141310]/10 bg-white/70 px-3 py-1 font-display text-[0.6rem] tracking-[0.14em] text-[#6b675e] uppercase">
+          <span className="whitespace-nowrap rounded-full border border-line bg-fg/5 px-3 py-1 font-display text-[0.6rem] tracking-[0.14em] text-muted uppercase">
             {service.category}
           </span>
         </div>
 
-        <h3 className="mt-5 text-balance font-display text-[2rem] font-bold leading-[1.05] text-[#141310] sm:text-[2.4rem]">
+        <h3 className="mt-5 text-balance font-display text-[2.2rem] font-bold leading-[1.03] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3rem]">
           {service.title}
         </h3>
 
-        <p className="mt-4 max-w-md text-balance font-body text-base text-[#6b675e] sm:text-lg">
+        <p className="mt-4 max-w-md text-balance font-body text-base text-muted sm:text-lg">
           {service.description}
         </p>
 
@@ -178,9 +178,9 @@ function ServiceCard({
           {service.bullets.map((bullet) => (
             <li
               key={bullet}
-              className="flex items-start gap-2.5 font-body text-[0.95rem] text-[#3f3d36]"
+              className="flex items-start gap-2.5 font-body text-[0.95rem] text-fg/80"
             >
-              <span className="text-[#8a8676]">
+              <span className="text-muted">
                 <BulletIcon />
               </span>
               {bullet}
@@ -190,12 +190,12 @@ function ServiceCard({
 
         <a
           href="#"
-          className="group mt-8 inline-flex items-center gap-3 font-display text-[0.68rem] tracking-[0.14em] text-[#141310] uppercase"
+          className="group mt-8 inline-flex items-center gap-3 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase"
         >
-          <span className="border-b border-[#141310]/40 pb-0.5 transition-colors group-hover:border-[#141310]">
+          <span className="border-b border-fg/40 pb-0.5 transition-colors group-hover:border-teal">
             Discuss this service
           </span>
-          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#141310]/25 transition-transform duration-300 group-hover:translate-x-1">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-line transition-all duration-300 group-hover:translate-x-1 group-hover:border-teal/50 group-hover:text-teal">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
                 d="M2 8h11M9 4l4 4-4 4"
@@ -314,7 +314,11 @@ export default function SceneServices() {
   return (
     <section
       ref={rootRef}
-      className="relative bg-[#f4f1ea]"
+      className="relative overflow-hidden border-t border-line bg-bg"
+      style={{
+        backgroundImage:
+          "radial-gradient(1100px 560px at 10% -10%, var(--color-teal-dim), transparent 60%)",
+      }}
     >
       <div
         ref={stageRef}
@@ -322,12 +326,12 @@ export default function SceneServices() {
       >
         <div ref={introRef} className="relative md:motion-safe:absolute md:motion-safe:inset-x-6 md:motion-safe:top-1/2 md:motion-safe:-translate-y-1/2 lg:motion-safe:inset-x-10">
           <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-[#141310]/40" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-[#6b675e] uppercase">
+            <span className="h-px w-8 bg-line" />
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
               Our Expertise
             </p>
           </div>
-          <h2 className="mt-5 max-w-2xl text-balance font-display text-[2.4rem] font-bold leading-[1.03] text-[#141310] sm:text-[3.2rem] md:text-[3.6rem]">
+          <h2 className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.6rem] md:text-[4.4rem]">
             Every service is a chapter in your landscape story.
           </h2>
         </div>

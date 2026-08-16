@@ -21,7 +21,8 @@ const KEYFRAMES: {
 }[] = [
   { t: 0, pos: [0, 0.15, 5.4], look: [0, 0, -2.6], fov: 40 },
   { t: 0.35, pos: [0, 0.05, 1.2], look: [0, 0, -4], fov: 39 },
-  { t: 0.7, pos: [0, 0, -4.4], look: [0, 0, -9], fov: 44 },
+  { t: 0.58, pos: [0, 0, -1.6], look: [0, 0, -6.5], fov: 41 },
+  { t: 0.82, pos: [0, 0, -4.8], look: [0, 0, -10], fov: 46 },
   { t: 1, pos: [0, 0, -8.6], look: [0, 0, -15], fov: 50 },
 ];
 
@@ -125,7 +126,7 @@ function HeroPlane() {
       1,
       Math.max(0, scrollState.y / Math.max(1, scrollState.vh))
     );
-    const opacity = 1 - THREE.MathUtils.smoothstep(heroProgress, 0.1, 0.42);
+    const opacity = 1 - THREE.MathUtils.smoothstep(heroProgress, 0.2, 0.62);
     if (materialRef.current) materialRef.current.opacity = opacity;
   });
 
@@ -177,7 +178,7 @@ function CameraRig() {
 export default function HeroCameraScene() {
   return (
     <>
-      <fog attach="fog" args={["#0e0c09", 4, 15]} />
+      <fog attach="fog" args={["#0e0c09", 6, 16]} />
       <ambientLight intensity={0.16} color="#3a362c" />
       <directionalLight
         position={[3, 4, 4]}

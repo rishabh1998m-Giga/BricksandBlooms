@@ -3,13 +3,18 @@
 import { useEffect, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ArchMotif from "@/components/ArchMotif";
+import { useCinematicMode } from "@/lib/useCinematicMode";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const VIDEO_LOOP_START = 15;
 
 export default function SceneArrival() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const cinematic = useCinematicMode();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -67,6 +72,25 @@ export default function SceneArrival() {
         stagger: 0.12,
         delay: 0.3,
       });
+
+      // The camera rig (see components/webgl) owns the cinematic push-in
+      // through the arch on desktop; the DOM copy just needs to clear out
+      // of the way early so it doesn't fight the passage visually.
+      const copy = document.querySelector<HTMLElement>("[data-hero-copy]");
+      if (copy) {
+        gsap.to(copy, {
+          opacity: 0,
+          y: -50,
+          scale: 0.94,
+          ease: "power1.in",
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top top",
+            end: "24% top",
+            scrub: 0.3,
+          },
+        });
+      }
     },
     { scope: rootRef }
   );
@@ -74,11 +98,15 @@ export default function SceneArrival() {
   return (
     <section
       ref={rootRef}
-      className="relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-bg"
+      className={`relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden ${
+        cinematic ? "" : "bg-bg"
+      }`}
     >
       <video
         ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover"
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+          cinematic ? "opacity-0" : "opacity-100"
+        }`}
         muted
         playsInline
         preload="auto"
@@ -87,14 +115,23 @@ export default function SceneArrival() {
         <source src="/assets/video/prakrti-nilaya.webm" type="video/webm" />
       </video>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-bg/70 via-bg/35 to-bg/85" />
-
-      <ArchMotif
-        animate
-        className="pointer-events-none absolute right-[-8vw] top-1/2 h-[70vh] w-auto -translate-y-1/2 text-terracotta opacity-40 md:right-[-2vw]"
+      <div
+        className={`absolute inset-0 bg-gradient-to-b from-bg/70 via-bg/35 to-bg/85 transition-opacity duration-700 ${
+          cinematic ? "opacity-30" : "opacity-100"
+        }`}
       />
 
-      <div className="relative z-10 flex max-w-5xl flex-col items-center px-6 text-center">
+      {!cinematic && (
+        <ArchMotif
+          animate
+          className="pointer-events-none absolute right-[-8vw] top-1/2 h-[70vh] w-auto -translate-y-1/2 text-terracotta opacity-40 md:right-[-2vw]"
+        />
+      )}
+
+      <div
+        data-hero-copy
+        className="relative z-10 flex max-w-5xl flex-col items-center px-6 text-center"
+      >
         <p
           data-reveal
           className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"

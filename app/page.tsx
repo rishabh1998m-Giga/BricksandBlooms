@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       <Nav />
-      <main>
+      <main className="relative z-10">
         <SceneArrival />
         <SceneAwakens />
         <SceneTransformation />

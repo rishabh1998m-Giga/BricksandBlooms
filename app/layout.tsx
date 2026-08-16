@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Syne, Newsreader } from "next/font/google";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import ScrollRefresh from "@/components/ScrollRefresh";
+import WorldCanvas from "@/components/webgl/WorldCanvas";
 import "./globals.css";
 
 const syne = Syne({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="en" className={`${syne.variable} ${newsreader.variable}`}>
       <body>
         <ScrollRefresh />
+        <WorldCanvas />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

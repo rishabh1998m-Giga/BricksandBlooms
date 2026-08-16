@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Syne, Newsreader } from "next/font/google";
+import { Fraunces, Newsreader } from "next/font/google";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import ScrollRefresh from "@/components/ScrollRefresh";
 import WorldCanvas from "@/components/webgl/WorldCanvas";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["400", "500", "600", "700", "900"],
+  style: ["normal", "italic"],
 });
 
 const newsreader = Newsreader({
@@ -28,7 +29,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${syne.variable} ${newsreader.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${newsreader.variable}`}>
       <body>
         <ScrollRefresh />
         <WorldCanvas />

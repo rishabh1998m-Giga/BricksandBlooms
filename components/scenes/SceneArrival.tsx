@@ -164,11 +164,9 @@ export default function SceneArrival() {
 
       <div
         data-reveal
-        className="absolute bottom-9 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
+        className="absolute bottom-9 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center"
+        aria-hidden="true"
       >
-        <span className="font-display text-[0.62rem] tracking-[0.2em] text-fg/60 uppercase">
-          Scroll
-        </span>
         <span className="h-10 w-px animate-pulse bg-fg/40" />
       </div>
     </section>

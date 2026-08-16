@@ -4,6 +4,7 @@ import SceneAwakens from "@/components/scenes/SceneAwakens";
 import SceneTransformation from "@/components/scenes/SceneTransformation";
 import SceneProof from "@/components/scenes/SceneProof";
 import SceneServices from "@/components/scenes/SceneServices";
+import SceneProcess from "@/components/scenes/SceneProcess";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
         <SceneTransformation />
         <SceneProof />
         <SceneServices />
+        <SceneProcess />
       </main>
     </>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useVideoTexture } from "@react-three/drei";
@@ -10,6 +10,7 @@ import { scrollState } from "@/lib/scrollState";
 const ARCH_Z = -6;
 const HERO_PLANE_Z = -2.6;
 const VIDEO_LOOP_START = 15;
+const VIDEO_ASPECT = 1280 / 576;
 
 // Camera keyframes across the hero → arch-passage journey (t: 0 → 1).
 const KEYFRAMES: {
@@ -60,6 +61,7 @@ function HeroPlane() {
     crossOrigin: "anonymous",
   });
   const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const { size } = useThree();
 
   /* eslint-disable react-hooks/immutability -- imperative <video> element
      control (seeking past the intro title card, looping the B-roll), the
@@ -87,6 +89,37 @@ function HeroPlane() {
   }, [texture]);
   /* eslint-enable react-hooks/immutability */
 
+  // Size the plane like CSS `object-fit: cover`: compute the exact world
+  // dimensions the camera's starting frustum spans at the plane's depth, so
+  // the video fills the viewport edge-to-edge on any window shape — no dead
+  // margins — then crop (not stretch) the texture's UVs to the same ratio.
+  const { width, height } = useMemo(() => {
+    const distance = KEYFRAMES[0].pos[2] - HERO_PLANE_Z;
+    const vFovRad = (KEYFRAMES[0].fov * Math.PI) / 180;
+    const frameHeight = 2 * Math.tan(vFovRad / 2) * distance;
+    const frameAspect = size.width / size.height;
+    return {
+      width: frameHeight * frameAspect * 1.08,
+      height: frameHeight * 1.08,
+    };
+  }, [size]);
+
+  /* eslint-disable react-hooks/immutability -- cropping the video texture's
+     UVs to match the frame aspect (CSS object-fit: cover, done manually
+     since three.js has no built-in equivalent). */
+  useEffect(() => {
+    const frameAspect = width / height;
+    if (frameAspect > VIDEO_ASPECT) {
+      texture.repeat.set(1, VIDEO_ASPECT / frameAspect);
+    } else {
+      texture.repeat.set(frameAspect / VIDEO_ASPECT, 1);
+    }
+    texture.offset.set((1 - texture.repeat.x) / 2, (1 - texture.repeat.y) / 2);
+    texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.needsUpdate = true;
+  }, [texture, width, height]);
+  /* eslint-enable react-hooks/immutability */
+
   useFrame(() => {
     const heroProgress = Math.min(
       1,
@@ -98,7 +131,7 @@ function HeroPlane() {
 
   return (
     <mesh position={[0, 0, HERO_PLANE_Z]}>
-      <planeGeometry args={[5.2, 2.34]} />
+      <planeGeometry args={[width, height]} />
       <meshBasicMaterial
         ref={materialRef}
         map={texture}

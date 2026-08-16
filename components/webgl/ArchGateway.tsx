@@ -30,10 +30,10 @@ export default function ArchGateway({
     hole.closePath();
 
     const outer = new THREE.Shape();
-    outer.moveTo(-5, bottom);
-    outer.lineTo(-5, 5);
-    outer.lineTo(5, 5);
-    outer.lineTo(5, bottom);
+    outer.moveTo(-9, bottom);
+    outer.lineTo(-9, 7.5);
+    outer.lineTo(9, 7.5);
+    outer.lineTo(9, bottom);
     outer.closePath();
     outer.holes.push(hole);
 

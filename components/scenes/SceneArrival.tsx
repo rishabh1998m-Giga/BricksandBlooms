@@ -117,7 +117,7 @@ export default function SceneArrival() {
 
       <div
         className={`absolute inset-0 bg-gradient-to-b from-bg/70 via-bg/35 to-bg/85 transition-opacity duration-700 ${
-          cinematic ? "opacity-30" : "opacity-100"
+          cinematic ? "opacity-60" : "opacity-100"
         }`}
       />
 

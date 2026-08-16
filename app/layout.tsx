@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Fraunces, Newsreader } from "next/font/google";
+import { Bodoni_Moda, Newsreader } from "next/font/google";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import ScrollRefresh from "@/components/ScrollRefresh";
 import WorldCanvas from "@/components/webgl/WorldCanvas";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const bodoniModa = Bodoni_Moda({
+  variable: "--font-bodoni",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "900"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
 });
 
@@ -29,7 +29,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${newsreader.variable}`}>
+    <html lang="en" className={`${bodoniModa.variable} ${newsreader.variable}`}>
       <body>
         <ScrollRefresh />
         <WorldCanvas />

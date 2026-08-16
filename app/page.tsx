@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import SceneArrival from "@/components/scenes/SceneArrival";
 import SceneAwakens from "@/components/scenes/SceneAwakens";
 import SceneTransformation from "@/components/scenes/SceneTransformation";
+import SceneProof from "@/components/scenes/SceneProof";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         <SceneArrival />
         <SceneAwakens />
         <SceneTransformation />
+        <SceneProof />
       </main>
     </>
   );

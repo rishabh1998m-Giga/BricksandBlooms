@@ -121,64 +121,51 @@ function BulletIcon() {
   );
 }
 
-function ServiceCard({
-  service,
-  panelClassName,
-  lineRef,
-}: {
-  service: ServiceItem;
-  panelClassName?: string;
-  lineRef?: (el: HTMLSpanElement | null) => void;
-}) {
+function ServiceSlide({ service }: { service: ServiceItem }) {
   return (
-    <div
-      className={
-        panelClassName ??
-        "grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:items-center md:gap-16"
-      }
-    >
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line shadow-[0_25px_70px_-25px_rgba(0,0,0,0.65)]">
+    <div className="relative h-[70dvh] w-full shrink-0 overflow-hidden rounded-2xl border border-line md:motion-safe:h-full md:motion-safe:w-screen md:motion-safe:rounded-none md:motion-safe:border-0">
+      <div className="absolute inset-0 [animation:kenburns_16s_ease-in-out_infinite]">
         <Image
           src={service.image}
           alt=""
           fill
-          sizes="(min-width: 768px) 42vw, 100vw"
+          sizes="100vw"
           className="object-cover"
         />
-        <span className="absolute bottom-4 left-5 font-display text-6xl font-bold text-fg/50 md:text-7xl">
-          {service.index}
-        </span>
       </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/45 to-bg/5" />
 
-      <div>
+      <span
+        className="pointer-events-none absolute bottom-4 right-5 font-display text-7xl font-extrabold text-fg/10 md:bottom-8 md:right-10 md:text-[9rem]"
+        aria-hidden="true"
+      >
+        {service.index}
+      </span>
+
+      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-8 md:mx-auto md:max-w-6xl md:px-10 md:pb-16">
         <div className="flex items-center gap-4">
           <span className="font-display text-xs tracking-[0.1em] text-muted">
             {service.index}
           </span>
-          <span className="relative h-px flex-1 bg-line">
-            <span
-              ref={lineRef}
-              className="absolute inset-y-0 left-0 block h-px w-full origin-left scale-x-0 bg-teal"
-            />
-          </span>
+          <span className="h-px flex-1 max-w-24 bg-line" />
           <span className="whitespace-nowrap rounded-full border border-line bg-fg/5 px-3 py-1 font-display text-[0.6rem] tracking-[0.14em] text-muted uppercase">
             {service.category}
           </span>
         </div>
 
-        <h3 className="mt-5 text-balance font-display text-[2.2rem] font-bold leading-[1.03] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3rem]">
+        <h3 className="mt-4 max-w-xl text-balance font-display text-[1.9rem] font-bold leading-[1.03] tracking-[-0.01em] text-fg sm:text-[2.4rem] md:text-[3rem]">
           {service.title}
         </h3>
 
-        <p className="mt-4 max-w-md text-balance font-body text-base text-muted sm:text-lg">
+        <p className="mt-3 max-w-md text-balance font-body text-base text-muted sm:text-lg">
           {service.description}
         </p>
 
-        <ul className="mt-6 space-y-2.5">
+        <ul className="mt-5 grid gap-x-8 gap-y-2 sm:grid-cols-2 md:mt-6">
           {service.bullets.map((bullet) => (
             <li
               key={bullet}
-              className="flex items-start gap-2.5 font-body text-[0.95rem] text-fg/80"
+              className="flex items-start gap-2.5 font-body text-[0.9rem] text-fg/80"
             >
               <span className="text-muted">
                 <BulletIcon />
@@ -190,7 +177,7 @@ function ServiceCard({
 
         <a
           href="#"
-          className="group mt-8 inline-flex items-center gap-3 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase"
+          className="group mt-6 inline-flex w-fit items-center gap-3 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase"
         >
           <span className="border-b border-fg/40 pb-0.5 transition-colors group-hover:border-teal">
             Discuss this service
@@ -215,9 +202,9 @@ function ServiceCard({
 export default function SceneServices() {
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
-  const panelRefs = useRef<HTMLDivElement[]>([]);
-  const lineRefs = useRef<HTMLSpanElement[]>([]);
+  const slideWrapRefs = useRef<HTMLDivElement[]>([]);
 
   useGSAP(
     () => {
@@ -227,15 +214,14 @@ export default function SceneServices() {
       const isDesktop = window.matchMedia("(min-width: 768px)").matches;
 
       const intro = introRef.current;
-      const panels = panelRefs.current;
-      const lines = lineRefs.current;
+      const slides = slideWrapRefs.current;
+      const track = trackRef.current;
 
-      if (prefersReduced || !isDesktop) {
-        const allBlocks = [intro, ...panels].filter(Boolean) as HTMLElement[];
+      if (prefersReduced || !isDesktop || !track) {
+        const allBlocks = [intro, ...slides].filter(Boolean) as HTMLElement[];
 
         if (prefersReduced) {
           gsap.set(allBlocks, { opacity: 1, y: 0 });
-          gsap.set(lines, { scaleX: 1 });
           return;
         }
 
@@ -252,60 +238,24 @@ export default function SceneServices() {
               stagger: 0.1,
             }),
         });
-        lines.forEach((line) => {
-          ScrollTrigger.create({
-            trigger: line,
-            start: "top 90%",
-            once: true,
-            onEnter: () =>
-              gsap.to(line, { scaleX: 1, duration: 1, ease: "power3.out" }),
-          });
-        });
         return;
       }
 
-      // Desktop, motion-enabled: pinned crossfade sequence.
-      gsap.set(panels, { opacity: 0, y: 30 });
-      gsap.set(intro, { opacity: 1, y: 0 });
-      gsap.set(lines, { scaleX: 0 });
-
-      const beats = 1 + SERVICES.length;
-      const tl = gsap.timeline({
+      // Desktop, motion-enabled: horizontal scroll-jacking carousel.
+      // Vertical scroll pans the whole track sideways, like paging
+      // through a lookbook, instead of crossfading in place.
+      gsap.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth),
+        ease: "none",
         scrollTrigger: {
           trigger: rootRef.current,
           start: "top top",
-          end: `+=${beats * 100}%`,
-          scrub: 1.1,
+          end: () => "+=" + (track.scrollWidth - window.innerWidth),
           pin: stageRef.current,
+          scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
-        defaults: { ease: "none" },
-      });
-
-      tl.to(intro, { opacity: 0, y: -24, duration: 0.6 }, 0.15);
-
-      SERVICES.forEach((_, i) => {
-        const start = 0.7 + i;
-        const panel = panels[i];
-        const line = lines[i];
-        if (!panel) return;
-
-        tl.to(
-          panel,
-          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
-          start
-        );
-        if (line) {
-          tl.to(line, { scaleX: 1, duration: 0.7, ease: "power2.out" }, start);
-        }
-        if (i < SERVICES.length - 1) {
-          tl.to(
-            panel,
-            { opacity: 0, y: -24, duration: 0.4, ease: "power2.in" },
-            start + 0.85
-          );
-        }
       });
     },
     { scope: rootRef }
@@ -322,36 +272,42 @@ export default function SceneServices() {
     >
       <div
         ref={stageRef}
-        className="relative mx-auto flex w-full max-w-6xl flex-col justify-center overflow-hidden px-6 py-24 md:px-10 md:motion-safe:min-h-[100dvh] md:motion-safe:overflow-visible"
+        className="relative flex w-full flex-col overflow-hidden py-24 md:motion-safe:h-[100dvh] md:motion-safe:py-0"
       >
-        <div ref={introRef} className="relative md:motion-safe:absolute md:motion-safe:inset-x-6 md:motion-safe:top-1/2 md:motion-safe:-translate-y-1/2 lg:motion-safe:inset-x-10">
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-line" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
-              Our Expertise
+        <div
+          ref={trackRef}
+          className="flex flex-col gap-10 px-6 md:motion-safe:h-full md:motion-safe:flex-row md:motion-safe:flex-nowrap md:motion-safe:gap-0 md:motion-safe:px-0"
+        >
+          <div
+            ref={introRef}
+            className="flex flex-col justify-center md:motion-safe:h-full md:motion-safe:w-screen md:motion-safe:shrink-0 md:motion-safe:items-center md:motion-safe:px-10 md:motion-safe:text-center"
+          >
+            <div className="flex items-center gap-3 md:motion-safe:justify-center">
+              <span className="h-px w-8 bg-line" />
+              <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
+                Our Expertise
+              </p>
+            </div>
+            <h2 className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.6rem] md:text-[4.4rem]">
+              Every service is a chapter in your landscape story.
+            </h2>
+            <p className="mt-5 font-display text-[0.62rem] tracking-[0.18em] text-muted uppercase md:motion-safe:hidden">
+              Scroll to explore
             </p>
           </div>
-          <h2 className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.6rem] md:text-[4.4rem]">
-            Every service is a chapter in your landscape story.
-          </h2>
-        </div>
 
-        {SERVICES.map((service, i) => (
-          <div
-            key={service.index}
-            ref={(el) => {
-              if (el) panelRefs.current[i] = el;
-            }}
-            className="relative mt-24 md:mt-24 md:motion-safe:absolute md:motion-safe:inset-x-6 md:motion-safe:top-1/2 md:motion-safe:mt-0 md:motion-safe:-translate-y-1/2 lg:motion-safe:inset-x-10"
-          >
-            <ServiceCard
-              service={service}
-              lineRef={(el) => {
-                if (el) lineRefs.current[i] = el;
+          {SERVICES.map((service, i) => (
+            <div
+              key={service.index}
+              ref={(el) => {
+                if (el) slideWrapRefs.current[i] = el;
               }}
-            />
-          </div>
-        ))}
+              className="md:motion-safe:h-full md:motion-safe:shrink-0"
+            >
+              <ServiceSlide service={service} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

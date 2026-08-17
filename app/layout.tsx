@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Newsreader } from "next/font/google";
+import { Bricolage_Grotesque, Newsreader } from "next/font/google";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import ScrollRefresh from "@/components/ScrollRefresh";
 import WorldCanvas from "@/components/webgl/WorldCanvas";
 import "./globals.css";
 
-const bodoniModa = Bodoni_Moda({
-  variable: "--font-bodoni",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const newsreader = Newsreader({
@@ -29,7 +28,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${bodoniModa.variable} ${newsreader.variable}`}>
+    <html lang="en" className={`${bricolage.variable} ${newsreader.variable}`}>
       <body>
         <ScrollRefresh />
         <WorldCanvas />

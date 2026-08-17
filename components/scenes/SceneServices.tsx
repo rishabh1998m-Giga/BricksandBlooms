@@ -121,7 +121,13 @@ function BulletIcon() {
   );
 }
 
-function ServiceSlide({ service }: { service: ServiceItem }) {
+function ServiceSlide({
+  service,
+  titleRef,
+}: {
+  service: ServiceItem;
+  titleRef?: (el: HTMLHeadingElement | null) => void;
+}) {
   return (
     <div className="relative h-[70dvh] w-full shrink-0 overflow-hidden rounded-2xl border border-line md:motion-safe:h-full md:motion-safe:w-screen md:motion-safe:rounded-none md:motion-safe:border-0">
       <div className="absolute inset-0 [animation:kenburns_16s_ease-in-out_infinite]">
@@ -153,7 +159,10 @@ function ServiceSlide({ service }: { service: ServiceItem }) {
           </span>
         </div>
 
-        <h3 className="mt-4 max-w-xl text-balance font-display text-[1.9rem] font-bold leading-[1.03] tracking-[-0.01em] text-fg sm:text-[2.4rem] md:text-[3rem]">
+        <h3
+          ref={titleRef}
+          className="mt-4 max-w-xl text-balance font-display text-[1.9rem] font-bold leading-[1.03] tracking-[-0.01em] text-fg [transform-origin:left_center] sm:text-[2.4rem] md:text-[3rem]"
+        >
           {service.title}
         </h3>
 
@@ -205,6 +214,7 @@ export default function SceneServices() {
   const trackRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
   const slideWrapRefs = useRef<HTMLDivElement[]>([]);
+  const titleRefs = useRef<HTMLHeadingElement[]>([]);
 
   useGSAP(
     () => {
@@ -244,6 +254,7 @@ export default function SceneServices() {
       // Desktop, motion-enabled: horizontal scroll-jacking carousel.
       // Vertical scroll pans the whole track sideways, like paging
       // through a lookbook, instead of crossfading in place.
+      let velocity = 0;
       gsap.to(track, {
         x: () => -(track.scrollWidth - window.innerWidth),
         ease: "none",
@@ -255,8 +266,30 @@ export default function SceneServices() {
           scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            velocity = self.getVelocity();
+          },
         },
       });
+
+      // The titles skew in the direction of scroll, like the type has
+      // physical weight and drags slightly behind the pan, then snaps
+      // upright as scrolling settles — tied to the same scroll signal
+      // driving the horizontal carousel, not a separate hover gimmick.
+      const setSkew = gsap.quickTo(titleRefs.current, "skewX", {
+        duration: 0.5,
+        ease: "power3",
+      });
+      const decay = () => {
+        const target = gsap.utils.clamp(-14, 14, velocity / 140);
+        setSkew(target);
+        velocity *= 0.85;
+      };
+      gsap.ticker.add(decay);
+
+      return () => {
+        gsap.ticker.remove(decay);
+      };
     },
     { scope: rootRef }
   );
@@ -288,7 +321,12 @@ export default function SceneServices() {
                 Our Expertise
               </p>
             </div>
-            <h2 className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.6rem] md:text-[4.4rem]">
+            <h2
+              ref={(el) => {
+                if (el) titleRefs.current[0] = el;
+              }}
+              className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg [transform-origin:center] sm:text-[3.6rem] md:text-[4.4rem]"
+            >
               Every service is a chapter in your landscape story.
             </h2>
             <p className="mt-5 font-display text-[0.62rem] tracking-[0.18em] text-muted uppercase md:motion-safe:hidden">
@@ -304,7 +342,12 @@ export default function SceneServices() {
               }}
               className="md:motion-safe:h-full md:motion-safe:shrink-0"
             >
-              <ServiceSlide service={service} />
+              <ServiceSlide
+                service={service}
+                titleRef={(el) => {
+                  if (el) titleRefs.current[i + 1] = el;
+                }}
+              />
             </div>
           ))}
         </div>

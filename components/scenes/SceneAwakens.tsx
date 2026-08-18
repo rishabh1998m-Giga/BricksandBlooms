@@ -46,7 +46,13 @@ export default function SceneAwakens() {
       if (prefersReduced) {
         gsap.set(frames, { clipPath: "inset(0% 0% 0% 0%)", autoAlpha: 1 });
         gsap.set(images.slice(1), { display: "none" });
-        gsap.set(texts, { autoAlpha: 0, y: 0, display: "none" });
+        gsap.set(texts, {
+          autoAlpha: 0,
+          y: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          display: "none",
+        });
         gsap.set(texts[texts.length - 1], { autoAlpha: 1, display: "block" });
         return;
       }
@@ -54,8 +60,8 @@ export default function SceneAwakens() {
       gsap.set(frames.slice(1), { clipPath: "inset(0% 0% 100% 0%)" });
       gsap.set(frames[0], { clipPath: "inset(0% 0% 0% 0%)" });
       gsap.set(images, { scale: 1.16 });
-      gsap.set(texts, { autoAlpha: 0, y: 18 });
-      gsap.set(texts[0], { autoAlpha: 1, y: 0 });
+      gsap.set(texts, { autoAlpha: 0, scale: 0.7, filter: "blur(18px)" });
+      gsap.set(texts[0], { autoAlpha: 1, scale: 1, filter: "blur(0px)" });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -79,8 +85,32 @@ export default function SceneAwakens() {
             { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "power2.inOut" },
             i - 0.28
           );
-          tl.to(texts[i - 1], { autoAlpha: 0, y: -14, duration: 0.3 }, i - 0.3);
-          tl.to(texts[i], { autoAlpha: 1, y: 0, duration: 0.3 }, i - 0.05);
+
+          // Kinetic-typography morph: the outgoing phrase punches forward
+          // and dissolves into blur, the incoming phrase resolves out of
+          // blur from below full size — a cut, not a crossfade.
+          tl.to(
+            texts[i - 1],
+            {
+              autoAlpha: 0,
+              scale: 1.3,
+              filter: "blur(16px)",
+              duration: 0.32,
+              ease: "power2.in",
+            },
+            i - 0.3
+          );
+          tl.to(
+            texts[i],
+            {
+              autoAlpha: 1,
+              scale: 1,
+              filter: "blur(0px)",
+              duration: 0.4,
+              ease: "power2.out",
+            },
+            i - 0.12
+          );
         }
       });
 

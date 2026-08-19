@@ -81,6 +81,28 @@ export default function SceneVision() {
       });
 
       tl.to({}, { duration: 0.5 });
+
+      // Cursor-reactive tilt: the words lean gently toward the pointer,
+      // like they're magnetically aware of it. Runs on x/y/rotate only,
+      // so it never fights the scroll timeline's scale/filter tweens.
+      const stage = stageRef.current;
+      if (stage) {
+        const handleMove = (e: PointerEvent) => {
+          const rect = stage.getBoundingClientRect();
+          const px = (e.clientX - rect.left) / rect.width - 0.5;
+          const py = (e.clientY - rect.top) / rect.height - 0.5;
+          gsap.to(texts, {
+            xPercent: px * 6,
+            yPercent: py * 4,
+            rotate: px * 1.4,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        };
+        stage.addEventListener("pointermove", handleMove);
+        return () => stage.removeEventListener("pointermove", handleMove);
+      }
     },
     { scope: rootRef }
   );
@@ -91,7 +113,7 @@ export default function SceneVision() {
       className="relative overflow-hidden border-t border-line bg-bg"
       style={{
         backgroundImage:
-          "radial-gradient(1000px 520px at 50% 110%, var(--color-terracotta-dim), transparent 60%)",
+          "radial-gradient(1300px 800px at 12% -5%, var(--color-terracotta-dim), transparent 55%), radial-gradient(1300px 800px at 88% 105%, var(--color-teal-dim), transparent 55%)",
       }}
     >
       <div
@@ -109,8 +131,8 @@ export default function SceneVision() {
             <p
               className={
                 beat.size === "large"
-                  ? "max-w-4xl text-balance font-display text-[2.4rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.6rem]"
-                  : "max-w-xl text-balance font-display text-[1.6rem] font-medium tracking-[-0.005em] text-muted sm:text-[2rem] md:text-[2.4rem]"
+                  ? "max-w-5xl text-balance font-display text-[3.2rem] font-bold leading-[1.02] tracking-[-0.015em] text-fg sm:text-[4.6rem] md:text-[6.4rem] lg:text-[7.2rem]"
+                  : "max-w-2xl text-balance font-display text-[2.1rem] font-medium tracking-[-0.005em] text-muted sm:text-[2.9rem] md:text-[3.6rem]"
               }
             >
               {beat.text}

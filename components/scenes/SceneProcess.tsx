@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,6 +13,8 @@ type Step = {
   title: string;
   description: string;
   icon: React.ReactNode;
+  image: string;
+  eyebrow: string;
 };
 
 function SearchIcon() {
@@ -75,6 +78,8 @@ const STEPS: Step[] = [
     description:
       "We begin by understanding your space, lifestyle, and vision. Site visits, soil study, sunlight patterns, and functional needs are carefully mapped before design begins.",
     icon: <SearchIcon />,
+    image: "/assets/process/discovery.webp",
+    eyebrow: "Landscape",
   },
   {
     index: "//02",
@@ -82,6 +87,8 @@ const STEPS: Step[] = [
     description:
       "With insights in place, we create thoughtful landscape concepts. Layouts, plant selection, zoning, irrigation planning, and 3D visualizations ensure clarity before execution.",
     icon: <BulbIcon />,
+    image: "/assets/process/planning.webp",
+    eyebrow: "Architecture",
   },
   {
     index: "//03",
@@ -89,6 +96,8 @@ const STEPS: Step[] = [
     description:
       "Design comes to life with precision. From sourcing materials to on-site supervision, we manage every detail to ensure quality and timeline control.",
     icon: <PaletteIcon />,
+    image: "/assets/process/execution.webp",
+    eyebrow: "Materials & Craft",
   },
   {
     index: "//04",
@@ -96,11 +105,15 @@ const STEPS: Step[] = [
     description:
       "Installation is just the beginning. We guide plant care, maintenance schedules, and seasonal upgrades to ensure your landscape thrives long-term.",
     icon: <RocketIcon />,
+    image: "/assets/process/grow.webp",
+    eyebrow: "Living Landscape",
   },
 ];
 
 export default function SceneProcess() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const imageRefs = useRef<HTMLDivElement[]>([]);
 
   useGSAP(
     () => {
@@ -127,6 +140,46 @@ export default function SceneProcess() {
             stagger: 0.1,
           }),
       });
+
+      // Each card's photo drifts toward the cursor — a quiet sense that
+      // this is one continuous environment you're looking into, not a
+      // flat image behind text.
+      const cleanups: (() => void)[] = [];
+      cardRefs.current.forEach((card, i) => {
+        const img = imageRefs.current[i];
+        if (!card || !img) return;
+
+        const handleMove = (e: PointerEvent) => {
+          const rect = card.getBoundingClientRect();
+          const px = (e.clientX - rect.left) / rect.width - 0.5;
+          const py = (e.clientY - rect.top) / rect.height - 0.5;
+          gsap.to(img, {
+            xPercent: px * 6,
+            yPercent: py * 6,
+            duration: 0.8,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        };
+        const handleLeave = () => {
+          gsap.to(img, {
+            xPercent: 0,
+            yPercent: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        };
+
+        card.addEventListener("pointermove", handleMove);
+        card.addEventListener("pointerleave", handleLeave);
+        cleanups.push(() => {
+          card.removeEventListener("pointermove", handleMove);
+          card.removeEventListener("pointerleave", handleLeave);
+        });
+      });
+
+      return () => cleanups.forEach((fn) => fn());
     },
     { scope: rootRef }
   );
@@ -175,16 +228,41 @@ export default function SceneProcess() {
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {STEPS.map((step) => (
+          {STEPS.map((step, i) => (
             <div
               key={step.index}
+              ref={(el) => {
+                if (el) cardRefs.current[i] = el;
+              }}
               data-reveal
-              className="group rounded-2xl border border-line bg-fg/[0.03] p-8 transition-colors duration-300 hover:border-teal/40 hover:bg-fg/[0.05]"
+              className="group relative min-h-[300px] overflow-hidden rounded-2xl border border-line transition-colors duration-300 hover:border-teal/40 md:min-h-[340px]"
             >
-              <div className="flex items-start gap-5">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-line bg-fg/5 text-fg/80 transition-colors duration-300 group-hover:border-teal/50 group-hover:text-teal">
-                  {step.icon}
-                </span>
+              <div
+                ref={(el) => {
+                  if (el) imageRefs.current[i] = el;
+                }}
+                className="absolute inset-0 [animation:kenburns_18s_ease-in-out_infinite]"
+              >
+                <Image
+                  src={step.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/70 to-bg/25" />
+
+              <div className="relative z-10 flex h-full flex-col justify-between p-8">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-line bg-bg/40 text-fg/80 backdrop-blur-sm transition-colors duration-300 group-hover:border-teal/50 group-hover:text-teal">
+                    {step.icon}
+                  </span>
+                  <span className="whitespace-nowrap rounded-full border border-line bg-bg/40 px-3 py-1 font-display text-[0.6rem] tracking-[0.14em] text-muted uppercase backdrop-blur-sm">
+                    {step.eyebrow}
+                  </span>
+                </div>
+
                 <div>
                   <p className="flex items-baseline gap-2 font-display text-lg font-bold tracking-[0.01em] text-fg">
                     <span className="text-[0.75rem] font-normal tracking-[0.1em] text-muted">
@@ -192,7 +270,7 @@ export default function SceneProcess() {
                     </span>
                     {step.title.toUpperCase()}
                   </p>
-                  <p className="mt-3 max-w-md font-body text-[0.95rem] leading-relaxed text-muted">
+                  <p className="mt-3 max-w-md font-body text-[0.95rem] leading-relaxed text-fg/80">
                     {step.description}
                   </p>
                 </div>

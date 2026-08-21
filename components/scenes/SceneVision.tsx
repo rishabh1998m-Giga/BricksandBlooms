@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import FlowerBud from "@/components/FlowerBud";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,27 +23,6 @@ const VINE_PATH =
 
 const BUD_FRACTIONS = [0.06, 0.35, 0.62, 0.9];
 const BUD_COLORS = ["#4ca48e", "#d97a4e", "#dd939a", "#f1ecdd"];
-
-function FlowerBud({ color }: { color: string }) {
-  return (
-    <g style={{ color }}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <ellipse
-          key={i}
-          cx={0}
-          cy={-2.4}
-          rx="1.5"
-          ry="2.4"
-          transform={`rotate(${i * 72})`}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="0.4"
-        />
-      ))}
-      <circle r="0.9" fill="currentColor" />
-    </g>
-  );
-}
 
 export default function SceneVision() {
   const rootRef = useRef<HTMLDivElement>(null);

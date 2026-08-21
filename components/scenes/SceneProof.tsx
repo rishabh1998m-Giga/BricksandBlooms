@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import FlowerBud from "@/components/FlowerBud";
+import ProofBloomCanvas from "@/components/webgl/ProofBloomCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -180,6 +181,8 @@ export default function SceneProof() {
           "radial-gradient(1200px 700px at 100% 100%, var(--color-terracotta-dim), transparent 55%)",
       }}
     >
+      <ProofBloomCanvas sectionRef={rootRef} />
+
       <div
         ref={spotlightRef}
         className="pointer-events-none absolute inset-0 opacity-0"

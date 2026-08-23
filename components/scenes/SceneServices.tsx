@@ -139,7 +139,13 @@ function ServiceSlide({
           className="object-cover"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/45 to-bg/5" />
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(to top, var(--color-bg) 0%, var(--color-bg) 16%, color-mix(in srgb, var(--color-bg) 60%, transparent) 36%, transparent 62%)",
+        }}
+      />
 
       <span
         className="pointer-events-none absolute bottom-4 right-5 font-display text-7xl font-extrabold text-fg/10 md:bottom-8 md:right-10 md:text-[9rem]"

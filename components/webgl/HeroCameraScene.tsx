@@ -178,22 +178,22 @@ function CameraRig() {
 export default function HeroCameraScene() {
   return (
     <>
-      <fog attach="fog" args={["#0e0c09", 6, 16]} />
-      <ambientLight intensity={0.16} color="#3a362c" />
+      <fog attach="fog" args={["#f3ece0", 6, 17]} />
+      <ambientLight intensity={0.75} color="#f3ece0" />
       <directionalLight
         position={[3, 4, 4]}
-        intensity={1.5}
-        color="#f1ecdd"
+        intensity={1.3}
+        color="#fffaf0"
       />
       <directionalLight
         position={[-4, 1, -2]}
-        intensity={0.3}
-        color="#d97a4e"
+        intensity={0.35}
+        color="#c25a30"
       />
       <directionalLight
         position={[0, -2, -5]}
-        intensity={0.14}
-        color="#4ca48e"
+        intensity={0.2}
+        color="#2f7d68"
       />
       <HeroPlane />
       <ArchGateway position={[0, -0.3, ARCH_Z]} />

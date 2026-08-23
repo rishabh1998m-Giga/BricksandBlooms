@@ -268,10 +268,16 @@ export default function SceneProcess() {
             />
           </div>
         ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/70 to-transparent" />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(to top, var(--color-bg) 0%, var(--color-bg) 14%, color-mix(in srgb, var(--color-bg) 55%, transparent) 34%, transparent 60%)",
+          }}
+        />
 
-        <div className="pointer-events-none absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 items-stretch gap-5 md:right-14 md:flex">
-          <div className="relative w-px self-stretch bg-line/30">
+        <div className="pointer-events-none absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 items-stretch gap-5 rounded-2xl bg-bg/40 px-4 py-4 backdrop-blur-md md:right-14 md:flex">
+          <div className="relative w-px self-stretch bg-line/50">
             <div
               ref={railFillRef}
               className="absolute inset-x-0 top-0 w-px origin-top bg-teal"

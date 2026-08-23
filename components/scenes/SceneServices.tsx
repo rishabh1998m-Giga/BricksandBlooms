@@ -304,10 +304,6 @@ export default function SceneServices() {
     <section
       ref={rootRef}
       className="relative overflow-hidden border-t border-line bg-bg"
-      style={{
-        backgroundImage:
-          "radial-gradient(1100px 560px at 10% -10%, var(--color-teal-dim), transparent 60%)",
-      }}
     >
       <div
         ref={stageRef}

@@ -176,10 +176,6 @@ export default function SceneProof() {
     <section
       ref={rootRef}
       className="relative overflow-hidden border-t border-line bg-bg px-6 py-24 md:px-10 md:py-32"
-      style={{
-        backgroundImage:
-          "radial-gradient(1200px 700px at 100% 100%, var(--color-terracotta-dim), transparent 55%)",
-      }}
     >
       <ProofBloomCanvas sectionRef={rootRef} />
 

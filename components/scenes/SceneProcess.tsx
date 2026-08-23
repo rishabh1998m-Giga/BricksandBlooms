@@ -205,10 +205,6 @@ export default function SceneProcess() {
     <section
       ref={rootRef}
       className="relative overflow-hidden border-t border-line bg-bg"
-      style={{
-        backgroundImage:
-          "radial-gradient(1100px 560px at 88% -8%, var(--color-teal-dim), transparent 60%)",
-      }}
     >
       <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-24 md:px-10 md:pb-20 md:pt-32">
         <div className="flex items-center gap-3">

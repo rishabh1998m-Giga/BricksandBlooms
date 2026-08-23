@@ -194,10 +194,6 @@ export default function SceneVision() {
     <section
       ref={rootRef}
       className="relative overflow-hidden border-t border-line bg-bg"
-      style={{
-        backgroundImage:
-          "radial-gradient(1300px 800px at 12% -5%, var(--color-terracotta-dim), transparent 55%), radial-gradient(1300px 800px at 88% 105%, var(--color-teal-dim), transparent 55%)",
-      }}
     >
       <div
         ref={stageRef}

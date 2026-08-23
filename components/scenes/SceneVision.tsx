@@ -22,7 +22,7 @@ const VINE_PATH =
   "M -5,92 C 14,84 6,62 17,47 C 28,32 10,18 24,15 C 40,3 58,20 74,18 C 96,15 104,5 124,15 C 146,25 148,35 165,30";
 
 const BUD_FRACTIONS = [0.06, 0.35, 0.62, 0.9];
-const BUD_COLORS = ["#2f7d68", "#c25a30", "#d0808a", "#221d15"];
+const BUD_COLORS = ["#4ca48e", "#d97a4e", "#dd939a", "#f1ecdd"];
 
 export default function SceneVision() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -194,6 +194,10 @@ export default function SceneVision() {
     <section
       ref={rootRef}
       className="relative overflow-hidden border-t border-line bg-bg"
+      style={{
+        backgroundImage:
+          "radial-gradient(1300px 800px at 12% -5%, var(--color-terracotta-dim), transparent 55%), radial-gradient(1300px 800px at 88% 105%, var(--color-teal-dim), transparent 55%)",
+      }}
     >
       <div
         ref={stageRef}
@@ -201,7 +205,7 @@ export default function SceneVision() {
       >
         <svg
           ref={svgRef}
-          className="pointer-events-none absolute inset-0 h-full w-full text-fg/40"
+          className="pointer-events-none absolute inset-0 h-full w-full text-fg/25"
           viewBox="0 0 160 90"
           preserveAspectRatio="none"
           aria-hidden="true"

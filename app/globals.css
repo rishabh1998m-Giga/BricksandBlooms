@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --color-bg: #f3ece0;
-  --color-bg-elevated: #faf6ee;
-  --color-fg: #221d15;
-  --color-muted: #7a6f5c;
-  --color-terracotta: #c25a30;
-  --color-terracotta-dim: #f5ddc7;
-  --color-teal: #2f7d68;
-  --color-teal-dim: #dcebe4;
-  --color-blush: #d0808a;
-  --color-line: rgba(34, 29, 21, 0.12);
+  --color-bg: #0e0c09;
+  --color-bg-elevated: #17140f;
+  --color-fg: #f1ecdd;
+  --color-muted: #a79e8c;
+  --color-terracotta: #d97a4e;
+  --color-terracotta-dim: #3a2419;
+  --color-teal: #4ca48e;
+  --color-teal-dim: #17332b;
+  --color-blush: #dd939a;
+  --color-line: rgba(241, 236, 220, 0.14);
 }
 
 @theme inline {
@@ -46,7 +46,7 @@ body {
 
 ::selection {
   background: var(--color-terracotta);
-  color: var(--color-bg-elevated);
+  color: var(--color-bg);
 }
 
 :focus-visible {

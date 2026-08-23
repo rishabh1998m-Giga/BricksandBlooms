@@ -139,13 +139,7 @@ function ServiceSlide({
           className="object-cover"
         />
       </div>
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(to top, var(--color-bg) 0%, var(--color-bg) 16%, color-mix(in srgb, var(--color-bg) 60%, transparent) 36%, transparent 62%)",
-        }}
-      />
+      <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/45 to-bg/5" />
 
       <span
         className="pointer-events-none absolute bottom-4 right-5 font-display text-7xl font-extrabold text-fg/10 md:bottom-8 md:right-10 md:text-[9rem]"
@@ -304,6 +298,10 @@ export default function SceneServices() {
     <section
       ref={rootRef}
       className="relative overflow-hidden border-t border-line bg-bg"
+      style={{
+        backgroundImage:
+          "radial-gradient(1100px 560px at 10% -10%, var(--color-teal-dim), transparent 60%)",
+      }}
     >
       <div
         ref={stageRef}

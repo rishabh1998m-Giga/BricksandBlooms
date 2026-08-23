@@ -205,6 +205,10 @@ export default function SceneProcess() {
     <section
       ref={rootRef}
       className="relative overflow-hidden border-t border-line bg-bg"
+      style={{
+        backgroundImage:
+          "radial-gradient(1100px 560px at 88% -8%, var(--color-teal-dim), transparent 60%)",
+      }}
     >
       <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-24 md:px-10 md:pb-20 md:pt-32">
         <div className="flex items-center gap-3">
@@ -264,16 +268,10 @@ export default function SceneProcess() {
             />
           </div>
         ))}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "linear-gradient(to top, var(--color-bg) 0%, var(--color-bg) 14%, color-mix(in srgb, var(--color-bg) 55%, transparent) 34%, transparent 60%)",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/70 to-transparent" />
 
-        <div className="pointer-events-none absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 items-stretch gap-5 rounded-2xl bg-bg/40 px-4 py-4 backdrop-blur-md md:right-14 md:flex">
-          <div className="relative w-px self-stretch bg-line/50">
+        <div className="pointer-events-none absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 items-stretch gap-5 md:right-14 md:flex">
+          <div className="relative w-px self-stretch bg-line/30">
             <div
               ref={railFillRef}
               className="absolute inset-x-0 top-0 w-px origin-top bg-teal"

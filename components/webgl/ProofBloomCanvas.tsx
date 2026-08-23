@@ -78,15 +78,15 @@ export default function ProofBloomCanvas({
           <directionalLight position={[-4, 1, 2]} intensity={0.4} color="#d97a4e" />
           <directionalLight position={[0, -2, 3]} intensity={0.18} color="#4ca48e" />
           <Flower3D
-            position={[3.6, 2.2, -1]}
+            position={[4.4, 0.9, -3.2]}
             color="#4ca48e"
-            scale={0.6}
+            scale={0.32}
             spinSpeed={0.035}
           />
           <Flower3D
-            position={[-3.7, -2.3, -1.3]}
+            position={[-4, -1.5, -3.8]}
             color="#d97a4e"
-            scale={0.75}
+            scale={0.38}
             spinSpeed={-0.024}
           />
           <CameraRig pointer={pointer} />

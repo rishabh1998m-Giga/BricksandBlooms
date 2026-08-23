@@ -112,23 +112,26 @@ const STEPS: Step[] = [
 
 export default function SceneProcess() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<HTMLDivElement[]>([]);
-  const imageRefs = useRef<HTMLDivElement[]>([]);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const photoRefs = useRef<HTMLDivElement[]>([]);
+  const panelRefs = useRef<HTMLDivElement[]>([]);
+  const railItemRefs = useRef<HTMLDivElement[]>([]);
+  const railFillRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       const prefersReduced = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
-      const targets = gsap.utils.toArray<HTMLElement>("[data-reveal]");
+      const reveals = gsap.utils.toArray<HTMLElement>("[data-reveal]");
 
       if (prefersReduced) {
-        gsap.set(targets, { opacity: 1, y: 0 });
+        gsap.set(reveals, { opacity: 1, y: 0 });
         return;
       }
 
-      gsap.set(targets, { opacity: 0, y: 28 });
-      ScrollTrigger.batch(targets, {
+      gsap.set(reveals, { opacity: 0, y: 28 });
+      ScrollTrigger.batch(reveals, {
         start: "top 85%",
         once: true,
         onEnter: (batch) =>
@@ -141,45 +144,59 @@ export default function SceneProcess() {
           }),
       });
 
-      // Each card's photo drifts toward the cursor — a quiet sense that
-      // this is one continuous environment you're looking into, not a
-      // flat image behind text.
-      const cleanups: (() => void)[] = [];
-      cardRefs.current.forEach((card, i) => {
-        const img = imageRefs.current[i];
-        if (!card || !img) return;
+      // A pinned chapter walkthrough — scroll steps through the four stages
+      // one full-bleed photo at a time, instead of a static grid.
+      const photos = photoRefs.current;
+      const panels = panelRefs.current;
+      const railItems = railItemRefs.current;
 
-        const handleMove = (e: PointerEvent) => {
-          const rect = card.getBoundingClientRect();
-          const px = (e.clientX - rect.left) / rect.width - 0.5;
-          const py = (e.clientY - rect.top) / rect.height - 0.5;
-          gsap.to(img, {
-            xPercent: px * 6,
-            yPercent: py * 6,
-            duration: 0.8,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-        };
-        const handleLeave = () => {
-          gsap.to(img, {
-            xPercent: 0,
-            yPercent: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-        };
+      gsap.set(photos, { autoAlpha: 0 });
+      gsap.set(photos[0], { autoAlpha: 1 });
+      gsap.set(panels, { autoAlpha: 0, y: 28 });
+      gsap.set(panels[0], { autoAlpha: 1, y: 0 });
+      gsap.set(railItems, { opacity: 0.35 });
+      gsap.set(railItems[0], { opacity: 1 });
 
-        card.addEventListener("pointermove", handleMove);
-        card.addEventListener("pointerleave", handleLeave);
-        cleanups.push(() => {
-          card.removeEventListener("pointermove", handleMove);
-          card.removeEventListener("pointerleave", handleLeave);
-        });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: stageRef.current,
+          start: "top top",
+          end: "+=300%",
+          scrub: 1.1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (railFillRef.current) {
+              gsap.set(railFillRef.current, { scaleY: self.progress });
+            }
+          },
+        },
+        defaults: { ease: "none" },
       });
 
-      return () => cleanups.forEach((fn) => fn());
+      STEPS.forEach((_, i) => {
+        if (i === 0) return;
+        const pos = i - 0.15;
+        tl.to(photos[i - 1], { autoAlpha: 0, duration: 0.5 }, pos)
+          .to(photos[i], { autoAlpha: 1, duration: 0.6 }, pos + 0.05)
+          .to(
+            panels[i - 1],
+            { autoAlpha: 0, y: -20, duration: 0.35, ease: "power2.in" },
+            pos
+          )
+          .to(
+            panels[i],
+            { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" },
+            pos + 0.15
+          )
+          .to(railItems[i - 1], { opacity: 0.35, duration: 0.3 }, pos)
+          .to(railItems[i], { opacity: 1, duration: 0.3 }, pos + 0.1);
+      });
+
+      // A trailing hold so the section doesn't unpin the instant the last
+      // chapter arrives — gives it a beat to actually be read.
+      tl.to({}, { duration: 0.4 });
     },
     { scope: rootRef }
   );
@@ -187,13 +204,13 @@ export default function SceneProcess() {
   return (
     <section
       ref={rootRef}
-      className="relative overflow-hidden border-t border-line bg-bg px-6 py-24 md:px-10 md:py-32"
+      className="relative overflow-hidden border-t border-line bg-bg"
       style={{
         backgroundImage:
           "radial-gradient(1100px 560px at 88% -8%, var(--color-teal-dim), transparent 60%)",
       }}
     >
-      <div className="relative mx-auto max-w-6xl">
+      <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-24 md:px-10 md:pb-20 md:pt-32">
         <div className="flex items-center gap-3">
           <span className="h-px w-8 bg-line" />
           <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
@@ -226,54 +243,129 @@ export default function SceneProcess() {
             B&amp;B
           </div>
         </div>
+      </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {STEPS.map((step, i) => (
+      {/* Cinematic chapter walkthrough — pinned, scroll-scrubbed */}
+      <div
+        ref={stageRef}
+        className="relative hidden h-[100dvh] w-full overflow-hidden motion-safe:block"
+      >
+        {STEPS.map((step, i) => (
+          <div
+            key={step.index}
+            ref={(el) => {
+              if (el) photoRefs.current[i] = el;
+            }}
+            className="absolute inset-0 [animation:kenburns_18s_ease-in-out_infinite]"
+          >
+            <Image
+              src={step.image}
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority={i === 0}
+            />
+          </div>
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/70 to-transparent" />
+
+        <div className="pointer-events-none absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 items-stretch gap-5 md:right-14 md:flex">
+          <div className="relative w-px self-stretch bg-line/30">
             <div
-              key={step.index}
-              ref={(el) => {
-                if (el) cardRefs.current[i] = el;
-              }}
-              data-reveal
-              className="group relative min-h-[300px] overflow-hidden rounded-2xl border border-line transition-colors duration-300 hover:border-teal/40 md:min-h-[340px]"
-            >
+              ref={railFillRef}
+              className="absolute inset-x-0 top-0 w-px origin-top bg-teal"
+              style={{ height: "100%", transform: "scaleY(0)" }}
+            />
+          </div>
+          <div className="flex flex-col justify-between gap-10 py-1">
+            {STEPS.map((step, i) => (
               <div
+                key={step.index}
                 ref={(el) => {
-                  if (el) imageRefs.current[i] = el;
+                  if (el) railItemRefs.current[i] = el;
                 }}
-                className="absolute inset-0 [animation:kenburns_18s_ease-in-out_infinite]"
+                className="text-right"
               >
-                <Image
-                  src={step.image}
-                  alt=""
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover"
-                />
+                <p className="font-display text-[0.7rem] tracking-[0.14em] text-fg">
+                  {step.index}
+                </p>
+                <p className="mt-1 whitespace-nowrap font-display text-[0.58rem] tracking-[0.12em] text-muted uppercase">
+                  {step.eyebrow}
+                </p>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/70 to-bg/25" />
+            ))}
+          </div>
+        </div>
 
-              <div className="relative z-10 flex h-full flex-col justify-between p-8">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-line bg-bg/40 text-fg/80 backdrop-blur-sm transition-colors duration-300 group-hover:border-teal/50 group-hover:text-teal">
+        <div className="absolute inset-x-0 bottom-0 z-10 p-8 md:p-14">
+          <div className="relative min-h-[230px] max-w-2xl sm:min-h-[210px] md:min-h-[190px]">
+            {STEPS.map((step, i) => (
+              <div
+                key={step.index}
+                ref={(el) => {
+                  if (el) panelRefs.current[i] = el;
+                }}
+                className="absolute inset-0"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-line bg-bg/40 text-teal backdrop-blur-sm">
                     {step.icon}
                   </span>
                   <span className="whitespace-nowrap rounded-full border border-line bg-bg/40 px-3 py-1 font-display text-[0.6rem] tracking-[0.14em] text-muted uppercase backdrop-blur-sm">
                     {step.eyebrow}
                   </span>
                 </div>
+                <p className="mt-6 flex items-baseline gap-3 font-display text-[2.1rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[2.8rem] md:text-[3.6rem]">
+                  <span className="text-[0.85rem] font-normal tracking-[0.1em] text-muted">
+                    {step.index}
+                  </span>
+                  {step.title}
+                </p>
+                <p className="mt-4 max-w-lg font-body text-base leading-relaxed text-fg/80 sm:text-lg">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-                <div>
-                  <p className="flex items-baseline gap-2 font-display text-lg font-bold tracking-[0.01em] text-fg">
-                    <span className="text-[0.75rem] font-normal tracking-[0.1em] text-muted">
-                      {step.index}
-                    </span>
-                    {step.title.toUpperCase()}
-                  </p>
-                  <p className="mt-3 max-w-md font-body text-[0.95rem] leading-relaxed text-fg/80">
-                    {step.description}
-                  </p>
+      {/* Reduced-motion fallback — every step visible at once, no pinning */}
+      <div className="mx-auto hidden max-w-6xl px-6 pb-24 motion-reduce:block md:px-10 md:pb-32">
+        <div className="grid gap-6">
+          {STEPS.map((step) => (
+            <div
+              key={step.index}
+              className="flex flex-col gap-6 rounded-2xl border border-line p-8 sm:flex-row sm:items-center"
+            >
+              <div className="relative h-40 w-full shrink-0 overflow-hidden rounded-xl sm:h-32 sm:w-48">
+                <Image
+                  src={step.image}
+                  alt=""
+                  fill
+                  sizes="200px"
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line text-teal">
+                    {step.icon}
+                  </span>
+                  <span className="font-display text-[0.6rem] tracking-[0.14em] text-muted uppercase">
+                    {step.eyebrow}
+                  </span>
                 </div>
+                <p className="mt-3 flex items-baseline gap-2 font-display text-lg font-bold tracking-[0.01em] text-fg">
+                  <span className="text-[0.75rem] font-normal tracking-[0.1em] text-muted">
+                    {step.index}
+                  </span>
+                  {step.title.toUpperCase()}
+                </p>
+                <p className="mt-2 max-w-md font-body text-[0.95rem] leading-relaxed text-fg/80">
+                  {step.description}
+                </p>
               </div>
             </div>
           ))}

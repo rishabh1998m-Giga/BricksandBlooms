@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import FlowerBud from "@/components/FlowerBud";
+import JourneyBloomCanvas from "@/components/webgl/JourneyBloomCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -130,6 +131,7 @@ export default function SceneProcess() {
   const budBloomRefs = useRef<SVGGElement[]>([]);
   const panelRefs = useRef<HTMLDivElement[]>([]);
   const numberRefs = useRef<HTMLParagraphElement[]>([]);
+  const progressRef = useRef({ value: 0 });
 
   useGSAP(
     () => {
@@ -198,6 +200,9 @@ export default function SceneProcess() {
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            progressRef.current.value = self.progress;
+          },
         },
         defaults: { ease: "none" },
       });
@@ -300,7 +305,9 @@ export default function SceneProcess() {
         ref={stageRef}
         className="relative hidden h-[100dvh] w-full overflow-hidden motion-safe:block"
       >
-        <div className="mx-auto flex h-full max-w-6xl items-center gap-6 px-6 md:gap-16 md:px-10">
+        <JourneyBloomCanvas sectionRef={stageRef} progressRef={progressRef} />
+
+        <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center gap-6 px-6 md:gap-16 md:px-10">
           <div className="relative hidden h-[70%] w-[120px] shrink-0 md:block">
             <svg
               ref={svgRef}

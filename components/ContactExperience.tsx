@@ -1,26 +1,20 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type FormEvent,
-  type KeyboardEvent,
-} from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ArchMotif from "@/components/ArchMotif";
 
 type FieldKey = "name" | "phone" | "email" | "location" | "requirement";
 
-type Question = {
+type Field = {
   key: FieldKey;
-  eyebrow: string;
-  prompt: string;
+  label: string;
   placeholder: string;
   type: "text" | "tel" | "email" | "textarea";
+  icon: React.ReactNode;
   accent: string;
+  autoComplete?: string;
   validate: (value: string) => string | null;
 };
 
@@ -28,33 +22,106 @@ const TEAL = "#4ca48e";
 const TERRACOTTA = "#d97a4e";
 const BLUSH = "#dd939a";
 
-const QUESTIONS: Question[] = [
+function PersonIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <circle cx="10" cy="6.5" r="3" stroke="currentColor" strokeWidth="1.4" />
+      <path
+        d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M5 4c-.9 0-1.5.8-1.3 1.6.8 4.8 4 8 8.8 8.8.8.2 1.6-.4 1.6-1.3v-1.5c0-.5-.3-.9-.8-1l-2-.5c-.4-.1-.8 0-1 .3l-.6.8c-1.5-.7-2.7-1.9-3.4-3.4l.8-.6c.3-.2.4-.6.3-1l-.5-2c-.1-.5-.5-.8-1-.8H5Z"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function MailIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+      <path
+        d="M3.5 6l6.5 5 6.5-5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function PinIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M10 18s6-5.5 6-10a6 6 0 1 0-12 0c0 4.5 6 10 6 10Z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      <circle cx="10" cy="8" r="2" stroke="currentColor" strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+function LeafIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M4 16c0-8 6-13 12-13 0 6-5 12-13 13Z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      <path d="M5 15c3-3 6-5 10-11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const FIELDS: Field[] = [
   {
     key: "name",
-    eyebrow: "Let's start with you",
-    prompt: "What should we call you?",
+    label: "Full Name",
     placeholder: "Your full name",
     type: "text",
+    icon: <PersonIcon />,
     accent: TEAL,
+    autoComplete: "name",
     validate: (v) => (v.trim().length < 2 ? "Tell us your name." : null),
   },
   {
     key: "phone",
-    eyebrow: "Stay in touch",
-    prompt: "Best number to reach you?",
+    label: "Phone",
     placeholder: "Phone number",
     type: "tel",
+    icon: <PhoneIcon />,
     accent: TERRACOTTA,
+    autoComplete: "tel",
     validate: (v) =>
       v.replace(/\D/g, "").length < 7 ? "Enter a valid phone number." : null,
   },
   {
     key: "email",
-    eyebrow: "And in writing",
-    prompt: "What's your email?",
+    label: "Email",
     placeholder: "you@example.com",
     type: "email",
+    icon: <MailIcon />,
     accent: BLUSH,
+    autoComplete: "email",
     validate: (v) =>
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
         ? "Enter a valid email address."
@@ -62,21 +129,21 @@ const QUESTIONS: Question[] = [
   },
   {
     key: "location",
-    eyebrow: "The site itself",
-    prompt: "Where's your site?",
+    label: "Where's your site?",
     placeholder: "City, neighbourhood, or address",
     type: "text",
+    icon: <PinIcon />,
     accent: TEAL,
     validate: (v) =>
       v.trim().length < 2 ? "Let us know where the project is." : null,
   },
   {
     key: "requirement",
-    eyebrow: "The vision",
-    prompt: "Tell us what you have in mind",
+    label: "Requirement",
     placeholder:
       "A rooftop garden, a courtyard renewal, a full landscape redesign...",
     type: "textarea",
+    icon: <LeafIcon />,
     accent: TERRACOTTA,
     validate: (v) =>
       v.trim().length < 5 ? "Tell us a little about your project." : null,
@@ -96,24 +163,23 @@ export default function ContactExperience() {
     location: "",
     requirement: "",
   });
-  const [step, setStep] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
   const [status, setStatus] = useState<Status>("idle");
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState("");
 
   const rootRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const questionRef = useRef<HTMLDivElement>(null);
   const petalRefs = useRef<SVGPathElement[]>([]);
   const hasBloomedOnceRef = useRef(false);
 
-  const current = QUESTIONS[step];
-  const isLast = step === QUESTIONS.length - 1;
-  const bloomed = status === "success" ? QUESTIONS.length : step + 1;
+  const filledCount = FIELDS.filter((f) => values[f.key].trim().length > 0)
+    .length;
+  const bloomed = status === "success" ? FIELDS.length : filledCount;
 
-  // The bloom grows a petal for every question already answered. The very
-  // first run snaps straight to the initial state instead of animating in,
-  // so petals past the current step don't visibly shrink away on load.
+  // The bloom grows a petal for every field that has something in it. The
+  // very first run snaps straight to the initial state instead of
+  // animating in, so nothing shrinks away on load.
   useGSAP(
     () => {
       const prefersReduced = window.matchMedia(
@@ -141,27 +207,6 @@ export default function ContactExperience() {
     { dependencies: [bloomed], scope: rootRef }
   );
 
-  // The active question slides/fades in fresh each time `step` changes.
-  useGSAP(
-    () => {
-      if (!questionRef.current) return;
-      const prefersReduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-      gsap.fromTo(
-        questionRef.current,
-        { autoAlpha: 0, y: prefersReduced ? 0 : 22 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: prefersReduced ? 0.01 : 0.55,
-          ease: "power2.out",
-        }
-      );
-    },
-    { dependencies: [step], scope: rootRef }
-  );
-
   // A quiet cursor-tilt on the card, matching the rest of the site.
   useEffect(() => {
     const prefersReduced = window.matchMedia(
@@ -187,14 +232,37 @@ export default function ContactExperience() {
     return () => stage.removeEventListener("pointermove", handleMove);
   }, []);
 
-  const setValue = (value: string) => {
-    setValues((prev) => ({ ...prev, [current.key]: value }));
-    if (error) setError(null);
+  const setValue = (key: FieldKey, value: string) => {
+    setValues((prev) => ({ ...prev, [key]: value }));
+    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
-  const submit = useCallback(async () => {
+  const resetForm = () => {
+    setValues({ name: "", phone: "", email: "", location: "", requirement: "" });
+    setErrors({});
+    setStatus("idle");
+    setSubmitError(null);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    const nextErrors: Partial<Record<FieldKey, string>> = {};
+    FIELDS.forEach((f) => {
+      const err = f.validate(values[f.key]);
+      if (err) nextErrors[f.key] = err;
+    });
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      const firstInvalid = FIELDS.find((f) => nextErrors[f.key]);
+      if (firstInvalid) {
+        document.getElementById(firstInvalid.key)?.focus();
+      }
+      return;
+    }
+
     setStatus("submitting");
-    setError(null);
+    setSubmitError(null);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -204,66 +272,14 @@ export default function ContactExperience() {
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Something went wrong.");
       setStatus("success");
-    } catch (e) {
+    } catch (err) {
       setStatus("error");
-      setError(
-        e instanceof Error
-          ? e.message
+      setSubmitError(
+        err instanceof Error
+          ? err.message
           : "Something went wrong — please try again."
       );
     }
-  }, [values, honeypot]);
-
-  const goNext = useCallback(() => {
-    const err = current.validate(values[current.key]);
-    if (err) {
-      setError(err);
-      return;
-    }
-    if (isLast) {
-      submit();
-      return;
-    }
-    const el = questionRef.current;
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (el && !prefersReduced) {
-      gsap.to(el, {
-        autoAlpha: 0,
-        y: -18,
-        duration: 0.28,
-        ease: "power2.in",
-        onComplete: () => setStep((s) => s + 1),
-      });
-    } else {
-      setStep((s) => s + 1);
-    }
-  }, [current, values, isLast, submit]);
-
-  const goBack = () => {
-    if (step === 0) return;
-    setError(null);
-    setStep((s) => s - 1);
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (current.type === "textarea") {
-      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        goNext();
-      }
-      return;
-    }
-    if (e.key === "Enter") {
-      e.preventDefault();
-      goNext();
-    }
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    goNext();
   };
 
   const flower = (size: number, colors: string[]) => (
@@ -290,7 +306,7 @@ export default function ContactExperience() {
     </svg>
   );
 
-  const petalColors = QUESTIONS.map((q) => q.accent);
+  const petalColors = FIELDS.map((f) => f.accent);
 
   return (
     <section
@@ -316,36 +332,35 @@ export default function ContactExperience() {
           A few details, and we&rsquo;ll take it from here.
         </p>
 
-        <div className="mt-16 grid grid-cols-1 items-stretch gap-10 md:grid-cols-[0.85fr_1fr] md:gap-16">
+        <div className="mt-16 grid grid-cols-1 items-start gap-10 md:grid-cols-[0.85fr_1fr] md:gap-16">
           {/* The bloom card */}
           <div
             ref={cardRef}
-            className="relative mx-auto flex w-full max-w-[420px] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-line bg-bg-elevated px-8 py-14"
+            className="relative mx-auto flex w-full max-w-[420px] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-line bg-bg-elevated px-8 py-14 md:sticky md:top-28"
           >
             <div
               className="pointer-events-none absolute inset-0 transition-opacity duration-700"
               style={{
-                backgroundImage: `radial-gradient(120% 90% at 50% 30%, ${current.accent}26, transparent 70%)`,
+                backgroundImage: `radial-gradient(120% 90% at 50% 30%, ${
+                  petalColors[Math.max(0, Math.min(bloomed, FIELDS.length) - 1)]
+                }26, transparent 70%)`,
               }}
             />
             <div className="relative">{flower(160, petalColors)}</div>
             <p className="relative mt-8 font-display text-[0.68rem] tracking-[0.18em] text-muted uppercase">
               {status === "success"
                 ? "All set"
-                : `${step + 1} of ${QUESTIONS.length}`}
+                : `${filledCount} of ${FIELDS.length} details`}
             </p>
-            <p
-              className="relative mt-2 max-w-[16rem] text-balance text-center font-body text-base text-fg/80"
-              key={status === "success" ? "success" : current.key}
-            >
+            <p className="relative mt-2 max-w-[16rem] text-balance text-center font-body text-base text-fg/80">
               {status === "success"
                 ? "Your vision is planted. We'll help it grow."
-                : current.eyebrow}
+                : "Every detail helps us design something that truly belongs."}
             </p>
           </div>
 
-          {/* The conversation */}
-          <div className="relative flex min-h-[340px] flex-col justify-center">
+          {/* The form */}
+          <div className="relative">
             {status === "success" ? (
               <div>
                 <p className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase">
@@ -360,17 +375,7 @@ export default function ContactExperience() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => {
-                    setValues({
-                      name: "",
-                      phone: "",
-                      email: "",
-                      location: "",
-                      requirement: "",
-                    });
-                    setStep(0);
-                    setStatus("idle");
-                  }}
+                  onClick={resetForm}
                   className="mt-8 inline-flex items-center gap-2 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase transition-colors hover:text-teal"
                 >
                   <span className="border-b border-fg/40 pb-0.5">
@@ -379,7 +384,7 @@ export default function ContactExperience() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} noValidate>
                 {/* Honeypot — hidden from real visitors, catches bots */}
                 <div className="absolute -left-[9999px]" aria-hidden="true">
                   <label htmlFor="company">Company</label>
@@ -394,106 +399,80 @@ export default function ContactExperience() {
                   />
                 </div>
 
-                <div ref={questionRef} key={current.key}>
-                  <p
-                    className="font-display text-[0.68rem] tracking-[0.22em] uppercase"
-                    style={{ color: current.accent }}
-                  >
-                    {current.eyebrow}
-                  </p>
-                  <label
-                    htmlFor={current.key}
-                    className="mt-4 block text-balance font-display text-[2rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3rem]"
-                  >
-                    {current.prompt}
-                  </label>
-
-                  {current.type === "textarea" ? (
-                    <textarea
-                      id={current.key}
-                      name={current.key}
-                      autoFocus
-                      rows={3}
-                      value={values[current.key]}
-                      onChange={(e) => setValue(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder={current.placeholder}
-                      className="mt-6 w-full resize-none border-b border-line bg-transparent pb-3 font-body text-xl text-fg placeholder:text-muted/60 focus:border-teal focus:outline-none"
-                    />
-                  ) : (
-                    <input
-                      id={current.key}
-                      name={current.key}
-                      type={current.type}
-                      autoFocus
-                      autoComplete={
-                        current.key === "name"
-                          ? "name"
-                          : current.key === "email"
-                            ? "email"
-                            : current.key === "phone"
-                              ? "tel"
-                              : "off"
-                      }
-                      value={values[current.key]}
-                      onChange={(e) => setValue(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder={current.placeholder}
-                      className="mt-6 w-full border-b border-line bg-transparent pb-3 font-body text-xl text-fg placeholder:text-muted/60 focus:border-teal focus:outline-none"
-                    />
-                  )}
-
-                  {error && (
-                    <p className="mt-3 font-body text-sm text-terracotta">
-                      {error}
-                    </p>
-                  )}
-
-                  <div className="mt-8 flex items-center gap-5">
-                    <button
-                      type="submit"
-                      disabled={status === "submitting"}
-                      className="group inline-flex items-center gap-3 rounded-full border border-line px-6 py-3 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase transition-colors duration-300 hover:border-teal/50 hover:text-teal disabled:opacity-50"
-                    >
-                      {status === "submitting"
-                        ? "Sending..."
-                        : isLast
-                          ? "Send it over"
-                          : "Continue"}
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full border border-line transition-all duration-300 group-hover:translate-x-1 group-hover:border-teal/50">
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M2 8h11M9 4l4 4-4 4"
-                            stroke="currentColor"
-                            strokeWidth="1.4"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-
-                    {step > 0 && (
-                      <button
-                        type="button"
-                        onClick={goBack}
-                        className="font-display text-[0.62rem] tracking-[0.14em] text-muted uppercase transition-colors hover:text-fg"
+                <div className="flex flex-col gap-9">
+                  {FIELDS.map((field) => (
+                    <div key={field.key}>
+                      <label
+                        htmlFor={field.key}
+                        className="flex items-center gap-2.5 font-display text-[0.72rem] tracking-[0.16em] uppercase"
+                        style={{ color: field.accent }}
                       >
-                        Back
-                      </button>
-                    )}
+                        <span aria-hidden="true">{field.icon}</span>
+                        {field.label}
+                      </label>
 
-                    <span className="hidden font-display text-[0.6rem] tracking-[0.1em] text-muted/70 sm:inline">
-                      {current.type === "textarea" ? "⌘ + Enter" : "Press Enter ↵"}
-                    </span>
-                  </div>
+                      {field.type === "textarea" ? (
+                        <textarea
+                          id={field.key}
+                          name={field.key}
+                          rows={3}
+                          value={values[field.key]}
+                          onChange={(e) => setValue(field.key, e.target.value)}
+                          placeholder={field.placeholder}
+                          className="mt-3 w-full resize-none border-b border-line bg-transparent pb-3 font-body text-lg text-fg placeholder:text-muted/60 focus:border-teal focus:outline-none"
+                        />
+                      ) : (
+                        <input
+                          id={field.key}
+                          name={field.key}
+                          type={field.type}
+                          autoComplete={field.autoComplete}
+                          value={values[field.key]}
+                          onChange={(e) => setValue(field.key, e.target.value)}
+                          placeholder={field.placeholder}
+                          className="mt-3 w-full border-b border-line bg-transparent pb-3 font-body text-lg text-fg placeholder:text-muted/60 focus:border-teal focus:outline-none"
+                        />
+                      )}
+
+                      {errors[field.key] && (
+                        <p className="mt-2 font-body text-sm text-terracotta">
+                          {errors[field.key]}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
+
+                {submitError && (
+                  <p className="mt-5 font-body text-sm text-terracotta">
+                    {submitError}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === "submitting"}
+                  className="group mt-10 inline-flex items-center gap-3 rounded-full border border-line px-6 py-3 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase transition-colors duration-300 hover:border-teal/50 hover:text-teal disabled:opacity-50"
+                >
+                  {status === "submitting" ? "Sending..." : "Send it over"}
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full border border-line transition-all duration-300 group-hover:translate-x-1 group-hover:border-teal/50">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M2 8h11M9 4l4 4-4 4"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
               </form>
             )}
           </div>

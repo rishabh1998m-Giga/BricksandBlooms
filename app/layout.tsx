@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import ScrollRefresh from "@/components/ScrollRefresh";
-import WorldCanvas from "@/components/webgl/WorldCanvas";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -31,7 +30,6 @@ export default function RootLayout({
     <html lang="en" className={`${plusJakarta.variable} ${newsreader.variable}`}>
       <body>
         <ScrollRefresh />
-        <WorldCanvas />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

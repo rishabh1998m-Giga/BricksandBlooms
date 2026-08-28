@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ArchMotif from "@/components/ArchMotif";
@@ -156,13 +157,18 @@ const PETAL_D =
 type Status = "idle" | "submitting" | "success" | "error";
 
 export default function ContactExperience() {
-  const [values, setValues] = useState<Record<FieldKey, string>>({
+  const searchParams = useSearchParams();
+  const serviceParam = searchParams.get("service");
+
+  const [values, setValues] = useState<Record<FieldKey, string>>(() => ({
     name: "",
     phone: "",
     email: "",
     location: "",
-    requirement: "",
-  });
+    requirement: serviceParam
+      ? `Interested in: ${serviceParam}. `
+      : "",
+  }));
   const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
   const [status, setStatus] = useState<Status>("idle");
   const [submitError, setSubmitError] = useState<string | null>(null);

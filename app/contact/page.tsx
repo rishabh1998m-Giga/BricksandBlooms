@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Nav from "@/components/Nav";
 import ContactExperience from "@/components/ContactExperience";
 
@@ -13,7 +14,9 @@ export default function ContactPage() {
     <>
       <Nav />
       <main className="relative z-10 min-h-dvh">
-        <ContactExperience />
+        <Suspense fallback={null}>
+          <ContactExperience />
+        </Suspense>
       </main>
     </>
   );

@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import FlowerBud from "@/components/FlowerBud";
+import LandscapeOpeningCanvas from "@/components/webgl/LandscapeOpeningCanvas";
+import BrickToBloomCanvas from "@/components/webgl/BrickToBloomCanvas";
 import MaintenanceBloomCanvas from "@/components/webgl/MaintenanceBloomCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,40 +15,74 @@ gsap.registerPlugin(ScrollTrigger);
 const TEAL = "#4ca48e";
 const TERRACOTTA = "#d97a4e";
 const BLUSH = "#dd939a";
+const STONE = "#a79e8c";
 const ACCENTS = [TEAL, TERRACOTTA, BLUSH];
 
-const DESIGN_AND_EXECUTION = [
-  "Terrace Garden",
-  "Vertical Garden",
-  "Villa Landscaping",
-  "Pergola & Fabrication",
-  "Luxury Landscapes",
-  "Swimming Pools",
-  "Water Fountains & Ponds",
-  "Commercial Landscaping",
-  "Landscape Irrigation",
-  "Softscape",
-  "Hardscape",
-  "Moss Wall",
+// The six stages of the flagship sequence — matched 1:1 to the growth
+// thresholds inside BrickToBloomCanvas so the label and the geometry
+// always agree on what's happening.
+const STAGES = [
+  { num: "01", name: "Structure", line: "Brick by brick, the frame takes shape.", threshold: 0 },
+  { num: "02", name: "Terrain", line: "The ground finds its form.", threshold: 0.26 },
+  { num: "03", name: "Planting", line: "Life takes root.", threshold: 0.38 },
+  { num: "04", name: "Water", line: "Movement enters the landscape.", threshold: 0.58 },
+  { num: "05", name: "Light", line: "Warmth settles over everything.", threshold: 0.74 },
+  { num: "06", name: "Life", line: "A landscape, complete.", threshold: 0.9 },
 ];
 
-const MAINTENANCE = ["Garden Maintenance", "Office Plant Rental", "FRP Planters"];
+type Zone = {
+  key: string;
+  label: string;
+  accent: string;
+  line: string;
+  services: string[];
+};
 
-// The hero's background motif: a rectilinear "brick coursing" line that
-// crossfades into an organic bloom-vine curve as the kinetic type turns
-// from "Brick." to "Bloom." — the brand's own name, drawn.
-const BRICK_PATH =
-  "M -5,66 H 20 V 44 H 46 V 66 H 72 V 44 H 98 V 66 H 124 V 44 H 150 V 66 H 165";
-const VINE_PATH =
-  "M -5,74 C 22,58 10,36 34,30 C 60,24 54,50 80,44 C 106,38 100,14 126,20 C 146,25 152,42 165,36";
+const ZONES: Zone[] = [
+  {
+    key: "brick",
+    label: "Brick & Stone",
+    accent: TERRACOTTA,
+    line: "Where structure gives a landscape its bones — the architecture that holds everything else up.",
+    services: ["Hardscape", "Pergola & Fabrication"],
+  },
+  {
+    key: "plant",
+    label: "Plant",
+    accent: TEAL,
+    line: "Softscape and living walls — the parts of a landscape that grow, breathe, and change with the seasons.",
+    services: ["Terrace Garden", "Vertical Garden", "Softscape", "Moss Wall"],
+  },
+  {
+    key: "water",
+    label: "Water",
+    accent: BLUSH,
+    line: "Pools, fountains, and the quiet engineering of irrigation — water in motion and water at rest.",
+    services: ["Swimming Pools", "Water Fountains & Ponds", "Landscape Irrigation"],
+  },
+  {
+    key: "terrain",
+    label: "Terrain",
+    accent: STONE,
+    line: "The full shape of a site — villas, commercial grounds, landscapes built at every scale.",
+    services: ["Villa Landscaping", "Luxury Landscapes", "Commercial Landscaping"],
+  },
+  {
+    key: "planter",
+    label: "Planter",
+    accent: TERRACOTTA,
+    line: "The ongoing relationship — indoor greenery, the vessels that bring nature in, and the care that keeps it alive.",
+    services: ["Garden Maintenance", "Office Plant Rental", "FRP Planters"],
+  },
+];
 
-// The spine that runs the full length of the two service categories —
-// rectilinear (brick-like) through Design & Execution, resolving into a
-// blooming vine by Maintenance. One continuous path, one continuous idea.
-const SPINE_PATH =
-  "M 30,0 L 30,90 L 10,90 L 10,180 L 30,180 L 30,270 L 50,270 L 50,360 L 30,360 L 30,450 L 10,450 L 10,540 " +
-  "L 30,540 C 14,590 46,640 30,690 C 15,730 45,770 30,810 C 19,840 41,870 30,900 L 30,1000";
-const SPINE_BUD_FRACTIONS = [0.68, 0.8, 0.9];
+const ALL_SERVICES = ZONES.flatMap((z) => z.services);
+
+const BRIDGE_PHOTOS = [
+  { src: "/assets/services/landscape-design.webp", caption: "A courtyard, reclaimed" },
+  { src: "/assets/process/execution.webp", caption: "Built by hand, on site" },
+  { src: "/assets/landscape/awakens-reveal.webp", caption: "What the land wanted to become" },
+];
 
 function ArrowIcon() {
   return (
@@ -62,47 +98,18 @@ function ArrowIcon() {
   );
 }
 
-function IndexRow({ num, name }: { num: number; name: string }) {
-  const accent = ACCENTS[(num - 1) % ACCENTS.length];
-  return (
-    <Link
-      href={`/contact?service=${encodeURIComponent(name)}`}
-      data-reveal
-      className="group flex items-center justify-between gap-6 border-b border-line py-6 transition-colors duration-300"
-      style={{ ["--accent" as string]: accent }}
-    >
-      <div className="flex items-baseline gap-5 md:gap-7">
-        <span className="w-6 shrink-0 font-display text-[0.72rem] tracking-[0.1em] text-muted tabular-nums">
-          {String(num).padStart(2, "0")}
-        </span>
-        <span className="text-balance font-display text-[1.5rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg transition-colors duration-300 group-hover:text-[var(--accent)] sm:text-[1.8rem] md:text-[2.1rem]">
-          {name}
-        </span>
-      </div>
-      <span
-        className="flex h-10 w-10 shrink-0 -translate-x-2 items-center justify-center rounded-full border border-line text-fg opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:border-[var(--accent)]/50 group-hover:text-[var(--accent)] group-hover:opacity-100"
-        aria-hidden="true"
-      >
-        <ArrowIcon />
-      </span>
-    </Link>
-  );
-}
-
 export default function ServicesIndex() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const heroStageRef = useRef<HTMLDivElement>(null);
-  const beatRefs = useRef<HTMLDivElement[]>([]);
-  const brickPathRef = useRef<SVGPathElement>(null);
-  const vinePathRef = useRef<SVGPathElement>(null);
+  const openingRef = useRef<HTMLElement>(null);
 
-  const spineWrapperRef = useRef<HTMLDivElement>(null);
-  const spineSvgRef = useRef<SVGSVGElement>(null);
-  const spinePathRef = useRef<SVGPathElement>(null);
-  const spineBudPositionRefs = useRef<SVGGElement[]>([]);
-  const spineBudBloomRefs = useRef<SVGGElement[]>([]);
+  const flagshipStageRef = useRef<HTMLDivElement>(null);
+  const stageLabelRefs = useRef<HTMLDivElement[]>([]);
+  const activeStageRef = useRef(0);
+  const progressRef = useRef({ value: 0 });
 
   const maintenanceRef = useRef<HTMLElement>(null);
+
+  const [activeZone, setActiveZone] = useState(0);
 
   useGSAP(
     () => {
@@ -111,60 +118,8 @@ export default function ServicesIndex() {
       ).matches;
       const reveals = gsap.utils.toArray<HTMLElement>("[data-reveal]");
 
-      // --- The spine: position its blooms along the path, then tie its
-      // growth to normal (unpinned) scroll across both category sections.
-      const spinePath = spinePathRef.current;
-      if (spinePath) {
-        const length = spinePath.getTotalLength();
-        const svgRect = spineSvgRef.current?.getBoundingClientRect();
-        const scaleX = (svgRect?.width ?? 60) / 60;
-        const scaleY = (svgRect?.height ?? 1000) / 1000;
-        const correction = scaleX > 0 ? scaleY / scaleX : 1;
-
-        SPINE_BUD_FRACTIONS.forEach((frac, i) => {
-          const pt = spinePath.getPointAtLength(length * frac);
-          spineBudPositionRefs.current[i]?.setAttribute(
-            "transform",
-            `translate(${pt.x} ${pt.y}) scale(${correction} 1)`
-          );
-        });
-
-        if (prefersReduced) {
-          spinePath.style.strokeDasharray = `${length}`;
-          spinePath.style.strokeDashoffset = "0";
-          gsap.set(spineBudBloomRefs.current, { scale: 1, transformOrigin: "center" });
-        } else {
-          gsap.set(spinePath, { strokeDasharray: length, strokeDashoffset: length });
-          gsap.set(spineBudBloomRefs.current, { scale: 0, transformOrigin: "center" });
-
-          const spineTl = gsap.timeline({
-            scrollTrigger: {
-              trigger: spineWrapperRef.current,
-              start: "top 75%",
-              end: "bottom bottom",
-              scrub: 0.6,
-            },
-          });
-          spineTl.to(spinePath, { strokeDashoffset: 0, ease: "none" }, 0);
-          SPINE_BUD_FRACTIONS.forEach((frac, i) => {
-            spineTl.to(
-              spineBudBloomRefs.current[i],
-              { scale: 1, ease: "back.out(2.2)", duration: 0.08 },
-              frac - 0.05
-            );
-          });
-        }
-      }
-
       if (prefersReduced) {
         gsap.set(reveals, { opacity: 1, y: 0 });
-        gsap.set(beatRefs.current, { autoAlpha: 0, display: "none" });
-        gsap.set(beatRefs.current[beatRefs.current.length - 1], {
-          autoAlpha: 1,
-          display: "flex",
-        });
-        gsap.set(brickPathRef.current, { autoAlpha: 0 });
-        gsap.set(vinePathRef.current, { autoAlpha: 1 });
         return;
       }
 
@@ -182,248 +137,321 @@ export default function ServicesIndex() {
           }),
       });
 
-      // --- The pinned kinetic hero: Brick. -> Bloom. -> the real headline,
-      // with the background line motif crossfading rectilinear -> organic
-      // in step with the words themselves.
-      const beats = beatRefs.current;
-      gsap.set(beats, { autoAlpha: 0, scale: 0.75, filter: "blur(16px)" });
-      gsap.set(beats[0], { autoAlpha: 1, scale: 1, filter: "blur(0px)" });
-      gsap.set(vinePathRef.current, { autoAlpha: 0 });
+      // --- The flagship sequence: pin, and let scroll position alone
+      // drive both the 3D growth (via progressRef, read every frame by
+      // BrickToBloomCanvas) and the stage-label crossfade below. Desktop
+      // only — on narrow viewports the WebGL layer never mounts (see
+      // useCinematicMode), so scroll-jacking a blank canvas for 450% of
+      // the viewport height would just be a long empty void; mobile gets
+      // the plain static list rendered right below instead.
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      if (!isDesktop) return;
 
-      const heroTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: heroStageRef.current,
-          start: "top top",
-          end: "+=200%",
-          scrub: 1.1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
+      const labels = stageLabelRefs.current;
+      gsap.set(labels, { autoAlpha: 0 });
+      gsap.set(labels[0], { autoAlpha: 1 });
+
+      ScrollTrigger.create({
+        trigger: flagshipStageRef.current,
+        start: "top top",
+        end: "+=450%",
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          progressRef.current.value = self.progress;
+          let idx = 0;
+          STAGES.forEach((s, i) => {
+            if (self.progress >= s.threshold) idx = i;
+          });
+          if (idx !== activeStageRef.current) {
+            const prev = activeStageRef.current;
+            activeStageRef.current = idx;
+            gsap.to(labels[prev], { autoAlpha: 0, duration: 0.3 });
+            gsap.to(labels[idx], { autoAlpha: 1, duration: 0.3 });
+          }
         },
-        defaults: { ease: "none" },
       });
-
-      beats.forEach((_, i) => {
-        if (i === 0) return;
-        heroTl
-          .to(
-            beats[i - 1],
-            { autoAlpha: 0, scale: 1.25, filter: "blur(14px)", duration: 0.3, ease: "power2.in" },
-            i - 0.3
-          )
-          .to(
-            beats[i],
-            { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power2.out" },
-            i - 0.12
-          );
-      });
-      heroTl.to(
-        brickPathRef.current,
-        { autoAlpha: 0, duration: 0.5 },
-        0.6
-      );
-      heroTl.to(
-        vinePathRef.current,
-        { autoAlpha: 1, duration: 0.5 },
-        0.6
-      );
-      heroTl.to({}, { duration: 0.5 });
     },
     { scope: rootRef }
   );
 
   return (
     <div ref={rootRef}>
-      {/* Eyebrow */}
-      <div className="relative mx-auto max-w-6xl px-6 pt-24 md:px-10 md:pt-32">
-        <div data-reveal className="flex items-center gap-3">
-          <span className="h-px w-8 bg-line" />
-          <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
-            Services
+      {/* ENTRY — a small, complete world rendered in real 3D */}
+      <section
+        ref={openingRef}
+        className="relative flex min-h-[26rem] w-full items-end overflow-hidden border-t border-line bg-bg px-6 pb-14 pt-24 md:h-[100dvh] md:min-h-0 md:pb-24 md:pt-0 md:px-10"
+      >
+        <LandscapeOpeningCanvas sectionRef={openingRef} />
+        <div className="relative z-10">
+          <div data-reveal className="flex items-center gap-3">
+            <span className="h-px w-8 bg-line" />
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
+              Services
+            </p>
+          </div>
+          <h1
+            data-reveal
+            className="mt-6 max-w-2xl text-balance font-display text-[2.4rem] font-bold leading-[1.02] tracking-[-0.01em] text-fg sm:text-[3.2rem] md:text-[4rem]"
+          >
+            Enter the world of Brick &amp; Blooms.
+          </h1>
+          <p
+            data-reveal
+            className="mt-5 max-w-md text-balance font-body text-base text-muted sm:text-lg"
+          >
+            Structure and softness, built together. Scroll to watch one
+            become the other.
           </p>
         </div>
-      </div>
+      </section>
 
-      {/* Pinned kinetic hero — Brick. / Bloom. / the headline */}
-      <div
-        ref={heroStageRef}
-        className="relative flex h-[100dvh] w-full items-center justify-center overflow-hidden px-6"
+      {/* THE FLAGSHIP SEQUENCE — a bare slab becomes a living landscape */}
+      <section
+        ref={flagshipStageRef}
+        className="relative hidden h-[100dvh] w-full overflow-hidden border-t border-line bg-bg motion-safe:md:block"
       >
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full text-fg/[0.14]"
-          viewBox="0 0 160 90"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            ref={brickPathRef}
-            d={BRICK_PATH}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.5"
-          />
-          <path
-            ref={vinePathRef}
-            d={VINE_PATH}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            strokeLinecap="round"
-          />
-        </svg>
+        <BrickToBloomCanvas sectionRef={flagshipStageRef} progressRef={progressRef} />
 
-        {[
-          <p
-            key="brick"
-            className="text-balance font-display text-[3.4rem] font-bold leading-[0.95] tracking-[-0.01em] text-fg sm:text-[5rem] md:text-[6.5rem]"
-          >
-            Brick.
-          </p>,
-          <p
-            key="bloom"
-            className="text-balance font-display text-[3.4rem] font-bold leading-[0.95] tracking-[-0.01em] text-terracotta sm:text-[5rem] md:text-[6.5rem]"
-          >
-            Bloom.
-          </p>,
-          <div key="final" className="flex max-w-3xl flex-col items-center px-6 text-center">
-            <h1 className="text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.6rem]">
-              From first bloom to lasting care.
-            </h1>
-            <p className="mt-5 max-w-lg text-balance font-body text-base text-muted sm:text-lg">
-              Fifteen disciplines under one studio — from a terrace garden&rsquo;s
-              first sketch to the quiet care that keeps it thriving.
+        <div className="relative z-10 flex h-full flex-col justify-between px-6 py-10 md:px-14 md:py-16">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-line" />
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
+              How a landscape is built
             </p>
-          </div>,
-        ].map((node, i) => (
-          <div
-            key={i}
-            ref={(el) => {
-              if (el) beatRefs.current[i] = el;
-            }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            {node}
           </div>
-        ))}
-      </div>
 
-      {/* The spine-connected categories */}
-      <div ref={spineWrapperRef} className="relative">
-        <svg
-          ref={spineSvgRef}
-          className="pointer-events-none absolute inset-y-0 left-[22px] hidden w-[60px] text-line md:block lg:left-[calc((100%-72rem)/2+22px)]"
-          viewBox="0 0 60 1000"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            ref={spinePathRef}
-            d={SPINE_PATH}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          {SPINE_BUD_FRACTIONS.map((_, i) => (
-            <g
-              key={i}
-              ref={(el) => {
-                if (el) spineBudPositionRefs.current[i] = el;
-              }}
-            >
-              <g
+          <div className="relative min-h-[7rem]">
+            {STAGES.map((stage, i) => (
+              <div
+                key={stage.num}
                 ref={(el) => {
-                  if (el) spineBudBloomRefs.current[i] = el;
+                  if (el) stageLabelRefs.current[i] = el;
                 }}
-                transform="scale(2.2)"
+                className="absolute inset-x-0 bottom-0"
               >
-                <FlowerBud color={ACCENTS[i % ACCENTS.length]} />
-              </g>
-            </g>
-          ))}
-        </svg>
-
-        {/* Design & Execution */}
-        <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
-          <div className="mx-auto max-w-6xl md:pl-16">
-            <div className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line pb-8">
-              <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-line" />
-                <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
-                  Design &amp; Execution
+                <p className="font-display text-[0.68rem] tracking-[0.22em] text-terracotta uppercase">
+                  {stage.num} — {stage.name}
+                </p>
+                <p className="mt-3 max-w-sm text-balance font-display text-[1.7rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.1rem]">
+                  {stage.line}
                 </p>
               </div>
-              <p className="font-display text-[0.68rem] tracking-[0.1em] text-muted uppercase">
-                {String(DESIGN_AND_EXECUTION.length).padStart(2, "0")} disciplines
-              </p>
-            </div>
-
-            <div className="mt-2 grid md:grid-cols-2 md:gap-x-16">
-              <div>
-                {DESIGN_AND_EXECUTION.slice(0, 6).map((name, i) => (
-                  <IndexRow key={name} num={i + 1} name={name} />
-                ))}
-              </div>
-              <div>
-                {DESIGN_AND_EXECUTION.slice(6).map((name, i) => (
-                  <IndexRow key={name} num={i + 7} name={name} />
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Maintenance */}
-        <section
-          ref={maintenanceRef}
-          className="relative overflow-hidden border-t border-line bg-bg-elevated px-6 py-20 md:px-10 md:py-28"
-        >
-          <MaintenanceBloomCanvas sectionRef={maintenanceRef} />
-
-          <div className="relative mx-auto max-w-6xl md:pl-16">
-            <div className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line pb-8">
-              <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-line" />
-                <p className="font-display text-[0.68rem] tracking-[0.18em] text-terracotta uppercase">
-                  Maintenance
+      {/* Reduced-motion fallback for the flagship sequence above — same six
+          stages, read as a static list instead of a pinned 3D scroll. */}
+      <section className="hidden border-t border-line bg-bg px-6 py-20 max-md:block motion-reduce:block md:px-10 md:py-28">
+        <div className="mx-auto max-w-2xl">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-line" />
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
+              How a landscape is built
+            </p>
+          </div>
+          <ul className="mt-10 flex flex-col gap-8">
+            {STAGES.map((stage) => (
+              <li key={stage.num} className="flex gap-5">
+                <span className="font-display text-[0.68rem] tracking-[0.22em] text-terracotta uppercase">
+                  {stage.num}
+                </span>
+                <p className="font-display text-[1.4rem] font-bold leading-[1.15] tracking-[-0.01em] text-fg">
+                  {stage.line}
                 </p>
-              </div>
-              <p className="font-display text-[0.68rem] tracking-[0.1em] text-muted uppercase">
-                The care that keeps it beautiful
-              </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* DISCOVERY — the elements of the landscape, and what each becomes */}
+      <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div data-reveal className="flex items-center gap-3">
+            <span className="h-px w-8 bg-line" />
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
+              Explore the elements
+            </p>
+          </div>
+          <h2
+            data-reveal
+            className="mt-5 max-w-2xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+          >
+            Five materials. Fifteen disciplines.
+          </h2>
+
+          <div className="mt-14 grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+            <div
+              data-reveal
+              className="flex flex-row flex-wrap gap-x-8 gap-y-5 md:flex-col md:gap-y-7"
+            >
+              {ZONES.map((zone, i) => (
+                <button
+                  key={zone.key}
+                  type="button"
+                  onMouseEnter={() => setActiveZone(i)}
+                  onFocus={() => setActiveZone(i)}
+                  onClick={() => setActiveZone(i)}
+                  className="group flex items-center gap-4 text-left"
+                >
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full transition-all duration-300"
+                    style={{
+                      backgroundColor: activeZone === i ? zone.accent : "var(--color-line)",
+                      transform: activeZone === i ? "scale(1.5)" : "scale(1)",
+                    }}
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="font-display text-[1.5rem] font-bold tracking-[-0.01em] transition-colors duration-300 sm:text-[1.9rem]"
+                    style={{ color: activeZone === i ? zone.accent : "var(--color-fg)" }}
+                  >
+                    {zone.label}
+                  </span>
+                </button>
+              ))}
             </div>
 
-            <div className="mt-10 grid gap-6 sm:grid-cols-3">
-              {MAINTENANCE.map((name, i) => {
-                const num = DESIGN_AND_EXECUTION.length + i + 1;
-                const accent = ACCENTS[(num - 1) % ACCENTS.length];
-                return (
+            <div
+              data-reveal
+              className="rounded-[1.75rem] border border-line bg-bg-elevated p-8 md:p-10"
+            >
+              <p
+                className="font-display text-[0.68rem] tracking-[0.18em] uppercase"
+                style={{ color: ZONES[activeZone].accent }}
+              >
+                {ZONES[activeZone].label}
+              </p>
+              <p className="mt-4 max-w-md text-balance font-body text-lg leading-relaxed text-fg/80">
+                {ZONES[activeZone].line}
+              </p>
+              <div className="mt-7 flex flex-col gap-1 border-t border-line pt-6">
+                {ZONES[activeZone].services.map((name) => (
                   <Link
                     key={name}
                     href={`/contact?service=${encodeURIComponent(name)}`}
-                    data-reveal
-                    className="group rounded-2xl border border-line bg-bg/40 p-8 backdrop-blur-sm transition-colors duration-300"
-                    style={{ ["--accent" as string]: accent }}
+                    className="group flex items-center justify-between gap-4 rounded-lg py-2.5 transition-colors duration-200 hover:bg-bg/60"
                   >
-                    <p className="font-display text-[2.4rem] font-bold leading-none text-fg/15 transition-colors duration-300 group-hover:text-[var(--accent)]/25">
-                      {String(num).padStart(2, "0")}
-                    </p>
-                    <p className="mt-4 text-balance font-display text-xl font-bold leading-tight tracking-[-0.01em] text-fg">
+                    <span className="font-display text-base font-bold text-fg sm:text-lg">
                       {name}
-                    </p>
+                    </span>
                     <span
-                      className="mt-5 flex h-9 w-9 items-center justify-center rounded-full border border-line text-fg transition-all duration-300 group-hover:translate-x-1 group-hover:border-[var(--accent)]/50 group-hover:text-[var(--accent)]"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line text-fg opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
+                      style={{ color: ZONES[activeZone].accent }}
                       aria-hidden="true"
                     >
                       <ArrowIcon />
                     </span>
                   </Link>
-                );
-              })}
+                ))}
+              </div>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* THE BRIDGE TO REALITY — real work, not illustration */}
+      <section className="border-t border-line bg-bg-elevated px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div data-reveal className="flex items-center gap-3">
+            <span className="h-px w-8 bg-line" />
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-terracotta uppercase">
+              On site
+            </p>
+          </div>
+          <h2
+            data-reveal
+            className="mt-5 max-w-xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+          >
+            Every one of these is somewhere real.
+          </h2>
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+            {BRIDGE_PHOTOS.map((photo) => (
+              <div
+                key={photo.src}
+                data-reveal
+                className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-line"
+              >
+                <Image
+                  src={photo.src}
+                  alt=""
+                  fill
+                  sizes="(min-width: 640px) 33vw, 100vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/10 to-transparent" />
+                <p className="absolute bottom-5 left-5 font-display text-sm text-fg/90">
+                  {photo.caption}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* THE FULL DIRECTORY — quiet, for reference */}
+      <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div data-reveal className="flex items-baseline justify-between gap-4 border-b border-line pb-6">
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-muted uppercase">
+              All fifteen, by name
+            </p>
+          </div>
+          <div className="mt-2 columns-1 sm:columns-2 lg:columns-3">
+            {ALL_SERVICES.map((name, i) => (
+              <Link
+                key={name}
+                href={`/contact?service=${encodeURIComponent(name)}`}
+                data-reveal
+                className="group flex items-baseline gap-3 border-b border-line py-4 transition-colors duration-200"
+                style={{ breakInside: "avoid" }}
+              >
+                <span className="font-display text-[0.65rem] text-muted tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="font-display text-base font-bold text-fg transition-colors duration-200">
+                  {name}
+                </span>
+                <span
+                  className="ml-auto opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                  style={{ color: ACCENTS[i % ACCENTS.length] }}
+                  aria-hidden="true"
+                >
+                  <ArrowIcon />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MAINTENANCE — the ongoing, living half */}
+      <section
+        ref={maintenanceRef}
+        className="relative overflow-hidden border-t border-line bg-bg-elevated px-6 py-20 md:px-10 md:py-28"
+      >
+        <MaintenanceBloomCanvas sectionRef={maintenanceRef} />
+        <div className="relative mx-auto max-w-6xl">
+          <div data-reveal className="flex items-center gap-3">
+            <span className="h-px w-8 bg-line" />
+            <p className="font-display text-[0.68rem] tracking-[0.18em] text-terracotta uppercase">
+              Maintenance
+            </p>
+          </div>
+          <h2
+            data-reveal
+            className="mt-5 max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+          >
+            A landscape is never really finished.
+          </h2>
+        </div>
+      </section>
 
       {/* Closing CTA */}
       <section className="border-t border-line bg-bg px-6 py-24 text-center md:px-10 md:py-32">

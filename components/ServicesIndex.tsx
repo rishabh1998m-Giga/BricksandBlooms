@@ -186,24 +186,18 @@ export default function ServicesIndex() {
       >
         <LandscapeOpeningCanvas sectionRef={openingRef} />
         <div className="relative z-10">
-          <div data-reveal className="flex items-center gap-3">
-            <span className="h-px w-8 bg-line" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
-              Services
-            </p>
-          </div>
           <h1
             data-reveal
-            className="mt-6 max-w-2xl text-balance font-display text-[2.4rem] font-bold leading-[1.02] tracking-[-0.01em] text-fg sm:text-[3.2rem] md:text-[4rem]"
+            className="max-w-2xl text-balance font-display text-[2.4rem] font-bold leading-[1.02] tracking-[-0.01em] text-fg sm:text-[3.2rem] md:text-[4rem]"
           >
-            Enter the world of Brick &amp; Blooms.
+            Everything between a bare plot and a finished garden.
           </h1>
           <p
             data-reveal
             className="mt-5 max-w-md text-balance font-body text-base text-muted sm:text-lg"
           >
-            Structure and softness, built together. Scroll to watch one
-            become the other.
+            Scroll through how we build one, start to finish. Then browse
+            all fifteen services below.
           </p>
         </div>
       </section>
@@ -216,12 +210,9 @@ export default function ServicesIndex() {
         <BrickToBloomCanvas sectionRef={flagshipStageRef} progressRef={progressRef} />
 
         <div className="relative z-10 flex h-full flex-col justify-between px-6 py-10 md:px-14 md:py-16">
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-line" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
-              How a landscape is built
-            </p>
-          </div>
+          <p className="font-body text-sm text-muted">
+            Six stages, start to finish — keep scrolling.
+          </p>
 
           <div className="relative min-h-[7rem]">
             {STAGES.map((stage, i) => (
@@ -248,12 +239,7 @@ export default function ServicesIndex() {
           stages, read as a static list instead of a pinned 3D scroll. */}
       <section className="hidden border-t border-line bg-bg px-6 py-20 max-md:block motion-reduce:block md:px-10 md:py-28">
         <div className="mx-auto max-w-2xl">
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-line" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
-              How a landscape is built
-            </p>
-          </div>
+          <p className="font-body text-sm text-muted">Six stages, start to finish.</p>
           <ul className="mt-10 flex flex-col gap-8">
             {STAGES.map((stage) => (
               <li key={stage.num} className="flex gap-5">
@@ -272,18 +258,15 @@ export default function ServicesIndex() {
       {/* DISCOVERY — the elements of the landscape, and what each becomes */}
       <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <div data-reveal className="flex items-center gap-3">
-            <span className="h-px w-8 bg-line" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase">
-              Explore the elements
-            </p>
-          </div>
           <h2
             data-reveal
-            className="mt-5 max-w-2xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-2xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             Five materials. Fifteen disciplines.
           </h2>
+          <p data-reveal className="mt-4 max-w-md font-body text-base text-muted">
+            Hover or tap a material to see what we build with it.
+          </p>
 
           <div className="mt-14 grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
             <div
@@ -358,18 +341,18 @@ export default function ServicesIndex() {
       {/* THE BRIDGE TO REALITY — real work, not illustration */}
       <section className="border-t border-line bg-bg-elevated px-6 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <div data-reveal className="flex items-center gap-3">
-            <span className="h-px w-8 bg-line" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-terracotta uppercase">
-              On site
+          <div className="flex flex-col justify-between gap-4 border-b border-line pb-8 md:flex-row md:items-end">
+            <h2
+              data-reveal
+              className="max-w-xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            >
+              Every one of these is somewhere real.
+            </h2>
+            <p data-reveal className="max-w-xs font-body text-base text-muted">
+              No renders, no stock photography — three frames from sites
+              we&rsquo;ve actually built.
             </p>
           </div>
-          <h2
-            data-reveal
-            className="mt-5 max-w-xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
-          >
-            Every one of these is somewhere real.
-          </h2>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
             {BRIDGE_PHOTOS.map((photo) => (
@@ -438,53 +421,43 @@ export default function ServicesIndex() {
       >
         <MaintenanceBloomCanvas sectionRef={maintenanceRef} />
         <div className="relative mx-auto max-w-6xl">
-          <div data-reveal className="flex items-center gap-3">
-            <span className="h-px w-8 bg-line" />
-            <p className="font-display text-[0.68rem] tracking-[0.18em] text-terracotta uppercase">
-              Maintenance
-            </p>
-          </div>
           <h2
             data-reveal
-            className="mt-5 max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             A landscape is never really finished.
           </h2>
+          <p data-reveal className="mt-4 max-w-md font-body text-base text-muted">
+            Monthly visits, seasonal resets, and the plants and water
+            features that need someone paying attention year-round.
+          </p>
         </div>
       </section>
 
       {/* Closing CTA */}
-      <section className="border-t border-line bg-bg px-6 py-24 text-center md:px-10 md:py-32">
-        <div className="mx-auto max-w-2xl">
-          <p
-            data-reveal
-            className="font-display text-[0.68rem] tracking-[0.18em] text-teal uppercase"
-          >
-            Let&rsquo;s Talk
-          </p>
+      <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-10 md:flex-row md:items-end">
           <h2
             data-reveal
-            className="mt-5 text-balance font-display text-[2.2rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.8rem]"
+            className="max-w-lg text-balance font-display text-[2.2rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.8rem]"
           >
             Have a project in mind?
           </h2>
-          <p
-            data-reveal
-            className="mt-4 text-balance font-body text-base text-muted sm:text-lg"
-          >
-            Tell us where your site is and what you have in mind — we&rsquo;ll
-            take it from there.
-          </p>
-          <Link
-            href="/contact"
-            data-reveal
-            className="group mt-8 inline-flex items-center gap-3 rounded-full border border-line px-6 py-3 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase transition-colors duration-300 hover:border-teal/50 hover:text-teal"
-          >
-            Start a conversation
-            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-line transition-all duration-300 group-hover:translate-x-1 group-hover:border-teal/50">
-              <ArrowIcon />
-            </span>
-          </Link>
+          <div data-reveal className="max-w-sm">
+            <p className="font-body text-base text-muted sm:text-lg">
+              Tell us where your site is and what you have in mind —
+              we&rsquo;ll take it from there.
+            </p>
+            <Link
+              href="/contact"
+              className="group mt-6 inline-flex items-center gap-3 rounded-full border border-line px-6 py-3 font-display text-[0.68rem] tracking-[0.14em] text-fg uppercase transition-colors duration-300 hover:border-teal/50 hover:text-teal"
+            >
+              Start a conversation
+              <span className="flex h-6 w-6 items-center justify-center rounded-full border border-line transition-all duration-300 group-hover:translate-x-1 group-hover:border-teal/50">
+                <ArrowIcon />
+              </span>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

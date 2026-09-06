@@ -56,7 +56,23 @@ const WHO_WE_SERVE = [
   { num: "04", label: "Institutional Courtyards", line: "A calm institutional courtyard." },
 ];
 
-const TILE_COUNT = 12;
+// Real work, not colour swatches — the same duotone photography used
+// elsewhere on the site, one frame per tile so no two are alike.
+const TILE_PHOTOS = [
+  { src: "/assets/landscape/awakens-detail.webp", alt: "A detail from one of our landscapes" },
+  { src: "/assets/landscape/awakens-character.webp", alt: "The character of a finished site" },
+  { src: "/assets/landscape/awakens-reveal.webp", alt: "A landscape, revealed" },
+  { src: "/assets/process/discovery.webp", alt: "Site discovery" },
+  { src: "/assets/process/planning.webp", alt: "Design planning" },
+  { src: "/assets/process/execution.webp", alt: "On-site execution" },
+  { src: "/assets/process/grow.webp", alt: "Planting taking root" },
+  { src: "/assets/services/consultation.webp", alt: "A design consultation" },
+  { src: "/assets/services/landscape-design.webp", alt: "A courtyard landscape design" },
+  { src: "/assets/services/terrace-balcony.webp", alt: "A terrace and balcony landscape" },
+  { src: "/assets/services/transformations.webp", alt: "A site transformation" },
+  { src: "/assets/services/execution.webp", alt: "Turnkey execution in progress" },
+];
+const TILE_COUNT = TILE_PHOTOS.length;
 
 function ArrowIcon() {
   return (
@@ -124,7 +140,7 @@ export default function AboutExperience() {
         gsap.set(tileRefs.current, {
           rotate: (i: number) => tileVariants[i].rot,
           scale: (i: number) => tileVariants[i].scale,
-          backgroundColor: (i: number) => tileVariants[i].color,
+          borderColor: (i: number) => tileVariants[i].color,
         });
         return;
       }
@@ -143,9 +159,10 @@ export default function AboutExperience() {
           }),
       });
 
-      // The "no templates" grid — a uniform grid of identical grey tiles
-      // that breaks itself apart into unique sizes, angles, and colours
-      // the moment it enters view. The metaphor does the explaining.
+      // The "no templates" grid — a uniform grid of identical square crops
+      // that breaks itself apart into unique sizes, angles, and accent
+      // colours the moment it enters view. The metaphor does the
+      // explaining; the photos underneath are real project work.
       gsap.set(tileRefs.current, { rotate: 0, scale: 1 });
       ScrollTrigger.create({
         trigger: gridRef.current,
@@ -157,7 +174,7 @@ export default function AboutExperience() {
             gsap.to(tile, {
               rotate: tileVariants[i].rot,
               scale: tileVariants[i].scale,
-              backgroundColor: tileVariants[i].color,
+              borderColor: tileVariants[i].color,
               duration: 0.8,
               delay: i * 0.045,
               ease: "back.out(1.7)",
@@ -224,16 +241,23 @@ export default function AboutExperience() {
           <div
             ref={gridRef}
             className="grid grid-cols-4 grid-rows-3 gap-3 sm:gap-4"
-            aria-hidden="true"
           >
-            {Array.from({ length: TILE_COUNT }).map((_, i) => (
-              <div key={i} className="relative aspect-square">
+            {TILE_PHOTOS.map((photo, i) => (
+              <div key={photo.src} className="relative aspect-square">
                 <div
                   ref={(el) => {
                     tileRefs.current[i] = el;
                   }}
-                  className="absolute inset-0 rounded-md bg-line transition-transform duration-300 hover:!scale-90"
-                />
+                  className="absolute inset-0 overflow-hidden rounded-md border-2 border-transparent transition-transform duration-300 hover:!scale-90"
+                >
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    sizes="(min-width: 640px) 12vw, 20vw"
+                    className="object-cover"
+                  />
+                </div>
               </div>
             ))}
           </div>

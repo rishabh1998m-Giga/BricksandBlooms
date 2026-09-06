@@ -116,10 +116,12 @@ export default function SceneArrival() {
       </video>
 
       {/* Scrim only where the copy sits, so the video reads clearly across
-          the rest of the frame instead of being dimmed edge to edge. */}
+          the rest of the frame instead of being dimmed edge to edge. Stops
+          are pulled in tight so the whole copy block — eyebrow included —
+          sits on solid dark ground, not just the headline. */}
       <div
-        className={`absolute inset-0 bg-gradient-to-t from-bg/85 via-bg/10 to-transparent transition-opacity duration-700 ${
-          cinematic ? "opacity-50" : "opacity-100"
+        className={`absolute inset-0 bg-gradient-to-t from-bg/90 from-0% via-bg/70 via-35% to-transparent to-60% transition-opacity duration-700 ${
+          cinematic ? "opacity-60" : "opacity-100"
         }`}
       />
 
@@ -136,7 +138,8 @@ export default function SceneArrival() {
       >
         <p
           data-reveal
-          className="font-display text-[0.65rem] tracking-[0.22em] text-teal uppercase"
+          className="font-display text-[0.72rem] font-semibold tracking-[0.22em] text-teal uppercase"
+          style={{ textShadow: "0 1px 10px rgba(0,0,0,0.75)" }}
         >
           Architects · Interiors · Landscape
         </p>
@@ -147,14 +150,6 @@ export default function SceneArrival() {
         >
           Nature&rsquo;s Beauty <span className="text-terracotta">Delivered</span>
         </h1>
-
-        <p
-          data-reveal
-          className="mt-4 max-w-sm text-balance font-body text-base text-fg/80 sm:text-lg"
-        >
-          Transforming outdoor spaces with thoughtful landscape design &amp;
-          execution.
-        </p>
       </div>
 
       <div

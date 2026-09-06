@@ -148,7 +148,7 @@ export default function SceneArrival() {
           data-reveal
           className="mt-4 max-w-xl text-balance font-display text-[2rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3.2rem]"
         >
-          Nature&rsquo;s Beauty <span className="text-terracotta">Delivered</span>
+          New way of <span className="text-terracotta">Living</span>
         </h1>
       </div>
 

@@ -208,7 +208,7 @@ export default function SceneProof() {
             </p>
             <h2
               data-reveal
-              className="mt-4 text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
+              className="mt-4 text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
             >
               The proof behind our landscapes
             </h2>
@@ -233,7 +233,7 @@ export default function SceneProof() {
         <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4 md:gap-8">
           {STATS.map((stat, i) => (
             <div key={stat.label} data-reveal>
-              <div className="flex items-baseline font-display text-[3rem] font-bold leading-none tracking-[-0.01em] text-fg sm:text-[3.8rem] md:text-[4.4rem]">
+              <div className="flex items-baseline font-display text-[3rem] font-medium leading-none tracking-[-0.01em] text-fg sm:text-[3.8rem] md:text-[4.4rem]">
                 <span
                   ref={(el) => {
                     if (el) valueRefs.current[i] = el;

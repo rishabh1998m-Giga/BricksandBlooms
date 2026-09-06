@@ -161,7 +161,7 @@ function ServiceSlide({
 
         <h3
           ref={titleRef}
-          className="mt-4 max-w-xl text-balance font-display text-[1.9rem] font-bold leading-[1.03] tracking-[-0.01em] text-fg [transform-origin:left_center] sm:text-[2.4rem] md:text-[3rem]"
+          className="mt-4 max-w-xl text-balance font-display text-[1.9rem] font-medium leading-[1.03] tracking-[-0.01em] text-fg [transform-origin:left_center] sm:text-[2.4rem] md:text-[3rem]"
         >
           {service.title}
         </h3>
@@ -325,7 +325,7 @@ export default function SceneServices() {
               ref={(el) => {
                 if (el) titleRefs.current[0] = el;
               }}
-              className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg [transform-origin:center] sm:text-[3.6rem] md:text-[4.4rem]"
+              className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg [transform-origin:center] sm:text-[3.6rem] md:text-[4.4rem]"
             >
               Every service is a chapter in your landscape story.
             </h2>

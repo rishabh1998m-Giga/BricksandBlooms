@@ -248,7 +248,7 @@ export default function SceneVision() {
             <p
               className={
                 beat.size === "large"
-                  ? "max-w-5xl text-balance font-display text-[3.2rem] font-bold leading-[1.02] tracking-[-0.015em] text-fg sm:text-[4.6rem] md:text-[6.4rem] lg:text-[7.2rem]"
+                  ? "max-w-5xl text-balance font-display text-[3.2rem] font-medium leading-[1.02] tracking-[-0.015em] text-fg sm:text-[4.6rem] md:text-[6.4rem] lg:text-[7.2rem]"
                   : "max-w-2xl text-balance font-display text-[2.1rem] font-medium tracking-[-0.005em] text-muted sm:text-[2.9rem] md:text-[3.6rem]"
               }
             >

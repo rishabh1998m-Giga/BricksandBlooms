@@ -331,7 +331,7 @@ export default function ContactExperience() {
             Get In Touch
           </p>
         </div>
-        <h1 className="mt-6 max-w-3xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.4rem]">
+        <h1 className="mt-6 max-w-3xl text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.4rem]">
           Let&rsquo;s bring your outdoor vision to life.
         </h1>
         <p className="mt-4 max-w-lg text-balance font-body text-base text-muted sm:text-lg">
@@ -372,7 +372,7 @@ export default function ContactExperience() {
                 <p className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase">
                   Thank you{values.name ? `, ${values.name.split(" ")[0]}` : ""}
                 </p>
-                <h2 className="mt-4 text-balance font-display text-[2.4rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[3rem]">
+                <h2 className="mt-4 text-balance font-display text-[2.4rem] font-medium leading-[1.05] tracking-[-0.01em] text-fg sm:text-[3rem]">
                   We&rsquo;ve got it — expect to hear from us within 24 hours.
                 </h2>
                 <p className="mt-5 max-w-md text-balance font-body text-lg text-fg/80">

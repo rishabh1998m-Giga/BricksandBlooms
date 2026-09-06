@@ -146,7 +146,7 @@ export default function SceneArrival() {
 
         <h1
           data-reveal
-          className="mt-4 max-w-xl text-balance font-display text-[2rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3.2rem]"
+          className="mt-4 max-w-xl text-balance font-display text-[2rem] font-medium leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3.2rem]"
         >
           New way of <span className="text-terracotta">Living</span>
         </h1>

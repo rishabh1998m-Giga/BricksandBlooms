@@ -269,7 +269,7 @@ export default function SceneProcess() {
         <div className="mt-6 flex items-start justify-between gap-6 border-b border-line pb-10">
           <h2
             data-reveal
-            className="max-w-3xl text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
+            className="max-w-3xl text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
           >
             A seamless journey from vision to reality
           </h2>
@@ -319,7 +319,7 @@ export default function SceneProcess() {
                 className="absolute inset-0 flex flex-col items-center justify-center"
               >
                 <p
-                  className="select-none font-display text-[8.5rem] font-bold leading-none opacity-[0.16]"
+                  className="select-none font-display text-[8.5rem] font-medium leading-none opacity-[0.16]"
                   style={{ color: step.accent }}
                   aria-hidden="true"
                 >
@@ -374,7 +374,7 @@ export default function SceneProcess() {
                   >
                     {step.icon}
                   </span>
-                  <h3 className="text-balance font-display text-[2.6rem] font-bold leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.4rem]">
+                  <h3 className="text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.4rem]">
                     {step.title}
                   </h3>
                 </div>
@@ -448,7 +448,7 @@ export default function SceneProcess() {
                   Step {step.num} / {STEPS.length}
                 </p>
               </div>
-              <h3 className="font-display text-2xl font-bold tracking-[-0.01em] text-fg sm:text-3xl">
+              <h3 className="font-display text-2xl font-medium tracking-[-0.01em] text-fg sm:text-3xl">
                 {step.title}
               </h3>
               <p className="max-w-xl font-body text-base leading-relaxed text-fg/80 sm:text-lg">

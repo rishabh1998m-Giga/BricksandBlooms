@@ -200,7 +200,7 @@ export default function AboutExperience() {
           </p>
           <p
             data-reveal
-            className="mt-8 text-balance font-display font-bold leading-[1.15] tracking-[-0.01em] text-fg"
+            className="mt-8 text-balance font-display font-medium leading-[1.15] tracking-[-0.01em] text-fg"
           >
             <span className="text-[1.7rem] sm:text-[2.1rem] md:text-[2.5rem]">
               For over{" "}
@@ -224,7 +224,7 @@ export default function AboutExperience() {
           <div>
             <h2
               data-reveal
-              className="text-balance font-display text-[2rem] font-bold leading-[1.12] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+              className="text-balance font-display text-[2rem] font-medium leading-[1.12] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
             >
               No templates. No repetition.
             </h2>
@@ -270,7 +270,7 @@ export default function AboutExperience() {
         <div className="mx-auto max-w-4xl">
           <h2
             data-reveal
-            className="max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-lg text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             Comprehensive, turnkey, start to finish.
           </h2>
@@ -313,7 +313,7 @@ export default function AboutExperience() {
             {PHASES[phase].items.map((item, i) => (
               <li
                 key={item}
-                className="flex items-baseline gap-3 border-b border-line py-4 font-display text-lg font-bold text-fg opacity-0"
+                className="flex items-baseline gap-3 border-b border-line py-4 font-display text-lg font-medium text-fg opacity-0"
                 style={{
                   animation: "about-item-in 0.5s ease-out forwards",
                   animationDelay: `${i * 0.05}s`,
@@ -339,7 +339,7 @@ export default function AboutExperience() {
         <div className="mx-auto max-w-5xl">
           <h2
             data-reveal
-            className="max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-lg text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             One exterior, two materials.
           </h2>
@@ -359,7 +359,7 @@ export default function AboutExperience() {
               </p>
               <ul className="mt-6 flex flex-col gap-1 border-t border-line pt-5">
                 {HARDSCAPE.map((item) => (
-                  <li key={item} className="py-2 font-display text-base font-bold text-fg sm:text-lg">
+                  <li key={item} className="py-2 font-display text-base font-medium text-fg sm:text-lg">
                     {item}
                   </li>
                 ))}
@@ -382,7 +382,7 @@ export default function AboutExperience() {
               </p>
               <ul className="mt-6 flex flex-col gap-1 border-t border-line pt-5">
                 {SOFTSCAPE.map((item) => (
-                  <li key={item} className="py-2 font-display text-base font-bold text-fg sm:text-lg">
+                  <li key={item} className="py-2 font-display text-base font-medium text-fg sm:text-lg">
                     {item}
                   </li>
                 ))}
@@ -398,7 +398,7 @@ export default function AboutExperience() {
         <div className="mx-auto max-w-4xl">
           <h2
             data-reveal
-            className="max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-lg text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             Whether it&rsquo;s one of these, or something else entirely.
           </h2>
@@ -413,7 +413,7 @@ export default function AboutExperience() {
                 <span className="font-display text-[0.7rem] text-muted tabular-nums">
                   {entry.num}
                 </span>
-                <span className="font-display text-2xl font-bold text-fg transition-colors duration-200 group-hover:text-terracotta sm:text-3xl">
+                <span className="font-display text-2xl font-medium text-fg transition-colors duration-200 group-hover:text-terracotta sm:text-3xl">
                   {entry.label}
                 </span>
                 <span className="font-body text-base text-muted sm:ml-auto">
@@ -431,7 +431,7 @@ export default function AboutExperience() {
         <div className="mx-auto max-w-4xl">
           <h2
             data-reveal
-            className="max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-lg text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             On-time delivery. Unmatched quality.
           </h2>
@@ -476,7 +476,7 @@ export default function AboutExperience() {
         <div className="mx-auto flex max-w-6xl flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <h2
             data-reveal
-            className="text-balance font-display font-bold leading-[1.05] tracking-[-0.01em]"
+            className="text-balance font-display font-medium leading-[1.05] tracking-[-0.01em]"
           >
             <span className="block text-[2.4rem] text-fg sm:text-[3.2rem] md:text-[3.8rem]">
               Curating Exteriors.

@@ -188,7 +188,7 @@ export default function ServicesIndex() {
         <div className="relative z-10">
           <h1
             data-reveal
-            className="max-w-2xl text-balance font-display text-[2.4rem] font-bold leading-[1.02] tracking-[-0.01em] text-fg sm:text-[3.2rem] md:text-[4rem]"
+            className="max-w-2xl text-balance font-display text-[2.4rem] font-medium leading-[1.02] tracking-[-0.01em] text-fg sm:text-[3.2rem] md:text-[4rem]"
           >
             Everything between a bare plot and a finished garden.
           </h1>
@@ -226,7 +226,7 @@ export default function ServicesIndex() {
                 <p className="font-display text-[0.68rem] tracking-[0.22em] text-terracotta uppercase">
                   {stage.num} — {stage.name}
                 </p>
-                <p className="mt-3 max-w-sm text-balance font-display text-[1.7rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.1rem]">
+                <p className="mt-3 max-w-sm text-balance font-display text-[1.7rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.1rem]">
                   {stage.line}
                 </p>
               </div>
@@ -246,7 +246,7 @@ export default function ServicesIndex() {
                 <span className="font-display text-[0.68rem] tracking-[0.22em] text-terracotta uppercase">
                   {stage.num}
                 </span>
-                <p className="font-display text-[1.4rem] font-bold leading-[1.15] tracking-[-0.01em] text-fg">
+                <p className="font-display text-[1.4rem] font-medium leading-[1.15] tracking-[-0.01em] text-fg">
                   {stage.line}
                 </p>
               </li>
@@ -260,7 +260,7 @@ export default function ServicesIndex() {
         <div className="mx-auto max-w-6xl">
           <h2
             data-reveal
-            className="max-w-2xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-2xl text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             Five materials. Fifteen disciplines.
           </h2>
@@ -291,7 +291,7 @@ export default function ServicesIndex() {
                     aria-hidden="true"
                   />
                   <span
-                    className="font-display text-[1.5rem] font-bold tracking-[-0.01em] transition-colors duration-300 sm:text-[1.9rem]"
+                    className="font-display text-[1.5rem] font-medium tracking-[-0.01em] transition-colors duration-300 sm:text-[1.9rem]"
                     style={{ color: activeZone === i ? zone.accent : "var(--color-fg)" }}
                   >
                     {zone.label}
@@ -320,7 +320,7 @@ export default function ServicesIndex() {
                     href={`/contact?service=${encodeURIComponent(name)}`}
                     className="group flex items-center justify-between gap-4 rounded-lg py-2.5 transition-colors duration-200 hover:bg-bg/60"
                   >
-                    <span className="font-display text-base font-bold text-fg sm:text-lg">
+                    <span className="font-display text-base font-medium text-fg sm:text-lg">
                       {name}
                     </span>
                     <span
@@ -344,7 +344,7 @@ export default function ServicesIndex() {
           <div className="flex flex-col justify-between gap-4 border-b border-line pb-8 md:flex-row md:items-end">
             <h2
               data-reveal
-              className="max-w-xl text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+              className="max-w-xl text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
             >
               Every one of these is somewhere real.
             </h2>
@@ -398,7 +398,7 @@ export default function ServicesIndex() {
                 <span className="font-display text-[0.65rem] text-muted tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="font-display text-base font-bold text-fg transition-colors duration-200">
+                <span className="font-display text-base font-medium text-fg transition-colors duration-200">
                   {name}
                 </span>
                 <span
@@ -423,7 +423,7 @@ export default function ServicesIndex() {
         <div className="relative mx-auto max-w-6xl">
           <h2
             data-reveal
-            className="max-w-lg text-balance font-display text-[2rem] font-bold leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+            className="max-w-lg text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
             A landscape is never really finished.
           </h2>
@@ -439,7 +439,7 @@ export default function ServicesIndex() {
         <div className="mx-auto flex max-w-6xl flex-col justify-between gap-10 md:flex-row md:items-end">
           <h2
             data-reveal
-            className="max-w-lg text-balance font-display text-[2.2rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.8rem]"
+            className="max-w-lg text-balance font-display text-[2.2rem] font-medium leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.8rem]"
           >
             Have a project in mind?
           </h2>

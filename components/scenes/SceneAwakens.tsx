@@ -192,7 +192,7 @@ export default function SceneAwakens() {
                 }}
                 className="absolute inset-x-0 top-0 flex flex-col items-center"
               >
-                <h2 className="text-balance font-display text-[2.4rem] font-bold leading-[0.98] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]">
+                <h2 className="text-balance font-display text-[2.4rem] font-medium leading-[0.98] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]">
                   {beat.label}
                   <span className="text-terracotta">.</span>
                 </h2>

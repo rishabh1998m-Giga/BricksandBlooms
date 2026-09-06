@@ -98,7 +98,7 @@ export default function SceneArrival() {
   return (
     <section
       ref={rootRef}
-      className={`relative flex h-[100dvh] w-full flex-col items-center justify-center overflow-hidden ${
+      className={`relative h-[100dvh] w-full overflow-hidden ${
         cinematic ? "" : "bg-bg"
       }`}
     >
@@ -115,9 +115,11 @@ export default function SceneArrival() {
         <source src="/assets/video/prakrti-nilaya.webm" type="video/webm" />
       </video>
 
+      {/* Scrim only where the copy sits, so the video reads clearly across
+          the rest of the frame instead of being dimmed edge to edge. */}
       <div
-        className={`absolute inset-0 bg-gradient-to-b from-bg/70 via-bg/35 to-bg/85 transition-opacity duration-700 ${
-          cinematic ? "opacity-60" : "opacity-100"
+        className={`absolute inset-0 bg-gradient-to-t from-bg/85 via-bg/10 to-transparent transition-opacity duration-700 ${
+          cinematic ? "opacity-50" : "opacity-100"
         }`}
       />
 
@@ -130,41 +132,34 @@ export default function SceneArrival() {
 
       <div
         data-hero-copy
-        className="relative z-10 flex max-w-5xl flex-col items-center px-6 text-center"
+        className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-start px-6 pb-14 sm:px-10 sm:pb-16 md:px-14 md:pb-20"
       >
         <p
           data-reveal
-          className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"
+          className="font-display text-[0.65rem] tracking-[0.22em] text-teal uppercase"
         >
           Architects · Interiors · Landscape
         </p>
 
         <h1
           data-reveal
-          className="mt-6 text-balance font-display text-[3.2rem] font-bold leading-[0.94] tracking-[-0.02em] text-fg sm:text-[5rem] md:text-[6.5rem] lg:text-[7.5rem]"
+          className="mt-4 max-w-xl text-balance font-display text-[2rem] font-bold leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3.2rem]"
         >
           Nature&rsquo;s Beauty <span className="text-terracotta">Delivered</span>
         </h1>
 
         <p
           data-reveal
-          className="mt-6 max-w-xl text-balance font-body text-lg text-fg/85 sm:text-xl"
+          className="mt-4 max-w-sm text-balance font-body text-base text-fg/80 sm:text-lg"
         >
           Transforming outdoor spaces with thoughtful landscape design &amp;
           execution.
-        </p>
-
-        <p
-          data-reveal
-          className="mt-5 font-display text-[0.68rem] tracking-[0.18em] text-muted uppercase"
-        >
-          Design · Consultation · Execution · Project Management
         </p>
       </div>
 
       <div
         data-reveal
-        className="absolute bottom-9 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center"
+        className="absolute bottom-9 right-6 z-10 flex flex-col items-center sm:right-10 md:right-14"
         aria-hidden="true"
       >
         <span className="h-10 w-px animate-pulse bg-fg/40" />

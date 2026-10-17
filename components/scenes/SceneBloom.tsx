@@ -1,99 +1,88 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import HomeBloomCanvas from "@/components/webgl/HomeBloomCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Four quiet beats tied to HomeBloomCanvas's own growth thresholds (see
-// that file's <Grow threshold={...}> calls) so the word on screen always
-// matches what the 3D scene is actually doing underneath it.
-const WORDS = [
-  { word: "Rooted.", threshold: 0 },
-  { word: "Built.", threshold: 0.2 },
-  { word: "Growing.", threshold: 0.46 },
-  { word: "Blooming.", threshold: 0.8 },
-];
+const WORDS = ["Rooted.", "Built.", "Growing.", "Blooming."];
 
 /**
- * The homepage's second scroll beat — a bare slab of ground becomes a real
- * brick, planted, watered, lit landscape, rendered in actual 3D (the same
- * technique as the /services flagship sequence) rather than a flat
- * illustrated vignette. A full-bleed canvas reads as a real place; a
- * centered line drawing on an empty canvas reads as a greeting card.
+ * The homepage's second scroll beat — two real photographs of the same
+ * brick-and-foliage corner (not an illustration, not a 3D render): the
+ * brick underneath, full in frame from the start, with the planted,
+ * blooming version rising up over it from the ground as you scroll — a
+ * literal "brick becomes bloom" told with an actual place, the same
+ * clip-path reveal technique SceneAwakens already uses for real photography
+ * right below this section.
  */
 export default function SceneBloom() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const brickImgRef = useRef<HTMLDivElement>(null);
+  const bloomFrameRef = useRef<HTMLDivElement>(null);
+  const bloomImgRef = useRef<HTMLDivElement>(null);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const activeWordRef = useRef(0);
-  const finalShownRef = useRef(false);
   const finalLineRef = useRef<HTMLParagraphElement>(null);
-  const progressRef = useRef({ value: 0 });
 
   useGSAP(
     () => {
       const words = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
-
       const prefersReduced = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
-      // Mirrors useCinematicMode's own gate exactly — on any viewport where
-      // HomeBloomCanvas will render null, there's nothing to scrub against,
-      // so skip the scroll-jack entirely rather than pinning the screen on
-      // an empty bg-bg void.
-      const cinematic =
-        !prefersReduced &&
-        window.matchMedia("(min-width: 768px) and (pointer: fine)").matches;
 
-      if (!cinematic) {
-        progressRef.current.value = 1;
+      if (prefersReduced) {
+        gsap.set(bloomFrameRef.current, { clipPath: "inset(0% 0% 0% 0%)" });
+        gsap.set([brickImgRef.current, bloomImgRef.current], { scale: 1 });
         gsap.set(words, { autoAlpha: 0 });
         gsap.set(words[words.length - 1], { autoAlpha: 1 });
         gsap.set(finalLineRef.current, { autoAlpha: 1, y: 0 });
         return;
       }
 
+      gsap.set(bloomFrameRef.current, { clipPath: "inset(0% 0% 100% 0%)" });
+      gsap.set([brickImgRef.current, bloomImgRef.current], { scale: 1.14 });
       gsap.set(words, { autoAlpha: 0 });
       gsap.set(words[0], { autoAlpha: 1 });
       gsap.set(finalLineRef.current, { autoAlpha: 0, y: 12 });
 
-      ScrollTrigger.create({
-        trigger: rootRef.current,
-        start: "top top",
-        end: "+=380%",
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          progressRef.current.value = self.progress;
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
-          let idx = 0;
-          WORDS.forEach((w, i) => {
-            if (self.progress >= w.threshold) idx = i;
-          });
-          if (idx !== activeWordRef.current) {
-            const prev = activeWordRef.current;
-            activeWordRef.current = idx;
-            gsap.to(words[prev], { autoAlpha: 0, duration: 0.3 });
-            gsap.to(words[idx], { autoAlpha: 1, duration: 0.3 });
-          }
-
-          const showFinal = self.progress >= 0.88;
-          if (showFinal !== finalShownRef.current) {
-            finalShownRef.current = showFinal;
-            gsap.to(finalLineRef.current, {
-              autoAlpha: showFinal ? 1 : 0,
-              y: showFinal ? 0 : 12,
-              duration: 0.3,
-              overwrite: true,
-            });
-          }
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top top",
+          end: isMobile ? "+=160%" : "+=230%",
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
+        defaults: { ease: "none" },
       });
+
+      // The bloom rises up from the ground to cover the bare brick —
+      // reducing the bottom inset is what makes the reveal climb upward
+      // rather than wipe sideways or fade in place.
+      tl.to(bloomFrameRef.current, {
+        clipPath: "inset(0% 0% 0% 0%)",
+        duration: 1,
+        ease: "power1.inOut",
+      }, 0);
+      tl.to(brickImgRef.current, { scale: 1, duration: 1 }, 0);
+      tl.to(bloomImgRef.current, { scale: 1, duration: 1 }, 0);
+
+      words.forEach((_, i) => {
+        if (i === 0) return;
+        const at = (i / (words.length - 1)) * 0.82;
+        tl.to(words[i - 1], { autoAlpha: 0, duration: 0.06 }, at - 0.06);
+        tl.to(words[i], { autoAlpha: 1, duration: 0.06 }, at);
+      });
+
+      tl.to(finalLineRef.current, { autoAlpha: 1, y: 0, duration: 0.15 }, 0.88);
     },
     { scope: rootRef }
   );
@@ -101,19 +90,52 @@ export default function SceneBloom() {
   return (
     <section
       ref={rootRef}
-      className="relative min-h-[32rem] w-full overflow-hidden border-t border-line bg-bg py-16 md:h-[100dvh] md:min-h-0 md:py-0"
+      className="relative h-[100dvh] w-full overflow-hidden border-t border-line bg-bg"
     >
-      <HomeBloomCanvas sectionRef={rootRef} progressRef={progressRef} />
+      <div className="absolute inset-0">
+        <div ref={brickImgRef} className="absolute inset-0" style={{ willChange: "transform" }}>
+          <Image
+            src="/assets/process/execution.webp"
+            alt="A brick wall, built by hand"
+            fill
+            sizes="100vw"
+            className="object-cover grayscale"
+          />
+        </div>
 
-      <div className="relative z-10 flex h-full flex-col justify-between px-6 md:px-14 md:py-16">
+        <div
+          ref={bloomFrameRef}
+          className="absolute inset-0"
+          style={{ willChange: "clip-path" }}
+        >
+          <div ref={bloomImgRef} className="absolute inset-0" style={{ willChange: "transform" }}>
+            <Image
+              src="/assets/process/grow.webp"
+              alt="The same corner, planted and in bloom"
+              fill
+              sizes="100vw"
+              className="object-cover grayscale"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* A light, mostly-transparent wash — see SceneAwakens for why this
+          stays near-flat instead of a full gradient (the latter reads as a
+          milky haze over a photo once the theme's base colour is light).
+          Legibility comes mainly from the text-shadow glow on the copy. */}
+      <div className="absolute inset-0 bg-bg/18" />
+
+      <div className="relative z-10 flex h-full flex-col justify-between px-6 py-10 md:px-14 md:py-16">
         <div className="relative h-6">
-          {WORDS.map(({ word }, i) => (
+          {WORDS.map((word, i) => (
             <span
               key={word}
               ref={(el) => {
                 wordRefs.current[i] = el;
               }}
-              className="absolute inset-0 font-display text-[0.72rem] tracking-[0.14em] text-muted uppercase"
+              className="absolute inset-0 font-display text-[0.72rem] tracking-[0.14em] text-teal uppercase"
+              style={{ textShadow: "0 1px 12px rgba(247,242,232,0.9), 0 1px 3px rgba(247,242,232,0.9)" }}
             >
               {word}
             </span>
@@ -123,6 +145,7 @@ export default function SceneBloom() {
         <p
           ref={finalLineRef}
           className="max-w-sm text-balance font-display text-[1.7rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.1rem]"
+          style={{ textShadow: "0 2px 20px rgba(247,242,232,0.95), 0 1px 4px rgba(247,242,232,0.95)" }}
         >
           Strong foundations make room for growth.
         </p>

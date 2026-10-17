@@ -1,7 +1,6 @@
 import Nav from "@/components/Nav";
 import WorldCanvas from "@/components/webgl/WorldCanvas";
 import SceneArrival from "@/components/scenes/SceneArrival";
-import SceneBloom from "@/components/scenes/SceneBloom";
 import SceneAwakens from "@/components/scenes/SceneAwakens";
 import SceneTransformation from "@/components/scenes/SceneTransformation";
 import SceneProof from "@/components/scenes/SceneProof";
@@ -16,7 +15,6 @@ export default function Home() {
       <WorldCanvas />
       <main className="relative z-10">
         <SceneArrival />
-        <SceneBloom />
         <SceneAwakens />
         <SceneTransformation />
         <SceneProof />

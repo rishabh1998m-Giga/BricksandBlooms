@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import Flower3D from "./Flower3D";
+import LogoFlower3D from "./LogoFlower3D";
 import { useCinematicMode } from "@/lib/useCinematicMode";
 
 type Pointer = { x: number; y: number };
@@ -35,8 +35,9 @@ function CameraRig({ pointer }: { pointer: RefObject<Pointer> }) {
 
 /**
  * A small, section-scoped WebGL layer (not the fixed viewport-wide canvas
- * the hero uses) — two real 3D flowers drifting in soft depth behind the
- * stats, with the camera reading cursor position over the section itself.
+ * the hero uses) — two real 3D blooms, matching the flower in the logo
+ * mark, drifting in soft depth behind the stats, with the camera reading
+ * cursor position over the section itself.
  */
 export default function ProofBloomCanvas({
   sectionRef,
@@ -77,18 +78,8 @@ export default function ProofBloomCanvas({
           <directionalLight position={[3, 4, 5]} intensity={1.7} color="#f1ecdd" />
           <directionalLight position={[-4, 1, 2]} intensity={0.4} color="#c05f38" />
           <directionalLight position={[0, -2, 3]} intensity={0.18} color="#2b8870" />
-          <Flower3D
-            position={[4.4, 0.9, -3.2]}
-            color="#2b8870"
-            scale={0.32}
-            spinSpeed={0.035}
-          />
-          <Flower3D
-            position={[-4, -1.5, -3.8]}
-            color="#c05f38"
-            scale={0.38}
-            spinSpeed={-0.024}
-          />
+          <LogoFlower3D position={[4.4, 0.9, -3.2]} scale={0.32} spinSpeed={0.035} />
+          <LogoFlower3D position={[-4, -1.5, -3.8]} scale={0.38} spinSpeed={-0.024} />
           <CameraRig pointer={pointer} />
         </Suspense>
       </Canvas>

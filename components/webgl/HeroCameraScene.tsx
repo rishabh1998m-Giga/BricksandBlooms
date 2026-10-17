@@ -53,6 +53,58 @@ function sampleKeyframes(t: number) {
   return { pos, look, fov };
 }
 
+// A liquid ripple the cursor leaves in the video, like disturbing the
+// surface of water — the single biggest "this is a real 3D scene, not a
+// background video" signal in the hero, and it's applied entirely as a
+// render-time distortion: the source footage underneath is untouched.
+const RIPPLE_VERTEX = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const RIPPLE_FRAGMENT = /* glsl */ `
+  uniform sampler2D map;
+  uniform vec2 uRepeat;
+  uniform vec2 uOffset;
+  uniform vec2 uMouse;
+  uniform float uMouseStrength;
+  uniform float uTime;
+  uniform float uAspect;
+  uniform float uOpacity;
+  varying vec2 vUv;
+
+  void main() {
+    vec2 uv = vUv;
+
+    // A faint always-on shimmer, independent of the cursor, so the
+    // footage reads as alive even before anyone moves the mouse.
+    vec2 ambient = vec2(
+      sin(uv.y * 14.0 + uTime * 0.6),
+      sin(uv.x * 11.0 - uTime * 0.5)
+    ) * 0.0018;
+
+    // A radial ripple centered on the cursor — aspect-corrected so it
+    // reads as a circular wave rather than an oval one.
+    vec2 diff = uv - uMouse;
+    diff.x *= uAspect;
+    float dist = length(diff);
+    float falloff = smoothstep(0.42, 0.0, dist) * uMouseStrength;
+    vec2 dir = dist > 0.0001 ? diff / dist : vec2(0.0);
+    vec2 ripple = dir * sin(dist * 32.0 - uTime * 3.2) * 0.022 * falloff;
+    ripple.x /= uAspect;
+
+    vec2 distortedUv = uv + ambient + ripple;
+    vec2 mappedUv = distortedUv * uRepeat + uOffset;
+    vec4 color = texture2D(map, mappedUv);
+    gl_FragColor = vec4(color.rgb, color.a * uOpacity);
+
+    #include <colorspace_fragment>
+  }
+`;
+
 function HeroPlane() {
   const texture = useVideoTexture("/assets/video/prakrti-nilaya.webm", {
     muted: true,
@@ -61,8 +113,38 @@ function HeroPlane() {
     playsInline: true,
     crossOrigin: "anonymous",
   });
-  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
   const { size } = useThree();
+  const mouseTarget = useRef(0);
+
+  const uniforms = useMemo(
+    () => ({
+      map: { value: texture },
+      uRepeat: { value: new THREE.Vector2(1, 1) },
+      uOffset: { value: new THREE.Vector2(0, 0) },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uMouseStrength: { value: 0 },
+      uTime: { value: 0 },
+      uAspect: { value: 1 },
+      uOpacity: { value: 1 },
+    }),
+    [texture]
+  );
+
+  // The ripple surges toward the cursor's current position on every move,
+  // then decays on its own — a disturbance that fades, not a distortion
+  // that sticks to wherever the pointer last was.
+  useEffect(() => {
+    const handleMove = (e: PointerEvent) => {
+      uniforms.uMouse.value.set(
+        e.clientX / window.innerWidth,
+        1 - e.clientY / window.innerHeight
+      );
+      mouseTarget.current = 1;
+    };
+    window.addEventListener("pointermove", handleMove);
+    return () => window.removeEventListener("pointermove", handleMove);
+  }, [uniforms]);
 
   /* eslint-disable react-hooks/immutability -- imperative <video> element
      control (seeking past the intro title card, looping the B-roll), the
@@ -110,34 +192,57 @@ function HeroPlane() {
      since three.js has no built-in equivalent). */
   useEffect(() => {
     const frameAspect = width / height;
+    let repeatX: number;
+    let repeatY: number;
     if (frameAspect > VIDEO_ASPECT) {
-      texture.repeat.set(1, VIDEO_ASPECT / frameAspect);
+      repeatX = 1;
+      repeatY = VIDEO_ASPECT / frameAspect;
     } else {
-      texture.repeat.set(frameAspect / VIDEO_ASPECT, 1);
+      repeatX = frameAspect / VIDEO_ASPECT;
+      repeatY = 1;
     }
-    texture.offset.set((1 - texture.repeat.x) / 2, (1 - texture.repeat.y) / 2);
+    uniforms.uRepeat.value.set(repeatX, repeatY);
+    uniforms.uOffset.value.set((1 - repeatX) / 2, (1 - repeatY) / 2);
+    uniforms.uAspect.value = frameAspect;
     texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
     texture.needsUpdate = true;
-  }, [texture, width, height]);
+  }, [texture, width, height, uniforms]);
   /* eslint-enable react-hooks/immutability */
 
-  useFrame(() => {
+  /* eslint-disable react-hooks/immutability -- per-frame shader uniform
+     updates (ripple decay, clock, scroll-driven opacity), same escape
+     hatch as every other useFrame callback in this file. */
+  useFrame((_, delta) => {
     const heroProgress = Math.min(
       1,
       Math.max(0, scrollState.y / Math.max(1, scrollState.vh))
     );
     const opacity = 1 - THREE.MathUtils.smoothstep(heroProgress, 0.2, 0.62);
-    if (materialRef.current) materialRef.current.opacity = opacity;
+    uniforms.uOpacity.value = opacity;
+    uniforms.uTime.value += delta;
+
+    // The ripple's target strength decays on its own between pointer
+    // moves, so a disturbance fades like a real ripple instead of
+    // sticking to wherever the cursor last was.
+    mouseTarget.current *= Math.pow(0.0025, delta);
+    uniforms.uMouseStrength.value = THREE.MathUtils.damp(
+      uniforms.uMouseStrength.value,
+      mouseTarget.current,
+      4,
+      delta
+    );
   });
+  /* eslint-enable react-hooks/immutability */
 
   return (
     <mesh position={[0, 0, HERO_PLANE_Z]}>
       <planeGeometry args={[width, height]} />
-      <meshBasicMaterial
+      <shaderMaterial
         ref={materialRef}
-        map={texture}
+        uniforms={uniforms}
+        vertexShader={RIPPLE_VERTEX}
+        fragmentShader={RIPPLE_FRAGMENT}
         transparent
-        toneMapped={false}
         fog={false}
       />
     </mesh>

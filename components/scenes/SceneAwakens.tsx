@@ -26,6 +26,35 @@ const BEATS = [
   },
 ];
 
+// Tuned once as constants rather than inlined per-call, since both the
+// initial gsap.set() and the per-frame scrub onUpdate below need the exact
+// same numbers to agree on where a photo "belongs" for a given offset.
+const MAX_ANGLE = 56; // degrees a card is rotated away from facing the camera
+const SPACING = 58; // % of its own width a card shifts per step of offset
+const DEPTH = 560; // px a card is pushed back per step of offset
+const FADE_START = 0.82; // |offset| at which a card starts fading out
+const FADE_END = 1.55; // |offset| at which a card is fully invisible
+
+// Each photo is laid out purely as a function of its distance from
+// "current" (offset = index - beatPosition), so the whole deck reduces to
+// one continuous value scrubbed by scroll instead of per-beat keyframes —
+// the same photo rotates smoothly past the camera rather than cutting.
+function cardLayout(offset: number) {
+  const clamped = Math.max(-1.6, Math.min(1.6, offset));
+  const abs = Math.abs(clamped);
+  const opacity = Math.max(
+    0,
+    Math.min(1, 1 - (abs - FADE_START) / (FADE_END - FADE_START))
+  );
+  return {
+    rotationY: -clamped * MAX_ANGLE,
+    x: `${clamped * SPACING}%`,
+    z: -abs * DEPTH,
+    opacity,
+    innerScale: 1 + Math.min(abs, 1) * 0.1,
+  };
+}
+
 export default function SceneAwakens() {
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -44,8 +73,16 @@ export default function SceneAwakens() {
       const texts = textRefs.current;
 
       if (prefersReduced) {
-        gsap.set(frames, { clipPath: "inset(0% 0% 0% 0%)", autoAlpha: 1 });
-        gsap.set(images.slice(1), { display: "none" });
+        frames.forEach((frame, i) => {
+          const isLast = i === frames.length - 1;
+          gsap.set(frame, {
+            rotationY: 0,
+            x: isLast ? "0%" : "100%",
+            z: isLast ? 0 : -700,
+            opacity: isLast ? 1 : 0,
+          });
+        });
+        gsap.set(images, { scale: 1 });
         gsap.set(texts, {
           autoAlpha: 0,
           y: 0,
@@ -57,9 +94,16 @@ export default function SceneAwakens() {
         return;
       }
 
-      gsap.set(frames.slice(1), { clipPath: "inset(0% 0% 100% 0%)" });
-      gsap.set(frames[0], { clipPath: "inset(0% 0% 0% 0%)" });
-      gsap.set(images, { scale: 1.16 });
+      frames.forEach((frame, i) => {
+        const l = cardLayout(i);
+        gsap.set(frame, {
+          rotationY: l.rotationY,
+          x: l.x,
+          z: l.z,
+          opacity: l.opacity,
+        });
+        if (images[i]) gsap.set(images[i], { scale: l.innerScale });
+      });
       gsap.set(texts, { autoAlpha: 0, scale: 0.7, filter: "blur(18px)" });
       gsap.set(texts[0], { autoAlpha: 1, scale: 1, filter: "blur(0px)" });
 
@@ -72,46 +116,43 @@ export default function SceneAwakens() {
           pin: stageRef.current,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onUpdate: () => {
+            // Clamped to the last beat's index — without this, the trailing
+            // "rest" tween appended below (tl.to({}, {duration:0.35})) keeps
+            // tl.time() climbing past BEATS.length-1 while it plays, which
+            // dragged the final card past dead-center instead of letting it
+            // settle there.
+            const beatPosition = Math.min(tl.time(), BEATS.length - 1);
+            frames.forEach((frame, i) => {
+              const l = cardLayout(i - beatPosition);
+              gsap.set(frame, {
+                rotationY: l.rotationY,
+                x: l.x,
+                z: l.z,
+                opacity: l.opacity,
+              });
+              if (images[i]) gsap.set(images[i], { scale: l.innerScale });
+            });
+          },
         },
         defaults: { ease: "none" },
       });
 
+      // The text crossfade stays on its own simple timeline beats — it
+      // doesn't need to know about the 3D deck's continuous layout, only
+      // which beat is "current" at roughly the same moments.
       BEATS.forEach((_, i) => {
-        tl.to(images[i], { scale: 1.0, duration: 1 }, i);
-
-        if (i > 0) {
-          tl.to(
-            frames[i],
-            { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "power2.inOut" },
-            i - 0.28
-          );
-
-          // Kinetic-typography morph: the outgoing phrase punches forward
-          // and dissolves into blur, the incoming phrase resolves out of
-          // blur from below full size — a cut, not a crossfade.
-          tl.to(
-            texts[i - 1],
-            {
-              autoAlpha: 0,
-              scale: 1.3,
-              filter: "blur(16px)",
-              duration: 0.32,
-              ease: "power2.in",
-            },
-            i - 0.3
-          );
-          tl.to(
-            texts[i],
-            {
-              autoAlpha: 1,
-              scale: 1,
-              filter: "blur(0px)",
-              duration: 0.4,
-              ease: "power2.out",
-            },
-            i - 0.12
-          );
-        }
+        if (i === 0) return;
+        tl.to(
+          texts[i - 1],
+          { autoAlpha: 0, scale: 1.3, filter: "blur(16px)", duration: 0.32, ease: "power2.in" },
+          i - 0.3
+        );
+        tl.to(
+          texts[i],
+          { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power2.out" },
+          i - 0.12
+        );
       });
 
       tl.to({}, { duration: 0.35 });
@@ -146,7 +187,10 @@ export default function SceneAwakens() {
         ref={stageRef}
         className="relative flex h-[100dvh] w-full items-center justify-center overflow-hidden"
       >
-        <div className="absolute inset-0">
+        <div
+          className="absolute inset-0"
+          style={{ perspective: "1700px", transformStyle: "preserve-3d" }}
+        >
           {BEATS.map((beat, i) => (
             <div
               key={beat.src}
@@ -154,7 +198,7 @@ export default function SceneAwakens() {
                 if (el) frameRefs.current[i] = el;
               }}
               className="absolute inset-0"
-              style={{ willChange: "clip-path" }}
+              style={{ willChange: "transform, opacity" }}
             >
               <div
                 ref={(el) => {

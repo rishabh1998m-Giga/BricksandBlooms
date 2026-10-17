@@ -72,20 +72,20 @@ export default function ProofBloomCanvas({
         camera={{ position: [0, 0, 10], fov: 28, near: 0.1, far: 30 }}
       >
         <Suspense fallback={null}>
-          <fog attach="fog" args={["#0e0c09", 9, 22]} />
-          <ambientLight intensity={0.22} color="#3a362c" />
-          <directionalLight position={[3, 4, 5]} intensity={1.4} color="#f1ecdd" />
-          <directionalLight position={[-4, 1, 2]} intensity={0.4} color="#d97a4e" />
-          <directionalLight position={[0, -2, 3]} intensity={0.18} color="#4ca48e" />
+          <fog attach="fog" args={["#f7f2e8", 9, 22]} />
+          <ambientLight intensity={0.85} color="#e8ddc8" />
+          <directionalLight position={[3, 4, 5]} intensity={1.7} color="#f1ecdd" />
+          <directionalLight position={[-4, 1, 2]} intensity={0.4} color="#c05f38" />
+          <directionalLight position={[0, -2, 3]} intensity={0.18} color="#2b8870" />
           <Flower3D
             position={[4.4, 0.9, -3.2]}
-            color="#4ca48e"
+            color="#2b8870"
             scale={0.32}
             spinSpeed={0.035}
           />
           <Flower3D
             position={[-4, -1.5, -3.8]}
-            color="#d97a4e"
+            color="#c05f38"
             scale={0.38}
             spinSpeed={-0.024}
           />

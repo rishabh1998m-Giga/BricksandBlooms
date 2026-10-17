@@ -75,14 +75,14 @@ export default function MaintenanceBloomCanvas({
         camera={{ position: [0, 0, 10], fov: 30, near: 0.1, far: 30 }}
       >
         <Suspense fallback={null}>
-          <fog attach="fog" args={["#17140f", 9, 23]} />
-          <ambientLight intensity={0.24} color="#3a362c" />
-          <directionalLight position={[3, 4, 5]} intensity={1.3} color="#f1ecdd" />
-          <directionalLight position={[-4, 1, 2]} intensity={0.4} color="#d97a4e" />
-          <directionalLight position={[0, -2, 3]} intensity={0.2} color="#4ca48e" />
-          <Flower3D position={[-5.4, 2.4, -3]} color="#4ca48e" scale={0.34} spinSpeed={0.03} />
-          <Flower3D position={[5.6, -2.6, -3.6]} color="#d97a4e" scale={0.4} spinSpeed={-0.022} />
-          <Flower3D position={[0.4, 3.4, -4.2]} color="#dd939a" scale={0.3} spinSpeed={0.026} />
+          <fog attach="fog" args={["#efe5d3", 9, 23]} />
+          <ambientLight intensity={0.85} color="#e8ddc8" />
+          <directionalLight position={[3, 4, 5]} intensity={1.6} color="#f1ecdd" />
+          <directionalLight position={[-4, 1, 2]} intensity={0.4} color="#c05f38" />
+          <directionalLight position={[0, -2, 3]} intensity={0.2} color="#2b8870" />
+          <Flower3D position={[-5.4, 2.4, -3]} color="#2b8870" scale={0.34} spinSpeed={0.03} />
+          <Flower3D position={[5.6, -2.6, -3.6]} color="#c05f38" scale={0.4} spinSpeed={-0.022} />
+          <Flower3D position={[0.4, 3.4, -4.2]} color="#c97079" scale={0.3} spinSpeed={0.026} />
           <CameraRig pointer={pointer} />
         </Suspense>
       </Canvas>

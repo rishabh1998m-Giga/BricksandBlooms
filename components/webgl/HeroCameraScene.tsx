@@ -138,6 +138,7 @@ function HeroPlane() {
         map={texture}
         transparent
         toneMapped={false}
+        fog={false}
       />
     </mesh>
   );
@@ -178,8 +179,8 @@ function CameraRig() {
 export default function HeroCameraScene() {
   return (
     <>
-      <fog attach="fog" args={["#0e0c09", 6, 16]} />
-      <ambientLight intensity={0.16} color="#3a362c" />
+      <fog attach="fog" args={["#f7f2e8", 6, 16]} />
+      <ambientLight intensity={0.75} color="#e8ddc8" />
       <directionalLight
         position={[3, 4, 4]}
         intensity={1.5}
@@ -188,12 +189,12 @@ export default function HeroCameraScene() {
       <directionalLight
         position={[-4, 1, -2]}
         intensity={0.3}
-        color="#d97a4e"
+        color="#c05f38"
       />
       <directionalLight
         position={[0, -2, -5]}
         intensity={0.14}
-        color="#4ca48e"
+        color="#2b8870"
       />
       <HeroPlane />
       <ArchGateway position={[0, -0.3, ARCH_Z]} />

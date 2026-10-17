@@ -9,9 +9,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TEAL = "#4ca48e";
-const TERRACOTTA = "#d97a4e";
-const BLUSH = "#dd939a";
+const TEAL = "#2b8870";
+const TERRACOTTA = "#c05f38";
+const BLUSH = "#c97079";
 
 type Phase = "design" | "execution";
 

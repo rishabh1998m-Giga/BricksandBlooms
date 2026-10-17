@@ -116,12 +116,13 @@ export default function SceneArrival() {
       </video>
 
       {/* Scrim only where the copy sits, so the video reads clearly across
-          the rest of the frame instead of being dimmed edge to edge. Stops
-          are pulled in tight so the whole copy block — eyebrow included —
-          sits on solid dark ground, not just the headline. */}
+          the rest of the frame instead of being dimmed edge to edge. The
+          div itself is clipped to the bottom half — rather than spanning
+          the full frame with custom gradient-stop percentages — so there
+          is no ambiguity about the top of the hero staying scrim-free. */}
       <div
-        className={`absolute inset-0 bg-gradient-to-t from-bg/90 from-0% via-bg/70 via-35% to-transparent to-60% transition-opacity duration-700 ${
-          cinematic ? "opacity-60" : "opacity-100"
+        className={`absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-bg/95 to-transparent transition-opacity duration-700 ${
+          cinematic ? "opacity-70" : "opacity-100"
         }`}
       />
 

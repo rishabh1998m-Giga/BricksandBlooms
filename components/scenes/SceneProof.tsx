@@ -9,7 +9,7 @@ import ProofBloomCanvas from "@/components/webgl/ProofBloomCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const BUD_COLORS = ["#4ca48e", "#d97a4e", "#dd939a", "#f1ecdd"];
+const BUD_COLORS = ["#2b8870", "#c05f38", "#c97079", "#2b241c"];
 
 type Stat = {
   target: number;

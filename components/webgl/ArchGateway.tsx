@@ -18,7 +18,7 @@ const OUTER_TOP = HOLE_CENTER_Y + OUTER_HALF_SPAN;
 const DEPTH = 0.5;
 const CENTER_Z = DEPTH / 2;
 
-function ArchRimGlow({ color = "#d97a4e" }: { color?: string }) {
+function ArchRimGlow({ color = "#c05f38" }: { color?: string }) {
   const geometry = useMemo(() => {
     const path2d = new THREE.Path();
     path2d.moveTo(-HALF_WIDTH, HOLE_BOTTOM);
@@ -43,7 +43,7 @@ function ArchRimGlow({ color = "#d97a4e" }: { color?: string }) {
   return (
     <mesh geometry={geometry}>
       <meshStandardMaterial
-        color="#1a1712"
+        color="#4a3a2a"
         emissive={color}
         emissiveIntensity={2.2}
         roughness={0.5}
@@ -62,7 +62,7 @@ function ArchRimGlow({ color = "#d97a4e" }: { color?: string }) {
  */
 export default function ArchGateway({
   position,
-  color = "#171310",
+  color = "#d9cbb0",
 }: {
   position: [number, number, number];
   color?: string;

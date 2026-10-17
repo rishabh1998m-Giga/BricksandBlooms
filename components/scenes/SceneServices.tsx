@@ -139,7 +139,11 @@ function ServiceSlide({
           className="object-cover"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/45 to-bg/5" />
+      {/* Bottom-anchored scrim (not a full-card wash) — the caption sits in
+          the bottom third, so only that portion needs to be dimmed; a wash
+          spanning the whole photo reads as a haze once the theme's base
+          colour went light. */}
+      <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-bg/95 to-transparent" />
 
       <span
         className="pointer-events-none absolute bottom-4 right-5 font-display text-7xl font-extrabold text-fg/10 md:bottom-8 md:right-10 md:text-[9rem]"

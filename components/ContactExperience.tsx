@@ -19,9 +19,9 @@ type Field = {
   validate: (value: string) => string | null;
 };
 
-const TEAL = "#4ca48e";
-const TERRACOTTA = "#d97a4e";
-const BLUSH = "#dd939a";
+const TEAL = "#2b8870";
+const TERRACOTTA = "#c05f38";
+const BLUSH = "#c97079";
 
 function PersonIcon() {
   return (

@@ -176,10 +176,17 @@ export default function SceneAwakens() {
           ))}
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/10 to-bg/45" />
+        {/* A light, mostly-transparent wash rather than a full gradient
+            wash — the latter read as a milky haze over the photo once the
+            theme's base colour went light. Legibility now comes mainly
+            from the text-shadow glow on the copy itself, below. */}
+        <div className="absolute inset-0 bg-bg/18" />
 
         <div className="relative z-10 flex max-w-2xl flex-col items-center px-6 text-center">
-          <p className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase">
+          <p
+            className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"
+            style={{ textShadow: "0 1px 12px rgba(247,242,232,0.9), 0 1px 3px rgba(247,242,232,0.9)" }}
+          >
             The Landscape Awakens
           </p>
 
@@ -192,11 +199,17 @@ export default function SceneAwakens() {
                 }}
                 className="absolute inset-x-0 top-0 flex flex-col items-center"
               >
-                <h2 className="text-balance font-display text-[2.4rem] font-medium leading-[0.98] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]">
+                <h2
+                  className="text-balance font-display text-[2.4rem] font-medium leading-[0.98] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
+                  style={{ textShadow: "0 2px 20px rgba(247,242,232,0.95), 0 1px 4px rgba(247,242,232,0.95)" }}
+                >
                   {beat.label}
                   <span className="text-terracotta">.</span>
                 </h2>
-                <p className="mt-5 max-w-md text-balance font-body text-base text-fg/80 sm:text-lg">
+                <p
+                  className="mt-5 max-w-md text-balance font-body text-base text-fg/80 sm:text-lg"
+                  style={{ textShadow: "0 1px 14px rgba(247,242,232,0.9), 0 1px 3px rgba(247,242,232,0.9)" }}
+                >
                   {beat.caption}
                 </p>
               </div>

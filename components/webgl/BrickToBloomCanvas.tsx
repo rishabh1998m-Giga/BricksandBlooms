@@ -84,7 +84,7 @@ function WaterRipple({ position }: { position: [number, number, number] }) {
   return (
     <mesh ref={ref} position={position} rotation={[-Math.PI / 2, 0, 0]}>
       <circleGeometry args={[1.3, 48]} />
-      <meshStandardMaterial color="#0e2a26" roughness={0.1} metalness={0.55} />
+      <meshStandardMaterial color="#5aab93" roughness={0.3} metalness={0.15} />
     </mesh>
   );
 }
@@ -148,16 +148,16 @@ export default function BrickToBloomCanvas({
         camera={{ position: [0, 0.6, 8], fov: 30, near: 0.1, far: 30 }}
       >
         <Suspense fallback={null}>
-          <fog attach="fog" args={["#0e0c09", 8, 22]} />
-          <ambientLight intensity={0.18} color="#3a362c" />
-          <directionalLight position={[3, 4, 4]} intensity={1.2} color="#f1ecdd" />
-          <directionalLight position={[-4, 1, -1]} intensity={0.3} color="#d97a4e" />
+          <fog attach="fog" args={["#f7f2e8", 8, 22]} />
+          <ambientLight intensity={0.85} color="#e8ddc8" />
+          <directionalLight position={[3, 4, 4]} intensity={1.5} color="#f1ecdd" />
+          <directionalLight position={[-4, 1, -1]} intensity={0.3} color="#c05f38" />
           <LightPulse progressRef={progressRef} threshold={0.76} base={0.15} boost={1.3} />
 
           {/* Ground — present from the start; everything else grows from it */}
           <mesh position={[0, -1.1, -1]} receiveShadow>
             <boxGeometry args={[8.5, 0.3, 6]} />
-            <meshStandardMaterial color="#17140f" roughness={0.95} />
+            <meshStandardMaterial color="#e8dcc5" roughness={0.95} />
           </mesh>
 
           {/* 01 — Structure: a brick course assembling itself */}
@@ -181,19 +181,19 @@ export default function BrickToBloomCanvas({
           <Grow threshold={0.28} progressRef={progressRef} position={[0.6, -1.02, 0.6]}>
             <mesh rotation={[-Math.PI / 2, 0, 0]}>
               <boxGeometry args={[3.2, 1.6, 0.06]} />
-              <meshStandardMaterial color="#2a251c" roughness={0.9} />
+              <meshStandardMaterial color="#c9ba9d" roughness={0.9} />
             </mesh>
           </Grow>
 
           {/* 03 — Planting: blooms take root */}
           <Grow threshold={0.4} progressRef={progressRef} position={[-0.1, -0.6, 0.5]}>
-            <Flower3D position={[0, 0, 0]} color="#4ca48e" scale={0.32} spinSpeed={0.025} />
+            <Flower3D position={[0, 0, 0]} color="#2b8870" scale={0.32} spinSpeed={0.025} />
           </Grow>
           <Grow threshold={0.46} progressRef={progressRef} position={[-2.6, 0.7, 0.1]}>
-            <Flower3D position={[0, 0, 0]} color="#dd939a" scale={0.24} spinSpeed={-0.02} />
+            <Flower3D position={[0, 0, 0]} color="#c97079" scale={0.24} spinSpeed={-0.02} />
           </Grow>
           <Grow threshold={0.52} progressRef={progressRef} position={[0.55, -0.75, 1]}>
-            <Flower3D position={[0, 0, 0]} color="#4ca48e" scale={0.22} spinSpeed={0.03} />
+            <Flower3D position={[0, 0, 0]} color="#2b8870" scale={0.22} spinSpeed={0.03} />
           </Grow>
 
           {/* 04 — Water */}
@@ -206,7 +206,7 @@ export default function BrickToBloomCanvas({
             <mesh>
               <sphereGeometry args={[0.09, 14, 14]} />
               <meshStandardMaterial
-                color="#221a12"
+                color="#4a3a2a"
                 emissive="#f1ecdd"
                 emissiveIntensity={2.4}
                 toneMapped={false}
@@ -220,7 +220,7 @@ export default function BrickToBloomCanvas({
             </mesh>
             <mesh>
               <sphereGeometry args={[0.4, 16, 16]} />
-              <meshBasicMaterial color="#d97a4e" transparent opacity={0.08} toneMapped={false} />
+              <meshBasicMaterial color="#c05f38" transparent opacity={0.08} toneMapped={false} />
             </mesh>
           </Grow>
 

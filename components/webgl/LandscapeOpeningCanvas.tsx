@@ -27,7 +27,7 @@ function WaterSurface({ position }: { position: [number, number, number] }) {
   return (
     <mesh ref={ref} position={position} rotation={[-Math.PI / 2, 0, 0]}>
       <circleGeometry args={[1.1, 48]} />
-      <meshStandardMaterial color="#0e2a26" roughness={0.12} metalness={0.5} />
+      <meshStandardMaterial color="#5aab93" roughness={0.3} metalness={0.15} />
     </mesh>
   );
 }
@@ -59,7 +59,7 @@ function DustMotes({ count = 26 }: { count?: number }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="#d97a4e" size={0.02} transparent opacity={0.35} sizeAttenuation />
+      <pointsMaterial color="#c05f38" size={0.02} transparent opacity={0.35} sizeAttenuation />
     </points>
   );
 }
@@ -122,16 +122,16 @@ export default function LandscapeOpeningCanvas({
         camera={{ position: [0, 1.1, 8.5], fov: 32, near: 0.1, far: 30 }}
       >
         <Suspense fallback={null}>
-          <fog attach="fog" args={["#0e0c09", 7, 20]} />
-          <ambientLight intensity={0.2} color="#3a362c" />
-          <directionalLight position={[3, 5, 4]} intensity={1.5} color="#f1ecdd" castShadow />
-          <directionalLight position={[-4, 1, -1]} intensity={0.35} color="#d97a4e" />
-          <directionalLight position={[0, -1, 3]} intensity={0.16} color="#4ca48e" />
+          <fog attach="fog" args={["#f7f2e8", 7, 20]} />
+          <ambientLight intensity={0.85} color="#e8ddc8" />
+          <directionalLight position={[3, 5, 4]} intensity={1.8} color="#f1ecdd" castShadow />
+          <directionalLight position={[-4, 1, -1]} intensity={0.35} color="#c05f38" />
+          <directionalLight position={[0, -1, 3]} intensity={0.16} color="#2b8870" />
 
           {/* Ground */}
           <mesh position={[0, -1.1, -1]} receiveShadow>
             <boxGeometry args={[9, 0.3, 6]} />
-            <meshStandardMaterial color="#17140f" roughness={0.95} />
+            <meshStandardMaterial color="#e8dcc5" roughness={0.95} />
           </mesh>
 
           {/* A low brick course anchoring the left */}
@@ -140,8 +140,8 @@ export default function LandscapeOpeningCanvas({
           <Brick3D position={[-2.6, 0.24, -0.4]} rotation={[0, 0.15, 0]} scale={0.9} color="#8a7058" />
 
           {/* Blooms taking root beside it */}
-          <Flower3D position={[-0.2, -0.6, 0.6]} color="#4ca48e" scale={0.3} spinSpeed={0.02} />
-          <Flower3D position={[0.6, -0.75, 1.1]} color="#dd939a" scale={0.22} spinSpeed={-0.024} />
+          <Flower3D position={[-0.2, -0.6, 0.6]} color="#2b8870" scale={0.3} spinSpeed={0.02} />
+          <Flower3D position={[0.6, -0.75, 1.1]} color="#c97079" scale={0.22} spinSpeed={-0.024} />
 
           {/* Water, to the right */}
           <WaterSurface position={[2.4, -0.94, 0.2]} />

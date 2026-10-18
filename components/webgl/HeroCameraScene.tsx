@@ -161,13 +161,21 @@ function HeroPlane() {
         video.currentTime = VIDEO_LOOP_START;
       }
     };
+    // Tells SceneArrival's DOM layer (the poster standing in for this
+    // plane) that there's now an actual frame to look at, so it can fade
+    // away — see the "hero-video-ready" listener there.
+    const handlePlaying = () => {
+      window.dispatchEvent(new Event("hero-video-ready"));
+    };
 
     if (video.readyState >= 1) handleLoaded();
     video.addEventListener("loadedmetadata", handleLoaded);
     video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("playing", handlePlaying, { once: true });
     return () => {
       video.removeEventListener("loadedmetadata", handleLoaded);
       video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("playing", handlePlaying);
     };
   }, [texture]);
   /* eslint-enable react-hooks/immutability */

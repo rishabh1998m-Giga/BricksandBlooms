@@ -26,11 +26,28 @@ export default function SceneArrival() {
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const ctaRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const badgeRingRef = useRef<HTMLDivElement>(null);
+  const posterRef = useRef<HTMLDivElement>(null);
   const cinematic = useCinematicMode();
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    // On desktop, HeroCameraScene's WebGL plane (see components/webgl)
+    // loads and decodes this exact same file itself. Also loading and
+    // playing it here — just invisibly, via opacity — fetched and decoded
+    // the same ~30MB video twice at once, which was a real contributor to
+    // the hero feeling slow/stuck on first load. The <source> below is
+    // omitted entirely in cinematic mode so this element never starts a
+    // request for it; .load() here (with no source left in the DOM)
+    // explicitly aborts any request already in flight from the brief
+    // window before useCinematicMode resolves on the client, since it
+    // starts as false on the very first render.
+    if (cinematic) {
+      video.pause();
+      video.load();
+      return;
+    }
 
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -63,7 +80,35 @@ export default function SceneArrival() {
       video.removeEventListener("loadedmetadata", handleLoaded);
       video.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, []);
+  }, [cinematic]);
+
+  // The WebGL hero plane has no native "poster" of its own the way a plain
+  // <video> does, so without this, desktop visitors saw nothing at all
+  // (just the page background) for however long the video took to start
+  // decoding. This poster image sits in front of the WebGL canvas and
+  // fades away the moment HeroCameraScene's own video actually starts
+  // playing (see the "hero-video-ready" event dispatched there) — with a
+  // fallback timer in case that event is ever missed (e.g. autoplay
+  // blocked), so it never gets stuck covering a working video.
+  useEffect(() => {
+    if (!cinematic) return;
+    const el = posterRef.current;
+    if (!el) return;
+
+    let hidden = false;
+    const hide = () => {
+      if (hidden) return;
+      hidden = true;
+      gsap.to(el, { opacity: 0, duration: 0.6, ease: "power2.out" });
+    };
+
+    window.addEventListener("hero-video-ready", hide);
+    const fallback = setTimeout(hide, 4500);
+    return () => {
+      window.removeEventListener("hero-video-ready", hide);
+      clearTimeout(fallback);
+    };
+  }, [cinematic]);
 
   useGSAP(
     () => {
@@ -245,11 +290,27 @@ export default function SceneArrival() {
         }`}
         muted
         playsInline
-        preload="auto"
-        poster="/assets/video/prakrti-nilaya-poster.png"
+        preload={cinematic ? "none" : "auto"}
+        poster="/assets/video/prakrti-nilaya-poster.webp"
       >
-        <source src="/assets/video/prakrti-nilaya.webm" type="video/webm" />
+        {!cinematic && (
+          <source src="/assets/video/prakrti-nilaya.webm" type="video/webm" />
+        )}
       </video>
+
+      {/* Stands in for a native <video poster> on the WebGL path, which
+          has no such thing — otherwise this frame is blank until the
+          WebGL video starts playing. Sits above the (transparent) section
+          background, in front of the fixed WebGL canvas behind it, and
+          fades out once that video is confirmed playing. */}
+      {cinematic && (
+        <div
+          ref={posterRef}
+          className="absolute inset-0 h-full w-full bg-cover bg-center"
+          style={{ backgroundImage: "url(/assets/video/prakrti-nilaya-poster.webp)" }}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Scrim only where the copy sits, so the video reads clearly across
           the rest of the frame instead of being dimmed edge to edge. The

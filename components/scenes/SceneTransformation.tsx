@@ -84,7 +84,7 @@ function BeforeAfterCard({ project }: { project: Project }) {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onKeyDown={handleKeyDown}
-        className="relative aspect-[16/9] w-full cursor-ew-resize select-none overflow-hidden rounded-2xl bg-bg-elevated outline-none focus-visible:ring-2 focus-visible:ring-terracotta"
+        className="relative aspect-[16/9] w-full cursor-ew-resize select-none overflow-hidden rounded-2xl bg-bg-elevated outline-none focus-visible:ring-2 focus-visible:ring-terracotta md:aspect-auto md:h-[34vh] lg:h-[38vh]"
         style={{ touchAction: "none" }}
       >
         <Image
@@ -141,10 +141,10 @@ function BeforeAfterCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      <h3 className="mt-5 font-display text-xl font-medium tracking-[-0.01em] text-fg sm:text-2xl">
+      <h3 className="mt-3 font-display text-lg font-medium tracking-[-0.01em] text-fg sm:text-xl md:mt-4">
         {project.title}
       </h3>
-      <p className="mt-1.5 font-body text-base text-muted">
+      <p className="mt-1 font-body text-sm text-muted sm:text-base">
         {project.description}
       </p>
     </div>
@@ -186,9 +186,9 @@ export default function SceneTransformation() {
   return (
     <section
       ref={rootRef}
-      className="relative border-t border-line bg-bg px-6 py-24 md:px-10 md:py-32"
+      className="relative border-t border-line bg-bg px-6 py-16 md:flex md:h-[100dvh] md:items-center md:px-10 md:py-12"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto w-full max-w-6xl">
         <p
           data-reveal
           className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"
@@ -197,19 +197,19 @@ export default function SceneTransformation() {
         </p>
         <h2
           data-reveal
-          className="mt-4 max-w-xl text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
+          className="mt-3 max-w-xl text-balance font-display text-[2.4rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[2.8rem] md:text-[3.2rem]"
         >
           See the difference
         </h2>
         <p
           data-reveal
-          className="mt-4 max-w-lg text-balance font-body text-base text-muted sm:text-lg"
+          className="mt-3 max-w-lg text-balance font-body text-base text-muted sm:text-lg"
         >
           Drag to reveal the transformation. Every project starts with a
           vision and ends with a living landscape.
         </p>
 
-        <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-8">
+        <div className="mt-8 grid gap-8 md:mt-10 md:grid-cols-2">
           {PROJECTS.map((project) => (
             <BeforeAfterCard key={project.id} project={project} />
           ))}

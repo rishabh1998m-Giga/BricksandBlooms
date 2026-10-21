@@ -420,9 +420,8 @@ export default function SceneArrival() {
                       line.accent ? "text-terracotta" : "text-fg"
                     }`}
                     style={{
-                      textShadow: line.accent
-                        ? "1px 1px 0 rgba(43,36,28,0.5), 2px 2px 0 rgba(43,36,28,0.35), 3px 3px 10px rgba(43,36,28,0.3)"
-                        : "1px 1px 0 var(--color-terracotta-dim), 2px 2px 0 var(--color-terracotta-dim), 3px 3px 10px rgba(43,36,28,0.2)",
+                      textShadow:
+                        "1px 1px 0 rgba(43,36,28,0.45), 2px 2px 0 rgba(43,36,28,0.3), 3px 3px 10px rgba(43,36,28,0.25)",
                     }}
                   >
                     {word}

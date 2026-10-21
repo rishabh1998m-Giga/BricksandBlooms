@@ -245,7 +245,7 @@ export default function SceneAwakens() {
               >
                 <h2
                   className="text-balance font-display text-[2.4rem] font-medium leading-[0.98] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
-                  style={{ textShadow: "0 2px 20px rgba(247,242,232,0.95), 0 1px 4px rgba(247,242,232,0.95)" }}
+                  style={{ textShadow: "0 2px 16px rgba(43,36,28,0.35), 0 1px 4px rgba(43,36,28,0.3)" }}
                 >
                   {beat.label}
                   <span className="text-terracotta">.</span>

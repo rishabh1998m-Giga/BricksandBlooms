@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -8,32 +8,21 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Project = {
-  id: string;
-  title: string;
-  description: string;
-  before: string;
-  after: string;
+// The only pair in the project's photo library that's genuinely the same
+// spot at two different moments (not a staged "before" shot) — a brick
+// corner photographed early in planting, then again once it had filled
+// in. Both are desaturated to the same tone here so the drag reveals one
+// continuous photograph changing, rather than two different colour
+// grades cutting against each other.
+const PROJECT = {
+  title: "Structure to bloom",
+  description:
+    "The same corner, caught at two different moments — bare brick, then fully grown in.",
+  before: "/assets/process/execution.webp",
+  after: "/assets/process/grow.webp",
 };
 
-const PROJECTS: Project[] = [
-  {
-    id: "courtyard",
-    title: "Courtyard Renewal",
-    description: "From bare ground to a lush, layered retreat",
-    before: "/assets/projects/courtyard-before.webp",
-    after: "/assets/projects/courtyard-after.webp",
-  },
-  {
-    id: "rooftop",
-    title: "Rooftop Refresh",
-    description: "A sun-worn deck reimagined as a warm gathering space",
-    before: "/assets/projects/rooftop-before.webp",
-    after: "/assets/projects/rooftop-after.webp",
-  },
-];
-
-function BeforeAfterCard({ project }: { project: Project }) {
+function BeforeAfterSlider() {
   const frameRef = useRef<HTMLDivElement>(null);
   const [percent, setPercent] = useState(50);
   const draggingRef = useRef(false);
@@ -44,6 +33,31 @@ function BeforeAfterCard({ project }: { project: Project }) {
     const rect = frame.getBoundingClientRect();
     const pct = ((clientX - rect.left) / rect.width) * 100;
     setPercent(Math.min(100, Math.max(0, pct)));
+  }, []);
+
+  // A brief, one-time wiggle of the handle shortly after the section
+  // arrives — the only hint that this image is draggable, since nothing
+  // else about a photograph suggests it.
+  useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReduced) return;
+
+    const proxy = { value: 50 };
+    const tl = gsap.timeline({ delay: 1, defaults: { ease: "power2.inOut" } });
+    tl.to(proxy, {
+      value: 33,
+      duration: 0.9,
+      onUpdate: () => setPercent(proxy.value),
+    }).to(proxy, {
+      value: 50,
+      duration: 0.9,
+      onUpdate: () => setPercent(proxy.value),
+    });
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -70,83 +84,63 @@ function BeforeAfterCard({ project }: { project: Project }) {
   };
 
   return (
-    <div data-reveal className="flex flex-col">
+    <div
+      ref={frameRef}
+      role="slider"
+      tabIndex={0}
+      aria-label={`Before and after comparison for ${PROJECT.title}`}
+      aria-valuenow={Math.round(percent)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onKeyDown={handleKeyDown}
+      className="absolute inset-0 h-full w-full cursor-ew-resize select-none outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-inset"
+      style={{ touchAction: "none" }}
+    >
+      <Image
+        src={PROJECT.after}
+        alt={`${PROJECT.title} — after`}
+        fill
+        priority
+        sizes="100vw"
+        className="pointer-events-none object-cover grayscale"
+        draggable={false}
+      />
+
       <div
-        ref={frameRef}
-        role="slider"
-        tabIndex={0}
-        aria-label={`Before and after comparison for ${project.title}`}
-        aria-valuenow={Math.round(percent)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        onKeyDown={handleKeyDown}
-        className="relative aspect-[16/9] w-full cursor-ew-resize select-none overflow-hidden rounded-2xl bg-bg-elevated outline-none focus-visible:ring-2 focus-visible:ring-terracotta"
-        style={{ touchAction: "none" }}
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+        style={{ clipPath: `inset(0 ${100 - percent}% 0 0)` }}
       >
         <Image
-          src={project.after}
-          alt={`${project.title} — after`}
+          src={PROJECT.before}
+          alt={`${PROJECT.title} — before`}
           fill
-          sizes="(min-width: 768px) 48vw, 100vw"
-          className="pointer-events-none object-cover"
+          priority
+          sizes="100vw"
+          className="object-cover grayscale"
           draggable={false}
         />
-
-        <div
-          className="pointer-events-none absolute inset-0 overflow-hidden"
-          style={{ clipPath: `inset(0 ${100 - percent}% 0 0)` }}
-        >
-          <Image
-            src={project.before}
-            alt={`${project.title} — before`}
-            fill
-            sizes="(min-width: 768px) 48vw, 100vw"
-            className="object-cover"
-            draggable={false}
-          />
-        </div>
-
-        <span className="pointer-events-none absolute left-4 top-4 rounded-full bg-bg/60 px-3 py-1 font-display text-[0.62rem] tracking-[0.16em] text-fg/90 uppercase backdrop-blur-sm">
-          Before
-        </span>
-        <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-bg/60 px-3 py-1 font-display text-[0.62rem] tracking-[0.16em] text-fg/90 uppercase backdrop-blur-sm">
-          After
-        </span>
-
-        <div
-          className="pointer-events-none absolute inset-y-0 w-px bg-fg/70"
-          style={{ left: `${percent}%` }}
-        >
-          <span className="absolute left-1/2 top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-fg text-bg shadow-lg">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M5 4 1 8l4 4M11 4l4 4-4 4"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-        </div>
       </div>
 
-      <h3 className="mt-5 font-display text-xl font-medium tracking-[-0.01em] text-fg sm:text-2xl">
-        {project.title}
-      </h3>
-      <p className="mt-1.5 font-body text-base text-muted">
-        {project.description}
-      </p>
+      <div
+        className="pointer-events-none absolute inset-y-0 w-px bg-bg/80"
+        style={{ left: `${percent}%` }}
+      >
+        <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-bg text-fg shadow-[0_8px_30px_rgba(43,36,28,0.35)]">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path
+              d="M5 4 1 8l4 4M11 4l4 4-4 4"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </div>
     </div>
   );
 }
@@ -166,18 +160,26 @@ export default function SceneTransformation() {
         return;
       }
 
-      gsap.set(targets, { opacity: 0, y: 32 });
-      ScrollTrigger.batch(targets, {
-        start: "top 85%",
-        onEnter: (batch) =>
-          gsap.to(batch, {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            stagger: 0.12,
-          }),
-        once: true,
+      // A single trigger tied to the section itself, not per-element
+      // (ScrollTrigger.batch) — this section fills the full viewport, so
+      // the bottom row's own position already sits right at the ~90%
+      // line the moment the section is framed, firing inconsistently
+      // right when it should be visible. Triggering off the section's
+      // own entry and staggering every [data-reveal] target from there
+      // guarantees the whole frame — top heading and bottom labels alike
+      // — reveals together, reliably.
+      gsap.set(targets, { opacity: 0, y: 28 });
+      gsap.to(targets, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top 80%",
+          once: true,
+        },
       });
     },
     { scope: rootRef }
@@ -186,33 +188,53 @@ export default function SceneTransformation() {
   return (
     <section
       ref={rootRef}
-      className="relative border-t border-line bg-bg px-6 py-24 md:px-10 md:py-32"
+      className="relative h-[100dvh] w-full overflow-hidden border-t border-line bg-bg"
     >
-      <div className="mx-auto max-w-6xl">
-        <p
-          data-reveal
-          className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"
-        >
-          Transformations
-        </p>
-        <h2
-          data-reveal
-          className="mt-4 max-w-xl text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
-        >
-          See the difference
-        </h2>
-        <p
-          data-reveal
-          className="mt-4 max-w-lg text-balance font-body text-base text-muted sm:text-lg"
-        >
-          Drag to reveal the transformation. Every project starts with a
-          vision and ends with a living landscape.
-        </p>
+      <BeforeAfterSlider />
 
-        <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-8">
-          {PROJECTS.map((project) => (
-            <BeforeAfterCard key={project.id} project={project} />
-          ))}
+      {/* Scrims top and bottom only — the photograph itself stays clear
+          across the middle, where the drag happens. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[38%] bg-gradient-to-b from-bg/92 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-bg/90 to-transparent" />
+
+      <div className="relative z-10 flex h-full flex-col justify-between px-6 pb-10 pt-24 md:px-14 md:pb-14 md:pt-28">
+        <div className="max-w-xl">
+          <p
+            data-reveal
+            className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase"
+          >
+            Transformations
+          </p>
+          <h2
+            data-reveal
+            className="mt-4 text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.6rem] md:text-[4.6rem]"
+          >
+            See the difference
+          </h2>
+          <p
+            data-reveal
+            className="mt-4 max-w-md text-balance font-body text-base text-muted sm:text-lg"
+          >
+            Drag to reveal the transformation — every project starts with a
+            vision and ends with a living landscape.
+          </p>
+        </div>
+
+        <div data-reveal className="flex items-end justify-between gap-6">
+          <span className="rounded-full border border-fg/15 bg-bg/70 px-4 py-2 font-display text-[0.65rem] tracking-[0.18em] text-fg/90 uppercase backdrop-blur-sm">
+            Before
+          </span>
+          <div className="hidden max-w-sm text-center sm:block">
+            <h3 className="font-display text-base font-medium text-fg">
+              {PROJECT.title}
+            </h3>
+            <p className="mt-1 font-body text-sm text-muted">
+              {PROJECT.description}
+            </p>
+          </div>
+          <span className="rounded-full border border-fg/15 bg-bg/70 px-4 py-2 font-display text-[0.65rem] tracking-[0.18em] text-fg/90 uppercase backdrop-blur-sm">
+            After
+          </span>
         </div>
       </div>
     </section>

@@ -113,17 +113,25 @@ export default function SceneProof() {
         );
       });
 
-      ScrollTrigger.batch(reveals, {
-        start: "top 85%",
-        once: true,
-        onEnter: (batch) =>
-          gsap.to(batch, {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            stagger: 0.1,
-          }),
+      // A single trigger on the section itself, not per-element
+      // (ScrollTrigger.batch) — now that this section fills the full
+      // viewport, elements near the bottom sit right at the "top 85%"
+      // line the moment the section is framed, which fires
+      // inconsistently right when they should already be visible (see
+      // the identical fix on the Transformations section). Triggering
+      // off the section's own entry and staggering every [data-reveal]
+      // target from there reveals the whole frame together, reliably.
+      gsap.to(reveals, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top 80%",
+          once: true,
+        },
       });
 
       STATS.forEach((stat, i) => {
@@ -175,7 +183,7 @@ export default function SceneProof() {
   return (
     <section
       ref={rootRef}
-      className="relative overflow-hidden border-t border-line bg-bg px-6 py-24 md:px-10 md:py-32"
+      className="relative overflow-hidden border-t border-line bg-bg px-6 py-16 md:flex md:h-[100dvh] md:items-center md:px-10 md:py-12"
       style={{
         backgroundImage:
           "radial-gradient(1200px 700px at 100% 100%, var(--color-terracotta-dim), transparent 55%)",
@@ -197,7 +205,7 @@ export default function SceneProof() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-6xl">
+      <div className="relative mx-auto w-full max-w-6xl">
         <div className="flex items-start justify-between gap-6">
           <div className="max-w-xl">
             <p
@@ -208,13 +216,13 @@ export default function SceneProof() {
             </p>
             <h2
               data-reveal
-              className="mt-4 text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.4rem] md:text-[4.2rem]"
+              className="mt-3 text-balance font-display text-[2.2rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3rem]"
             >
               The proof behind our landscapes
             </h2>
             <p
               data-reveal
-              className="mt-4 max-w-md text-balance font-body text-base text-muted sm:text-lg"
+              className="mt-3 max-w-md text-balance font-body text-base text-muted sm:text-lg"
             >
               From concept to completion, we design and deliver outdoor
               spaces that stand the test of time.
@@ -230,10 +238,10 @@ export default function SceneProof() {
           </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4 md:gap-8">
+        <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 md:mt-12 md:grid-cols-4 md:gap-8">
           {STATS.map((stat, i) => (
             <div key={stat.label} data-reveal>
-              <div className="flex items-baseline font-display text-[3rem] font-medium leading-none tracking-[-0.01em] text-fg sm:text-[3.8rem] md:text-[4.4rem]">
+              <div className="flex items-baseline font-display text-[2.2rem] font-medium leading-none tracking-[-0.01em] text-fg sm:text-[2.6rem] md:text-[3rem]">
                 <span
                   ref={(el) => {
                     if (el) valueRefs.current[i] = el;
@@ -243,10 +251,10 @@ export default function SceneProof() {
                 </span>
                 <span className="text-teal">{stat.suffix}</span>
               </div>
-              <p className="mt-3 font-display text-[0.68rem] tracking-[0.1em] text-muted uppercase">
+              <p className="mt-2 font-display text-[0.68rem] tracking-[0.1em] text-muted uppercase">
                 {stat.label}
               </p>
-              <div className="mt-4 h-px w-full bg-line">
+              <div className="mt-3 h-px w-full bg-line">
                 <span
                   ref={(el) => {
                     if (el) barRefs.current[i] = el;
@@ -279,7 +287,7 @@ export default function SceneProof() {
 
         <div
           data-reveal
-          className="mt-20 flex flex-col items-center gap-3 border-t border-line pt-10 text-center"
+          className="mt-10 flex flex-col items-center gap-2 border-t border-line pt-6 text-center md:mt-12"
         >
           <div className="flex gap-1 text-teal" aria-hidden="true">
             {Array.from({ length: 5 }).map((_, i) => (

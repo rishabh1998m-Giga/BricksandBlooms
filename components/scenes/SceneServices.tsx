@@ -123,21 +123,32 @@ function BulletIcon() {
 
 function ServiceSlide({
   service,
-  titleRef,
+  contentRef,
+  imageWrapRef,
+  indexRef,
 }: {
   service: ServiceItem;
-  titleRef?: (el: HTMLHeadingElement | null) => void;
+  contentRef?: (el: HTMLDivElement | null) => void;
+  imageWrapRef?: (el: HTMLDivElement | null) => void;
+  indexRef?: (el: HTMLSpanElement | null) => void;
 }) {
   return (
     <div className="relative h-[70dvh] w-full shrink-0 overflow-hidden rounded-2xl border border-line md:motion-safe:h-full md:motion-safe:w-screen md:motion-safe:rounded-none md:motion-safe:border-0">
-      <div className="absolute inset-0 [animation:kenburns_16s_ease-in-out_infinite]">
-        <Image
-          src={service.image}
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
+      {/* A separate transform layer from the Ken Burns zoom below — GSAP
+          drives this one's x position (a parallax drift tied to how far
+          this card sits from "current" in the carousel), the CSS
+          keyframe drives the inner one's scale, so the two never fight
+          over the same transform. */}
+      <div ref={imageWrapRef} className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 [animation:kenburns_16s_ease-in-out_infinite]">
+          <Image
+            src={service.image}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
       </div>
       {/* Bottom-anchored scrim (not a full-card wash) — the caption sits in
           the bottom third, so only that portion needs to be dimmed; a wash
@@ -146,13 +157,17 @@ function ServiceSlide({
       <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-bg/95 to-transparent" />
 
       <span
-        className="pointer-events-none absolute bottom-4 right-5 font-display text-7xl font-extrabold text-fg/10 md:bottom-8 md:right-10 md:text-[9rem]"
+        ref={indexRef}
+        className="pointer-events-none absolute bottom-4 right-5 font-display text-7xl font-extrabold text-fg/10 [transform-origin:bottom_right] md:bottom-8 md:right-10 md:text-[9rem]"
         aria-hidden="true"
       >
         {service.index}
       </span>
 
-      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-8 md:mx-auto md:max-w-6xl md:px-10 md:pb-16">
+      <div
+        ref={contentRef}
+        className="relative z-10 flex h-full flex-col justify-end px-6 pb-8 md:mx-auto md:max-w-6xl md:px-10 md:pb-16"
+      >
         <div className="flex items-center gap-4">
           <span className="font-display text-xs tracking-[0.1em] text-muted">
             {service.index}
@@ -163,10 +178,7 @@ function ServiceSlide({
           </span>
         </div>
 
-        <h3
-          ref={titleRef}
-          className="mt-4 max-w-xl text-balance font-display text-[1.9rem] font-medium leading-[1.03] tracking-[-0.01em] text-fg [transform-origin:left_center] sm:text-[2.4rem] md:text-[3rem]"
-        >
+        <h3 className="mt-4 max-w-xl text-balance font-display text-[1.9rem] font-medium leading-[1.03] tracking-[-0.01em] text-fg sm:text-[2.4rem] md:text-[3rem]">
           {service.title}
         </h3>
 
@@ -218,7 +230,9 @@ export default function SceneServices() {
   const trackRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
   const slideWrapRefs = useRef<HTMLDivElement[]>([]);
-  const titleRefs = useRef<HTMLHeadingElement[]>([]);
+  const contentRefs = useRef<HTMLDivElement[]>([]);
+  const imageWrapRefs = useRef<HTMLDivElement[]>([]);
+  const indexRefs = useRef<HTMLSpanElement[]>([]);
 
   useGSAP(
     () => {
@@ -258,7 +272,49 @@ export default function SceneServices() {
       // Desktop, motion-enabled: horizontal scroll-jacking carousel.
       // Vertical scroll pans the whole track sideways, like paging
       // through a lookbook, instead of crossfading in place.
-      let velocity = 0;
+      //
+      // Depth, not distortion: every panel's own position in the track —
+      // not scroll velocity — drives a continuous "distance from current"
+      // value, and that value sets three things at once: the content
+      // block settles to full size and clarity only once its panel is
+      // actually centered (fading and shrinking slightly as neighbours
+      // approach or recede), its photo drifts sideways *inside* its own
+      // frame at a different rate than the panel itself pans (a real
+      // parallax layer, not a filter), and its giant background index
+      // number breathes in scale as its chapter takes focus. Nothing here
+      // ever skews or blurs the type — it stays sharp and legible through
+      // the whole pan.
+      const panelCount = SERVICES.length;
+      const applyDepth = (progress: number) => {
+        const currentPos = panelCount * progress;
+
+        if (intro) {
+          const abs = Math.min(Math.abs(0 - currentPos), 1);
+          gsap.set(intro, { scale: 1 - abs * 0.08, opacity: 1 - abs * 0.55 });
+        }
+
+        slides.forEach((_, i) => {
+          const offset = i + 1 - currentPos;
+          const abs = Math.min(Math.abs(offset), 1);
+          const content = contentRefs.current[i];
+          const imageWrap = imageWrapRefs.current[i];
+          const indexEl = indexRefs.current[i];
+
+          if (content) {
+            gsap.set(content, { scale: 1 - abs * 0.06, opacity: 1 - abs * 0.6 });
+          }
+          if (imageWrap) {
+            gsap.set(imageWrap, { x: offset * 36 });
+          }
+          if (indexEl) {
+            gsap.set(indexEl, {
+              scale: 0.82 + (1 - abs) * 0.18,
+              opacity: 0.05 + (1 - abs) * 0.07,
+            });
+          }
+        });
+      };
+
       gsap.to(track, {
         x: () => -(track.scrollWidth - window.innerWidth),
         ease: "none",
@@ -270,30 +326,11 @@ export default function SceneServices() {
           scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            velocity = self.getVelocity();
-          },
+          onUpdate: (self) => applyDepth(self.progress),
         },
       });
 
-      // The titles skew in the direction of scroll, like the type has
-      // physical weight and drags slightly behind the pan, then snaps
-      // upright as scrolling settles — tied to the same scroll signal
-      // driving the horizontal carousel, not a separate hover gimmick.
-      const setSkew = gsap.quickTo(titleRefs.current, "skewX", {
-        duration: 0.5,
-        ease: "power3",
-      });
-      const decay = () => {
-        const target = gsap.utils.clamp(-14, 14, velocity / 140);
-        setSkew(target);
-        velocity *= 0.85;
-      };
-      gsap.ticker.add(decay);
-
-      return () => {
-        gsap.ticker.remove(decay);
-      };
+      applyDepth(0);
     },
     { scope: rootRef }
   );
@@ -325,12 +362,7 @@ export default function SceneServices() {
                 Our Expertise
               </p>
             </div>
-            <h2
-              ref={(el) => {
-                if (el) titleRefs.current[0] = el;
-              }}
-              className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg [transform-origin:center] sm:text-[3.6rem] md:text-[4.4rem]"
-            >
+            <h2 className="mt-5 max-w-2xl text-balance font-display text-[2.6rem] font-medium leading-[1.0] tracking-[-0.01em] text-fg sm:text-[3.6rem] md:text-[4.4rem]">
               Every service is a chapter in your landscape story.
             </h2>
             <p className="mt-5 font-display text-[0.62rem] tracking-[0.18em] text-muted uppercase md:motion-safe:hidden">
@@ -348,8 +380,14 @@ export default function SceneServices() {
             >
               <ServiceSlide
                 service={service}
-                titleRef={(el) => {
-                  if (el) titleRefs.current[i + 1] = el;
+                contentRef={(el) => {
+                  if (el) contentRefs.current[i] = el;
+                }}
+                imageWrapRef={(el) => {
+                  if (el) imageWrapRefs.current[i] = el;
+                }}
+                indexRef={(el) => {
+                  if (el) indexRefs.current[i] = el;
                 }}
               />
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
@@ -13,7 +13,6 @@ const TEAL = "#2b8870";
 const TERRACOTTA = "#c05f38";
 const BLUSH = "#c97079";
 const STONE = "#a79e8c";
-const ACCENTS = [TEAL, TERRACOTTA, BLUSH];
 
 // Four real moments from real sites — not a modelled brick-to-bloom
 // animation — standing in for the four phases every project actually
@@ -92,7 +91,9 @@ const ZONES: Zone[] = [
   },
 ];
 
-const ALL_SERVICES = ZONES.flatMap((z) => z.services);
+const ALL_SERVICES_WITH_ZONE = ZONES.flatMap((zone) =>
+  zone.services.map((name) => ({ name, accent: zone.accent }))
+);
 
 const BRIDGE_PHOTOS = [
   { src: "/assets/services/landscape-design.webp", caption: "A courtyard, reclaimed" },
@@ -135,7 +136,10 @@ export default function ServicesIndex() {
   const journeyContentRefs = useRef<(HTMLDivElement | null)[]>([]);
   const journeyRailRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const [activeZone, setActiveZone] = useState(0);
+  const catalogRootRef = useRef<HTMLDivElement>(null);
+  const catalogTrackRef = useRef<HTMLDivElement>(null);
+  const catalogRailFillRef = useRef<HTMLSpanElement>(null);
+  const catalogIndexRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -221,6 +225,45 @@ export default function ServicesIndex() {
       });
 
       applyJourney(0);
+
+      // --- The Catalog: five materials scrolled through sideways, not
+      // listed down the page — a pinned horizontal pan, same family of
+      // technique as the Journey above but a different axis entirely, so
+      // the two "scroll-jacked" sections don't feel like repeats of
+      // each other.
+      const catalogTrack = catalogTrackRef.current;
+      const catalogFill = catalogRailFillRef.current;
+      const catalogIndexEl = catalogIndexRef.current;
+      if (catalogTrack) {
+        const panelCount = ZONES.length;
+        gsap.set(catalogTrack, { xPercent: 0 });
+        gsap.set(catalogFill, { scaleX: 0, transformOrigin: "left center" });
+
+        ScrollTrigger.create({
+          trigger: catalogRootRef.current,
+          start: "top top",
+          end: () => "+=" + (panelCount - 1) * window.innerWidth,
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            gsap.set(catalogTrack, {
+              xPercent: (-100 * (panelCount - 1) * self.progress) / panelCount,
+            });
+            if (catalogFill) {
+              gsap.set(catalogFill, { scaleX: self.progress });
+            }
+            if (catalogIndexEl) {
+              const idx = Math.min(
+                panelCount - 1,
+                Math.floor(self.progress * panelCount)
+              );
+              catalogIndexEl.textContent = String(idx + 1).padStart(2, "0");
+            }
+          },
+        });
+      }
     },
     { scope: rootRef }
   );
@@ -368,87 +411,149 @@ export default function ServicesIndex() {
         </div>
       </section>
 
-      {/* THE MATERIALS — the elements of the landscape, and what each becomes */}
-      <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-6xl">
-          <Eyebrow>The Materials</Eyebrow>
-          <h2
-            data-reveal
-            className="mt-4 max-w-2xl text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
-          >
-            Five materials. Fifteen disciplines.
-          </h2>
-          <p data-reveal className="mt-4 max-w-md font-body text-base text-muted">
-            Hover or tap a material to see what we build with it.
+      {/* THE CATALOG — five materials, scrolled through sideways instead
+          of hovered over a list. Desktop + motion-safe only; mobile and
+          reduced-motion get the swipeable carousel below. */}
+      <div
+        ref={catalogRootRef}
+        className="relative hidden h-[100dvh] w-full flex-col overflow-hidden border-t border-line bg-bg motion-safe:md:flex"
+      >
+        <div className="flex items-center justify-between px-6 pt-10 md:px-14">
+          <div>
+            <p className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase">
+              The Catalog
+            </p>
+            <h2 className="mt-3 max-w-md text-balance font-display text-[1.6rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2rem]">
+              Five materials. Fifteen disciplines.
+            </h2>
+          </div>
+          <p className="shrink-0 font-display text-sm tracking-[0.08em] text-muted tabular-nums">
+            <span ref={catalogIndexRef}>01</span> /{" "}
+            {String(ZONES.length).padStart(2, "0")}
           </p>
+        </div>
 
-          <div className="mt-14 grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
-            <div
-              data-reveal
-              className="flex flex-row flex-wrap gap-x-8 gap-y-5 md:flex-col md:gap-y-7"
-            >
-              {ZONES.map((zone, i) => (
-                <button
-                  key={zone.key}
-                  type="button"
-                  onMouseEnter={() => setActiveZone(i)}
-                  onFocus={() => setActiveZone(i)}
-                  onClick={() => setActiveZone(i)}
-                  className="group flex items-center gap-4 text-left"
+        <div className="relative mt-6 flex-1 overflow-hidden">
+          <div ref={catalogTrackRef} className="flex h-full w-[500%]">
+            {ZONES.map((zone, i) => (
+              <div
+                key={zone.key}
+                className="relative flex h-full w-[20%] shrink-0 flex-col justify-between overflow-hidden px-6 py-10 md:px-14"
+                style={{ backgroundColor: `${zone.accent}10` }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-6 top-1/2 -translate-y-1/2 select-none font-display text-[13rem] font-medium leading-none opacity-[0.06] md:text-[16rem]"
+                  style={{ color: zone.accent }}
                 >
-                  <span
-                    className="h-2 w-2 shrink-0 rounded-full transition-all duration-300"
-                    style={{
-                      backgroundColor: activeZone === i ? zone.accent : "var(--color-line)",
-                      transform: activeZone === i ? "scale(1.5)" : "scale(1)",
-                    }}
-                    aria-hidden="true"
-                  />
-                  <span
-                    className="font-display text-[1.5rem] font-medium tracking-[-0.01em] transition-colors duration-300 sm:text-[1.9rem]"
-                    style={{ color: activeZone === i ? zone.accent : "var(--color-fg)" }}
+                  {zone.label}
+                </span>
+
+                <div className="relative max-w-md">
+                  <span className="font-display text-[0.65rem] tracking-[0.18em] text-muted uppercase">
+                    {String(i + 1).padStart(2, "0")} — Material
+                  </span>
+                  <h3
+                    className="mt-3 text-balance font-display text-[2.6rem] font-medium leading-[0.95] tracking-[-0.01em] sm:text-[3.4rem]"
+                    style={{ color: zone.accent }}
                   >
                     {zone.label}
-                  </span>
-                </button>
-              ))}
-            </div>
+                  </h3>
+                  <p className="mt-4 max-w-sm text-balance font-body text-base text-fg/80 sm:text-lg">
+                    {zone.line}
+                  </p>
+                </div>
 
+                <div className="relative flex flex-col gap-1 border-t border-line pt-5">
+                  {zone.services.map((name) => (
+                    <Link
+                      key={name}
+                      href={`/contact?service=${encodeURIComponent(name)}`}
+                      className="group flex items-center justify-between gap-4 rounded-lg py-2 transition-colors duration-200 hover:bg-bg/60"
+                    >
+                      <span className="font-display text-lg font-medium text-fg sm:text-xl">
+                        {name}
+                      </span>
+                      <span
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
+                        style={{ color: zone.accent }}
+                        aria-hidden="true"
+                      >
+                        <ArrowIcon />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 px-6 pb-8 md:px-14">
+          <div className="relative h-px flex-1 bg-line">
+            <span
+              ref={catalogRailFillRef}
+              className="absolute inset-y-0 left-0 w-full bg-teal"
+            />
+          </div>
+          <p className="shrink-0 font-display text-[0.6rem] tracking-[0.14em] text-muted uppercase">
+            Scroll
+          </p>
+        </div>
+      </div>
+
+      {/* Mobile / reduced-motion fallback — the same five materials,
+          swiped through as snap-scrolling cards. */}
+      <section className="hidden border-t border-line bg-bg px-6 py-20 max-md:block motion-reduce:block md:px-10 md:py-28">
+        <Eyebrow>The Catalog</Eyebrow>
+        <h2
+          data-reveal
+          className="mt-4 max-w-md text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
+        >
+          Five materials. Fifteen disciplines.
+        </h2>
+        <p data-reveal className="mt-3 font-body text-sm text-muted">
+          Swipe to explore all five.
+        </p>
+
+        <div className="mt-8 -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4">
+          {ZONES.map((zone, i) => (
             <div
+              key={zone.key}
               data-reveal
-              className="rounded-[1.75rem] border border-line bg-bg-elevated p-8 md:p-10"
+              className="flex w-[85%] shrink-0 snap-center flex-col justify-between rounded-[1.75rem] border border-line p-7"
+              style={{ backgroundColor: `${zone.accent}10` }}
             >
-              <p
-                className="font-display text-[0.68rem] tracking-[0.18em] uppercase"
-                style={{ color: ZONES[activeZone].accent }}
-              >
-                {ZONES[activeZone].label}
-              </p>
-              <p className="mt-4 max-w-md text-balance font-body text-lg leading-relaxed text-fg/80">
-                {ZONES[activeZone].line}
-              </p>
-              <div className="mt-7 flex flex-col gap-1 border-t border-line pt-6">
-                {ZONES[activeZone].services.map((name) => (
+              <div>
+                <span className="font-display text-[0.65rem] tracking-[0.18em] text-muted uppercase">
+                  {String(i + 1).padStart(2, "0")} — Material
+                </span>
+                <h3
+                  className="mt-2 font-display text-[1.8rem] font-medium leading-[1.0] tracking-[-0.01em]"
+                  style={{ color: zone.accent }}
+                >
+                  {zone.label}
+                </h3>
+                <p className="mt-3 font-body text-sm text-fg/80">{zone.line}</p>
+              </div>
+              <div className="mt-6 flex flex-col gap-1 border-t border-line pt-4">
+                {zone.services.map((name) => (
                   <Link
                     key={name}
                     href={`/contact?service=${encodeURIComponent(name)}`}
-                    className="group flex items-center justify-between gap-4 rounded-lg py-2.5 transition-colors duration-200 hover:bg-bg/60"
+                    className="flex items-center justify-between gap-3 py-1.5"
                   >
-                    <span className="font-display text-base font-medium text-fg sm:text-lg">
+                    <span className="font-display text-base font-medium text-fg">
                       {name}
                     </span>
-                    <span
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line text-fg opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
-                      style={{ color: ZONES[activeZone].accent }}
-                      aria-hidden="true"
-                    >
+                    <span style={{ color: zone.accent }} aria-hidden="true">
                       <ArrowIcon />
                     </span>
                   </Link>
                 ))}
               </div>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -504,27 +609,21 @@ export default function ServicesIndex() {
               All fifteen, by name.
             </p>
           </div>
-          <div className="mt-2 columns-1 sm:columns-2 lg:columns-3">
-            {ALL_SERVICES.map((name, i) => (
+          <div className="mt-8 flex flex-wrap gap-3">
+            {ALL_SERVICES_WITH_ZONE.map(({ name, accent }) => (
               <Link
                 key={name}
                 href={`/contact?service=${encodeURIComponent(name)}`}
                 data-reveal
-                className="group flex items-baseline gap-3 border-b border-line py-4 transition-colors duration-200"
-                style={{ breakInside: "avoid" }}
+                className="group inline-flex items-center gap-2.5 rounded-full border border-line px-5 py-2.5 transition-colors duration-200 hover:bg-bg-elevated"
               >
-                <span className="font-display text-[0.65rem] text-muted tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="font-display text-base font-medium text-fg transition-colors duration-200">
-                  {name}
-                </span>
                 <span
-                  className="ml-auto opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                  style={{ color: ACCENTS[i % ACCENTS.length] }}
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: accent }}
                   aria-hidden="true"
-                >
-                  <ArrowIcon />
+                />
+                <span className="font-display text-sm font-medium text-fg">
+                  {name}
                 </span>
               </Link>
             ))}

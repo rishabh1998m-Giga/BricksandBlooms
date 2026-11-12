@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const LINKS = [
-  { label: "Work", href: "#" },
+  { label: "How We Work", href: "/work" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },

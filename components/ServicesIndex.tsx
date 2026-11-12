@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import Image from "next/image";
+import { useRef, type ReactElement } from "react";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -14,92 +13,149 @@ const TERRACOTTA = "#c05f38";
 const BLUSH = "#c97079";
 const STONE = "#a79e8c";
 
-// Four real moments from real sites — not a modelled brick-to-bloom
-// animation — standing in for the four phases every project actually
-// goes through. Each one is a genuine photo of that kind of work, not a
-// single project documented start to finish.
-const JOURNEY_STAGES = [
-  {
-    num: "01",
-    name: "Discovery",
-    line: "We start by reading the site itself — light, soil, what's already growing, what the space is asking to become.",
-    image: "/assets/process/discovery.webp",
-  },
-  {
-    num: "02",
-    name: "Planning",
-    line: "Materials, layout, and planting are worked out on paper before a single brick moves.",
-    image: "/assets/process/planning.webp",
-  },
-  {
-    num: "03",
-    name: "Execution",
-    line: "Structure goes in first — brickwork and hardscape, the bones the rest of the space leans on.",
-    image: "/assets/process/execution.webp",
-  },
-  {
-    num: "04",
-    name: "Grow",
-    line: "Planting takes root, and the landscape starts to fill in and carry on growing long after we've left.",
-    image: "/assets/process/grow.webp",
-  },
-];
+type IconComponent = (props: { className?: string }) => ReactElement;
 
-type Zone = {
-  key: string;
-  label: string;
-  accent: string;
-  line: string;
-  services: string[];
-};
+function IconDiscovery({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <circle cx="13" cy="13" r="8" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M19 19 27 27" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M9 13c0-2.2 1.8-4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
 
-const ZONES: Zone[] = [
-  {
-    key: "brick",
-    label: "Brick & Stone",
-    accent: TERRACOTTA,
-    line: "Where structure gives a landscape its bones — the architecture that holds everything else up.",
-    services: ["Hardscape", "Pergola & Fabrication"],
-  },
-  {
-    key: "plant",
-    label: "Plant",
-    accent: TEAL,
-    line: "Softscape and living walls — the parts of a landscape that grow, breathe, and change with the seasons.",
-    services: ["Terrace Garden", "Vertical Garden", "Softscape", "Moss Wall"],
-  },
-  {
-    key: "water",
-    label: "Water",
-    accent: BLUSH,
-    line: "Pools, fountains, and the quiet engineering of irrigation — water in motion and water at rest.",
-    services: ["Swimming Pools", "Water Fountains & Ponds", "Landscape Irrigation"],
-  },
-  {
-    key: "terrain",
-    label: "Terrain",
-    accent: STONE,
-    line: "The full shape of a site — villas, commercial grounds, landscapes built at every scale.",
-    services: ["Villa Landscaping", "Luxury Landscapes", "Commercial Landscaping"],
-  },
-  {
-    key: "planter",
-    label: "Planter",
-    accent: TERRACOTTA,
-    line: "The ongoing relationship — indoor greenery, the vessels that bring nature in, and the care that keeps it alive.",
-    services: ["Garden Maintenance", "Office Plant Rental", "FRP Planters"],
-  },
-];
+function IconPlanning({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <rect x="6" y="6" width="20" height="20" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M6 13h20M13 6v20" stroke="currentColor" strokeWidth="1.1" strokeDasharray="2 3" />
+      <circle cx="19" cy="19" r="2.2" fill="currentColor" />
+    </svg>
+  );
+}
 
-const ALL_SERVICES_WITH_ZONE = ZONES.flatMap((zone) =>
-  zone.services.map((name) => ({ name, accent: zone.accent }))
-);
+function IconExecution({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <rect x="5" y="19" width="8" height="5" rx="0.6" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="15" y="19" width="8" height="5" rx="0.6" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="10" y="14" width="8" height="5" rx="0.6" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M21 10l4-3M25 7v4h-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
-const BRIDGE_PHOTOS = [
-  { src: "/assets/services/landscape-design.webp", caption: "A courtyard, reclaimed" },
-  { src: "/assets/process/execution.webp", caption: "Built by hand, on site" },
-  { src: "/assets/landscape/awakens-reveal.webp", caption: "What the land wanted to become" },
-];
+function IconGrow({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <path d="M16 27V15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path
+        d="M16 15C16 10 20 6 25 6C25 11 21 15 16 15Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16 19C16 15.1 12.9 12 9 12C9 15.9 12.1 19 16 19Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconBrick({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M4 10h10M18 10h10M4 16h6M14 16h10M4 22h10M18 22h10"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function IconPlant({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <path d="M16 27V15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path
+        d="M16 15C16 9.5 20.5 5 26 5C26 10.5 21.5 15 16 15Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16 19C16 15.1 12.9 12 9 12C9 15.9 12.1 19 16 19Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconWater({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M16 5c4 6 7 10.2 7 14a7 7 0 1 1-14 0c0-3.8 3-8 7-14Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconTerrain({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M4 22l6-9 5 6 4-5 9 8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M4 25h24" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconPlanter({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <path d="M9 13h14l-2 13H11L9 13Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M16 13V9c0-2 1.5-4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M16 9c0-1.8-1.3-3.3-3-3.3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconLoop({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M8 12a8 8 0 0 1 14-5.3M24 20a8 8 0 0 1-14 5.3"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M22 4v4h-4M10 28v-4h4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function ArrowIcon() {
   return (
@@ -127,14 +183,103 @@ function Eyebrow({ children }: { children: string }) {
   );
 }
 
+// The four phases every project moves through, illustrated with simple
+// line icons instead of photographed the way they used to be — the page
+// is about the process, not a documentary of one particular site.
+const PROCESS_STEPS: {
+  num: string;
+  name: string;
+  line: string;
+  icon: IconComponent;
+}[] = [
+  {
+    num: "01",
+    name: "Discovery",
+    line: "We read the site itself — light, soil, what's already growing, what the space is asking to become.",
+    icon: IconDiscovery,
+  },
+  {
+    num: "02",
+    name: "Planning",
+    line: "Materials, layout, and planting are worked out on paper before a single brick moves.",
+    icon: IconPlanning,
+  },
+  {
+    num: "03",
+    name: "Execution",
+    line: "Structure goes in first — brickwork and hardscape, the bones the rest of the space leans on.",
+    icon: IconExecution,
+  },
+  {
+    num: "04",
+    name: "Grow",
+    line: "Planting takes root, and the landscape keeps filling in long after we've left.",
+    icon: IconGrow,
+  },
+];
+
+type Zone = {
+  key: string;
+  label: string;
+  accent: string;
+  line: string;
+  services: string[];
+  icon: IconComponent;
+};
+
+const ZONES: Zone[] = [
+  {
+    key: "brick",
+    label: "Brick & Stone",
+    accent: TERRACOTTA,
+    line: "Where structure gives a landscape its bones — the architecture that holds everything else up.",
+    services: ["Hardscape", "Pergola & Fabrication"],
+    icon: IconBrick,
+  },
+  {
+    key: "plant",
+    label: "Plant",
+    accent: TEAL,
+    line: "Softscape and living walls — the parts of a landscape that grow, breathe, and change with the seasons.",
+    services: ["Terrace Garden", "Vertical Garden", "Softscape", "Moss Wall"],
+    icon: IconPlant,
+  },
+  {
+    key: "water",
+    label: "Water",
+    accent: BLUSH,
+    line: "Pools, fountains, and the quiet engineering of irrigation — water in motion and water at rest.",
+    services: ["Swimming Pools", "Water Fountains & Ponds", "Landscape Irrigation"],
+    icon: IconWater,
+  },
+  {
+    key: "terrain",
+    label: "Terrain",
+    accent: STONE,
+    line: "The full shape of a site — villas, commercial grounds, landscapes built at every scale.",
+    services: ["Villa Landscaping", "Luxury Landscapes", "Commercial Landscaping"],
+    icon: IconTerrain,
+  },
+  {
+    key: "planter",
+    label: "Planter",
+    accent: TERRACOTTA,
+    line: "The ongoing relationship — indoor greenery, the vessels that bring nature in, and the care that keeps it alive.",
+    services: ["Garden Maintenance", "Office Plant Rental", "FRP Planters"],
+    icon: IconPlanter,
+  },
+];
+
+const ALL_SERVICES_WITH_ZONE = ZONES.flatMap((zone) =>
+  zone.services.map((name) => ({ name, accent: zone.accent }))
+);
+
 export default function ServicesIndex() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const openingRef = useRef<HTMLElement>(null);
 
-  const journeyRootRef = useRef<HTMLDivElement>(null);
-  const journeyStageRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const journeyContentRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const journeyRailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const heroArchRef = useRef<SVGPathElement>(null);
+  const heroVineRef = useRef<SVGPathElement>(null);
+  const heroLeafRefs = useRef<(SVGEllipseElement | null)[]>([]);
 
   const catalogRootRef = useRef<HTMLDivElement>(null);
   const catalogTrackRef = useRef<HTMLDivElement>(null);
@@ -150,6 +295,9 @@ export default function ServicesIndex() {
 
       if (prefersReduced) {
         gsap.set(reveals, { opacity: 1, y: 0 });
+        if (heroArchRef.current) gsap.set(heroArchRef.current, { strokeDashoffset: 0 });
+        if (heroVineRef.current) gsap.set(heroVineRef.current, { strokeDashoffset: 0 });
+        if (heroLeafRefs.current.length) gsap.set(heroLeafRefs.current, { scale: 1 });
         return;
       }
 
@@ -167,70 +315,32 @@ export default function ServicesIndex() {
           }),
       });
 
-      // --- The Journey: four real photographs, each rising up from the
-      // bottom to cover the one before it as you scroll — the structure
-      // literally layering up, the same idea the old 3D sequence was
-      // reaching for, told with real sites instead of modelled geometry.
-      // Desktop + motion-safe only; mobile gets the static list below.
+      // --- Hero illustration: an arch and a vine drawing themselves on,
+      // in place of a photograph — the brand mark's own line language,
+      // scaled up.
+      const archEl = heroArchRef.current;
+      const vineEl = heroVineRef.current;
+      const leaves = heroLeafRefs.current;
+      if (archEl && vineEl) {
+        const archLen = archEl.getTotalLength();
+        const vineLen = vineEl.getTotalLength();
+        gsap.set(archEl, { strokeDasharray: archLen, strokeDashoffset: archLen });
+        gsap.set(vineEl, { strokeDasharray: vineLen, strokeDashoffset: vineLen });
+        gsap.set(leaves, { scale: 0, transformOrigin: "center" });
+
+        gsap
+          .timeline({ delay: 0.2 })
+          .to(archEl, { strokeDashoffset: 0, duration: 1.3, ease: "power2.inOut" })
+          .to(vineEl, { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" }, "-=0.85")
+          .to(leaves, { scale: 1, duration: 0.5, ease: "back.out(2.2)", stagger: 0.12 }, "-=0.45");
+      }
+
+      // --- The Catalog: five materials scrolled through sideways instead
+      // of listed down the page — a pinned horizontal pan. Desktop +
+      // motion-safe only; mobile gets the swipeable carousel below.
       const isDesktop = window.matchMedia("(min-width: 768px)").matches;
       if (!isDesktop) return;
 
-      const stages = journeyStageRefs.current;
-      const content = journeyContentRefs.current;
-      const rail = journeyRailRefs.current;
-      const n = JOURNEY_STAGES.length;
-
-      gsap.set(stages.slice(1), { clipPath: "inset(100% 0% 0% 0%)" });
-      gsap.set(content, { autoAlpha: 0 });
-      gsap.set(content[0], { autoAlpha: 1 });
-      gsap.set(rail, { opacity: 0.35 });
-      gsap.set(rail[0], { opacity: 1 });
-
-      let activeStage = 0;
-      const segment = 1 / n;
-
-      const applyJourney = (progress: number) => {
-        stages.forEach((el, i) => {
-          if (!el || i === 0) return;
-          const segProgress = gsap.utils.clamp(
-            0,
-            1,
-            (progress - (i - 1) * segment) / segment
-          );
-          gsap.set(el, {
-            clipPath: `inset(${100 - segProgress * 100}% 0% 0% 0%)`,
-          });
-        });
-
-        const idx = Math.min(n - 1, Math.floor(progress * n));
-        if (idx !== activeStage) {
-          const prev = activeStage;
-          activeStage = idx;
-          gsap.to(content[prev], { autoAlpha: 0, duration: 0.3 });
-          gsap.to(content[idx], { autoAlpha: 1, duration: 0.3 });
-          gsap.to(rail[prev], { opacity: 0.35, duration: 0.3 });
-          gsap.to(rail[idx], { opacity: 1, duration: 0.3 });
-        }
-      };
-
-      ScrollTrigger.create({
-        trigger: journeyRootRef.current,
-        start: "top top",
-        end: "+=360%",
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => applyJourney(self.progress),
-      });
-
-      applyJourney(0);
-
-      // --- The Catalog: five materials scrolled through sideways, not
-      // listed down the page — a pinned horizontal pan, same family of
-      // technique as the Journey above but a different axis entirely, so
-      // the two "scroll-jacked" sections don't feel like repeats of
-      // each other.
       const catalogTrack = catalogTrackRef.current;
       const catalogFill = catalogRailFillRef.current;
       const catalogIndexEl = catalogIndexRef.current;
@@ -242,7 +352,7 @@ export default function ServicesIndex() {
         ScrollTrigger.create({
           trigger: catalogRootRef.current,
           start: "top top",
-          end: () => "+=" + (panelCount - 1) * window.innerWidth,
+          end: () => "+=" + (panelCount - 1) * window.innerWidth * 0.7,
           scrub: 1,
           pin: true,
           anticipatePin: 1,
@@ -270,144 +380,101 @@ export default function ServicesIndex() {
 
   return (
     <div ref={rootRef}>
-      {/* ENTRY — a real finished space, not a rendered one */}
-      <section
-        ref={openingRef}
-        className="relative flex min-h-[26rem] w-full items-end overflow-hidden border-t border-line bg-bg px-6 pb-14 pt-24 md:h-[100dvh] md:min-h-0 md:pb-24 md:pt-0 md:px-10"
-      >
-        <Image
-          src="/assets/landscape/awakens-character.webp"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-bg/95 to-transparent" />
-        <div className="relative z-10">
-          <h1
-            data-reveal
-            className="max-w-2xl text-balance font-display text-[2.4rem] font-medium leading-[1.02] tracking-[-0.01em] text-fg sm:text-[3.2rem] md:text-[4rem]"
+      {/* ENTRY — an arch and a vine, drawn in line instead of photographed */}
+      <section className="relative flex min-h-[30rem] w-full items-center overflow-hidden border-t border-line bg-bg px-6 py-20 md:min-h-[34rem] md:px-10">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 md:grid-cols-[1fr_auto]">
+          <div className="order-2 md:order-1">
+            <h1
+              data-reveal
+              className="max-w-xl text-balance font-display text-[2.4rem] font-medium leading-[1.02] tracking-[-0.01em] text-fg sm:text-[3.2rem] md:text-[3.6rem]"
+            >
+              Everything between a bare plot and a finished garden.
+            </h1>
+            <p
+              data-reveal
+              className="mt-5 max-w-md text-balance font-body text-base text-muted sm:text-lg"
+            >
+              Fifteen disciplines, one studio. Scroll through how we get
+              there.
+            </p>
+          </div>
+
+          <svg
+            viewBox="0 0 400 460"
+            className="order-1 h-[16rem] w-auto shrink-0 justify-self-center md:order-2 md:h-[22rem]"
+            aria-hidden="true"
           >
-            Everything between a bare plot and a finished garden.
-          </h1>
-          <p
-            data-reveal
-            className="mt-5 max-w-md text-balance font-body text-base text-muted sm:text-lg"
-          >
-            Scroll through how we get there. Then browse all fifteen
-            services below.
-          </p>
+            <path
+              ref={heroArchRef}
+              d="M70 440 V220 C70 124 139 50 200 50 C261 50 330 124 330 220 V440"
+              stroke="var(--color-fg)"
+              strokeOpacity="0.7"
+              strokeWidth="2"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <path
+              ref={heroVineRef}
+              d="M200 440 C196 360 230 330 206 270 C182 210 220 180 204 120 C196 88 210 70 200 50"
+              stroke={TEAL}
+              strokeWidth="2"
+              strokeLinecap="round"
+              fill="none"
+            />
+            {[
+              { cx: 214, cy: 330, rot: -30 },
+              { cx: 188, cy: 250, rot: 30 },
+              { cx: 214, cy: 170, rot: -30 },
+              { cx: 190, cy: 100, rot: 30 },
+            ].map((leaf, i) => (
+              <ellipse
+                key={i}
+                ref={(el) => {
+                  heroLeafRefs.current[i] = el;
+                }}
+                cx={leaf.cx}
+                cy={leaf.cy}
+                rx="13"
+                ry="6.5"
+                transform={`rotate(${leaf.rot} ${leaf.cx} ${leaf.cy})`}
+                fill={TERRACOTTA}
+                opacity="0.85"
+              />
+            ))}
+          </svg>
         </div>
       </section>
 
-      {/* THE JOURNEY — four real phases, each photo rising to cover the
-          last as the project moves forward */}
-      <div
-        ref={journeyRootRef}
-        className="relative hidden h-[100dvh] w-full overflow-hidden border-t border-line bg-bg motion-safe:md:block"
-      >
-        {JOURNEY_STAGES.map((stage, i) => (
-          <div
-            key={stage.num}
-            ref={(el) => {
-              journeyStageRefs.current[i] = el;
-            }}
-            className="absolute inset-0"
+      {/* THE PROCESS — four phases, told in icon and copy, not photographed */}
+      <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-6xl">
+          <Eyebrow>The Process</Eyebrow>
+          <h2
+            data-reveal
+            className="mt-4 max-w-xl text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
           >
-            <Image
-              src={stage.image}
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
-          </div>
-        ))}
+            Four phases, every project.
+          </h2>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-bg/95 to-transparent" />
-
-        <div className="relative z-10 flex h-full flex-col justify-between px-6 py-10 md:px-14 md:py-16">
-          <div className="flex items-center justify-between gap-6">
-            <p className="font-display text-[0.68rem] tracking-[0.22em] text-teal uppercase">
-              The Journey
-            </p>
-            <div className="flex items-center gap-3">
-              {JOURNEY_STAGES.map((stage, i) => (
-                <button
-                  key={stage.num}
-                  type="button"
-                  ref={(el) => {
-                    journeyRailRefs.current[i] = el;
-                  }}
-                  onClick={() => {
-                    const trigger = ScrollTrigger.getById("journey");
-                    if (trigger) {
-                      const y =
-                        trigger.start +
-                        (i / JOURNEY_STAGES.length) *
-                          (trigger.end - trigger.start) +
-                        4;
-                      window.scrollTo({ top: y, behavior: "smooth" });
-                    }
-                  }}
-                  className="font-display text-[0.62rem] tracking-[0.1em] text-fg uppercase transition-opacity"
-                >
-                  {stage.num}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative min-h-[9rem] max-w-xl">
-            {JOURNEY_STAGES.map((stage, i) => (
+          <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            {PROCESS_STEPS.map((step) => (
               <div
-                key={stage.num}
-                ref={(el) => {
-                  journeyContentRefs.current[i] = el;
-                }}
-                className="absolute inset-x-0 bottom-0"
+                key={step.num}
+                data-reveal
+                className="flex flex-col gap-4 border-t border-line pt-6"
               >
-                <p className="font-display text-[0.68rem] tracking-[0.22em] text-terracotta uppercase">
-                  {stage.num} — {stage.name}
-                </p>
-                <p className="mt-3 max-w-lg text-balance font-display text-[1.7rem] font-medium leading-[1.15] tracking-[-0.01em] text-fg sm:text-[2.1rem]">
-                  {stage.line}
-                </p>
+                <step.icon className="h-8 w-8 text-teal" />
+                <div>
+                  <span className="font-display text-[0.65rem] tracking-[0.18em] text-muted uppercase">
+                    {step.num} — {step.name}
+                  </span>
+                  <p className="mt-2 font-display text-base font-medium leading-snug text-fg">
+                    {step.line}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Mobile / reduced-motion fallback — the same four real photos,
-          read as a static stacked list. */}
-      <section className="hidden border-t border-line bg-bg px-6 py-20 max-md:block motion-reduce:block md:px-10 md:py-28">
-        <div className="mx-auto max-w-2xl">
-          <Eyebrow>The Journey</Eyebrow>
-          <ul className="mt-10 flex flex-col gap-10">
-            {JOURNEY_STAGES.map((stage) => (
-              <li key={stage.num} className="flex gap-5">
-                <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-line">
-                  <Image
-                    src={stage.image}
-                    alt=""
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <span className="font-display text-[0.68rem] tracking-[0.22em] text-terracotta uppercase">
-                    {stage.num} — {stage.name}
-                  </span>
-                  <p className="mt-2 font-display text-[1.15rem] font-medium leading-[1.25] tracking-[-0.01em] text-fg">
-                    {stage.line}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
@@ -450,7 +517,13 @@ export default function ServicesIndex() {
                 </span>
 
                 <div className="relative max-w-md">
-                  <span className="font-display text-[0.65rem] tracking-[0.18em] text-muted uppercase">
+                  <span
+                    className="inline-flex h-10 w-10 items-center justify-center"
+                    style={{ color: zone.accent }}
+                  >
+                    <zone.icon className="h-8 w-8" />
+                  </span>
+                  <span className="mt-4 block font-display text-[0.65rem] tracking-[0.18em] text-muted uppercase">
                     {String(i + 1).padStart(2, "0")} — Material
                   </span>
                   <h3
@@ -525,7 +598,13 @@ export default function ServicesIndex() {
               style={{ backgroundColor: `${zone.accent}10` }}
             >
               <div>
-                <span className="font-display text-[0.65rem] tracking-[0.18em] text-muted uppercase">
+                <span
+                  className="inline-flex h-9 w-9 items-center justify-center"
+                  style={{ color: zone.accent }}
+                >
+                  <zone.icon className="h-7 w-7" />
+                </span>
+                <span className="mt-3 block font-display text-[0.65rem] tracking-[0.18em] text-muted uppercase">
                   {String(i + 1).padStart(2, "0")} — Material
                 </span>
                 <h3
@@ -554,49 +633,6 @@ export default function ServicesIndex() {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* THE PROOF — real work, not illustration */}
-      <section className="border-t border-line bg-bg-elevated px-6 py-20 md:px-10 md:py-28">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col justify-between gap-4 border-b border-line pb-8 md:flex-row md:items-end">
-            <div>
-              <Eyebrow>The Proof</Eyebrow>
-              <h2
-                data-reveal
-                className="mt-4 max-w-xl text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
-              >
-                Every one of these is somewhere real.
-              </h2>
-            </div>
-            <p data-reveal className="max-w-xs font-body text-base text-muted">
-              No renders, no stock photography — three frames from sites
-              we&rsquo;ve actually built.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 sm:grid-cols-3">
-            {BRIDGE_PHOTOS.map((photo) => (
-              <div
-                key={photo.src}
-                data-reveal
-                className="group relative aspect-[3/4] overflow-hidden rounded-2xl border border-line"
-              >
-                <Image
-                  src={photo.src}
-                  alt=""
-                  fill
-                  sizes="(min-width: 640px) 33vw, 100vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/10 to-transparent" />
-                <p className="absolute bottom-5 left-5 font-display text-sm text-fg/90">
-                  {photo.caption}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -631,42 +667,31 @@ export default function ServicesIndex() {
         </div>
       </section>
 
-      {/* THE ONGOING STORY — the part that never really ends */}
-      <section className="relative overflow-hidden border-t border-line bg-bg-elevated px-6 py-20 md:min-h-[28rem] md:px-10 md:py-28">
-        <Image
-          src="/assets/services/maintenance.webp"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-bg-elevated/96 via-bg-elevated/80 to-bg-elevated/35" />
-        <div className="relative mx-auto max-w-6xl">
-          <Eyebrow>The Ongoing Story</Eyebrow>
-          <h2
-            data-reveal
-            className="mt-4 max-w-lg text-balance font-display text-[2rem] font-medium leading-[1.1] tracking-[-0.01em] text-fg sm:text-[2.6rem]"
-          >
-            A landscape is never really finished.
-          </h2>
-          <p data-reveal className="mt-4 max-w-md font-body text-base text-muted">
-            Monthly visits, seasonal resets, and the plants and water
-            features that need someone paying attention year-round.
-          </p>
-        </div>
-      </section>
-
-      {/* Closing CTA */}
+      {/* Closing CTA — the ongoing-care note folds in here instead of
+          getting its own full section */}
       <section className="border-t border-line bg-bg px-6 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-6xl">
           <Eyebrow>Let&rsquo;s Begin</Eyebrow>
           <div className="mt-4 flex flex-col justify-between gap-10 md:flex-row md:items-end">
-            <h2
-              data-reveal
-              className="max-w-lg text-balance font-display text-[2.2rem] font-medium leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.8rem]"
-            >
-              Have a project in mind?
-            </h2>
+            <div className="max-w-lg">
+              <h2
+                data-reveal
+                className="text-balance font-display text-[2.2rem] font-medium leading-[1.05] tracking-[-0.01em] text-fg sm:text-[2.8rem]"
+              >
+                Have a project in mind?
+              </h2>
+              <p
+                data-reveal
+                className="mt-4 flex items-start gap-2.5 font-body text-sm text-muted"
+              >
+                <IconLoop className="mt-0.5 h-4 w-4 shrink-0 text-teal" />
+                <span>
+                  A landscape is never really finished — monthly visits
+                  and seasonal resets keep it that way, long after we
+                  hand it over.
+                </span>
+              </p>
+            </div>
             <div data-reveal className="max-w-sm">
               <p className="font-body text-base text-muted sm:text-lg">
                 Tell us where your site is and what you have in mind —
